@@ -1,0 +1,33 @@
+{
+  "name": "100x-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "https://github.com/thebeetoken/beenest-backend#readme",
+  "dependencies": {
+    "aws-sdk": "^2.208.0",
+    "aws-xray-sdk": "^1.2.0",
+    "axios": "^0.17.1",
+    "body-parser": "^1.18.2",
+    "db": "^1.0.6",
+    "errorhandler": "^1.5.0",
+    "http-auth": "^3.2.3",
+    "koa": "^2.5.0",
+    "mysql": "^2.15.0",
+    "short-uuid": "^2.3.4",
+    "steem": "^0.7.1"
+  }
+}
