@@ -1,1 +1,29 @@
-node_modules/
+.idea
+.save
+*.css.map
+*.css
+nodemon.json
+
+# Created by .ignore support plugin (hsz.mobi)
+### Node template
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+
+# node-waf configuration
+.lock-wscript
+
+#vscode specific
+.vscode/*
+
+# Dependency directory
+node_modules
+.envrc
+
+build/

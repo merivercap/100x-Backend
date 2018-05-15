@@ -1,19 +1,18 @@
-process.env.NODE_ENV ? process.env.NODE_ENV : process.env.NODE_ENV = 'development';
-const PORT = process.env.PORT || 3000;
-const DEPLOYMENT_STAGE = process.env.DEPLOYMENT_STAGE || 'sandbox'
-
-const koa = require('koa');
-const errorhandler = require('errorhandler');
-const db = require('./models/dao');
-const routes = require('./controllers');
-const fallback = require('express-history-api-fallback');
-const bodyParser = require('body-parser');
-const path = require('path');
-const http = require('http');
+// process.env.NODE_ENV ? process.env.NODE_ENV : process.env.NODE_ENV = 'development';
+// const PORT = process.env.PORT || 3000;
+// const DEPLOYMENT_STAGE = process.env.DEPLOYMENT_STAGE || 'sandbox'
+const Koa = require('koa');
+// const errorhandler = require('errorhandler');
+// const db = require('./models/dao');
+// const routes = require('./controllers');
+// const fallback = require('express-history-api-fallback');
+// const bodyParser = require('body-parser');
+// const path = require('path');
+// const http = require('http');
 const compress = require('koa-compress');
 const logger = require('koa-logger');
-const serve = require('koa-static');
-const route = require('koa-route');
+// const serve = require('koa-static');
+// const route = require('koa-route');
 
 // Application setup.
 const app = new Koa();
@@ -33,15 +32,17 @@ app.use(logger());
 // app.use(route.head('/', books.head));
 
 // Connect all our routes to our application
-app.use('/', routes);
+// app.use('/', routes);
 
 // Serve static files
-app.use(serve(path.join(__dirname, 'public')));
+// app.use(serve(path.join(__dirname, 'public')));
 
 // Compress
 app.use(compress());
 
-if (!module.parent) {
-  app.listen(1337);
-  console.log('listening on port 1337');
-}
+
+app.use(async ctx => {
+    ctx.body = "It works!\n";
+});
+
+app.listen(3000);
