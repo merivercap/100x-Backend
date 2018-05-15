@@ -42,7 +42,7 @@ app.use(compress());
 
 
 app.use(async ctx => {
-    ctx.body = "It works!\n";
+    ctx.body = "It may work!\n";
 });
 
 app.listen(3000);
