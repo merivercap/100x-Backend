@@ -1,3 +1,5 @@
+import 'babel/polyfill';
+
 // process.env.NODE_ENV ? process.env.NODE_ENV : process.env.NODE_ENV = 'development';
 // const PORT = process.env.PORT || 3000;
 // const DEPLOYMENT_STAGE = process.env.DEPLOYMENT_STAGE || 'sandbox'
@@ -11,15 +13,32 @@ const Koa = require('koa');
 // const http = require('http');
 const compress = require('koa-compress');
 const logger = require('koa-logger');
+const mysql = require('mysql');
 // const serve = require('koa-static');
 // const route = require('koa-route');
 
-// Application setup.
-const app = new Koa();
 
-// Logger
+var pool = require('./models/db');
+
+pool.getConnection(function(err, connection) {
+  console.log('getgotgone');
+});
+
+pool.on('acquire', function (connection) {
+  console.log('Connection %d acquired', connection.threadId);
+});
+
+
+const app = new Koa();
 app.use(logger());
 
+app.use(compress());
+
+app.use(async ctx => {
+    ctx.body = 'Works!';
+});
+
+app.listen(3000);
 // app.use(route.get('/', books.home));
 // app.use(route.get('/books/', books.all));
 // app.use(route.get('/view/books/', books.list));
@@ -36,13 +55,3 @@ app.use(logger());
 
 // Serve static files
 // app.use(serve(path.join(__dirname, 'public')));
-
-// Compress
-app.use(compress());
-
-
-app.use(async ctx => {
-    ctx.body = "It may work!\n";
-});
-
-app.listen(3000);

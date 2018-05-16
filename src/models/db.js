@@ -1,7 +1,8 @@
-const AWSXRay = require('./../services/tracer');
-const mysql = AWSXRay.captureMySQL(require('mysql'));
+// const AWSXRay = require('./../services/tracer');
+// const mysql = AWSXRay.captureMySQL(require('mysql'));
+const mysql = require('mysql');
+const path = require('path');
 
-// TODO: hook up with Amazon RDS
 const RDS_HOSTNAME = process.env.RDS_HOSTNAME || '';
 const RDS_USERNAME = process.env.RDS_USERNAME || '';
 const RDS_PASSWORD = process.env.RDS_PASSWORD || '';
@@ -16,7 +17,4 @@ var pool = mysql.createPool({
   database: RDS_DB_NAME,
 });
 
-console.log(`Connected to ${RDS_HOSTNAME}`);
-
-module.exports = pool;
-module.exports.format = mysql.format;
+module.exports.pool = pool;
