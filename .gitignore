@@ -1,3 +1,5 @@
+# don't upload aws credentials
+
 .idea
 .save
 *.css.map
