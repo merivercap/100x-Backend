@@ -1,6 +1,5 @@
 const casual = require('casual');
 const mocks = {
-  String: () => 'It works!',
   Post: () => ({
     author: () => casual.username,
     permlink: () => casual.word,
