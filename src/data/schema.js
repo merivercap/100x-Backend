@@ -22,6 +22,7 @@ type Post {
   post_type: Int            | eg. 0 => Blog, 1 => Video, 2 => News
 }
 
+scalar Date
 */
 
 const typeDefs = `
@@ -35,7 +36,7 @@ type Post {
   tags: [Tag]!
   title: String!
   body: String!
-  created: Date!
+  created: String!
   net_votes: Int!
   children: Int!
   curator_payout_value: Int!
