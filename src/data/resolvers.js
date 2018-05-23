@@ -20,6 +20,11 @@ const resolvers = {
     allPosts(_, args) {
       return Post.findAll();
     }
+  },
+  Post: {
+    tags(post) {
+      return post.getTags();
+    }
   }
 };
 

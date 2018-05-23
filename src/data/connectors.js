@@ -26,12 +26,12 @@ const PostModel = db.define('post', {
   permlink: { type: Sequelize.STRING },
   title: { type: Sequelize.STRING },
   body: { type: Sequelize.STRING },
-  created: { type: Sequelize.STRING },
-  net_votes: { type: Sequelize.STRING },
-  children: { type: Sequelize.STRING },
-  curator_payout_value: { type: Sequelize.STRING },
-  trending: { type: Sequelize.STRING },
-  post_type: { type: Sequelize.STRING },
+  created: { type: Sequelize.DATE },
+  net_votes: { type: Sequelize.INTEGER },
+  children: { type: Sequelize.INTEGER },
+  curator_payout_value: { type: Sequelize.FLOAT },
+  trending: { type: Sequelize.INTEGER },
+  post_type: { type: Sequelize.INTEGER },
 });
 
 const TagModel = db.define('tag', {
@@ -57,11 +57,13 @@ db.sync({ force: true }).then(() => {
       children: casual.integer(from = 0, to = 1000),
       curator_payout_value: casual.integer(from = 0, to = 1000),
       trending: casual.integer(from = 0, to = 10000),
-      post_type: casual.integer(from = 0, to = 2),
+      post_type: 0,
     }).then((post) => {
-      return post.createTag({
-        name: taggings[Math.floor(Math.random()*taggings.length)],
-      });
+      _.times(3, () => {
+        return post.createTag({
+          name: taggings[Math.floor(Math.random()*taggings.length)],
+        });
+      })
     });
   });
 });

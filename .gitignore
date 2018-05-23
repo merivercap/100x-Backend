@@ -24,5 +24,6 @@ pids
 # Dependency directory
 node_modules
 .envrc
+.env
 
 build/

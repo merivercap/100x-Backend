@@ -1,6 +1,6 @@
-// process.env.NODE_ENV ? process.env.NODE_ENV : process.env.NODE_ENV = 'development';
+require('dotenv').config();
+process.env.NODE_ENV ? process.env.NODE_ENV : process.env.NODE_ENV = 'development';
 const PORT = process.env.PORT || 3000;
-// const DEPLOYMENT_STAGE = process.env.DEPLOYMENT_STAGE || 'sandbox'
 const Koa = require('koa');
 const koaRouter = require('koa-router');
 const koaBody = require('koa-bodyparser');

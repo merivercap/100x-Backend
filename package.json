@@ -29,6 +29,7 @@
     "body-parser": "^1.18.3",
     "casual": "^1.5.19",
     "db": "^1.0.6",
+    "dotenv": "^5.0.1",
     "errorhandler": "^1.5.0",
     "graphql": "^0.13.2",
     "graphql-tools": "^3.0.2",
