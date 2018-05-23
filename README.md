@@ -4,7 +4,7 @@
 ### Install
 
 ```shell
-$ npm install
+$ yarn install
 ```
 
 ### Start Server
