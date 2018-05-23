@@ -34,7 +34,7 @@ type Post {
   id: Int!
   author: String!
   permlink: String!
-  tags: [Tag]!
+  tags: [Tag]
   title: String!
   body: String!
   created: String!
