@@ -19,7 +19,7 @@ type Post {
   net_votes: Int              | number of upvotes, eg. 300
   children: Int               | eg. 100.  Number of replies to this post.
   curator_payout_value: Float | eg. $123, payout value of post.
-  trending: Int               | eg. 1, 2, 3, 4.  Higher values are trending!
+  trending: Int               | eg. 1, 2, 3, 4.  Lower values are trending
   post_type: Int              | eg. 0 => Blog, 1 => Video, 2 => News
 }
 
