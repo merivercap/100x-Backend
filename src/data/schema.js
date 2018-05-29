@@ -9,24 +9,25 @@ const resolvers = require('./resolvers');
 POST TABLE EXPLANATION
 
 type Post {
-  id: Int
-  author: String
-  permlink: String
-  tags: [Tag]                 | eg. bitcoin, beyondbitocin, crypto
-  title: String               | eg. Trump releases Tweet Storm
-  body: String                | eg. I love blogging on steeem
-  created: Time
-  net_votes: Int              | number of upvotes, eg. 300
-  children: Int               | eg. 100.  Number of replies to this post.
-  curator_payout_value: Float | eg. $123, payout value of post.
+  id: Int!
+  author: String!
+  permlink: String!
+  tags: [Tag]!                 | eg. bitcoin, beyondbitocin, crypto
+  title: String!               | eg. Trump releases Tweet Storm
+  body: String!                | eg. I love blogging on steeem
+  created: Date!
+  net_votes: Int!              | number of upvotes, eg. 300
+  children: Int!               | eg. 100.  Number of replies to this post.
+  curator_payout_value: Float! | eg. $123, payout value of post.
   trending: Int               | eg. 1, 2, 3, 4.  Lower values are trending
-  post_type: Int              | eg. 0 => Blog, 1 => Video, 2 => News
+  post_type: Int!              | eg. 0 => Blog, 1 => Video, 2 => News
 }
 
-scalar Date
 */
 
 const typeDefs = `
+scalar Date
+
 type Query {
   allPosts: [Post]
 }
@@ -37,7 +38,7 @@ type Post {
   tags: [Tag]!
   title: String!
   body: String!
-  created: String!
+  created: Date!
   net_votes: Int!
   children: Int!
   curator_payout_value: Float!
