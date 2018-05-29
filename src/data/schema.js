@@ -12,7 +12,7 @@ type Post {
   id: Int!
   author: String!
   permlink: String!
-  tags: [Tag]!                 | eg. bitcoin, beyondbitocin, crypto
+  tags: [Tag]                 | eg. bitcoin, beyondbitocin, crypto
   title: String!               | eg. Trump releases Tweet Storm
   body: String!                | eg. I love blogging on steeem
   created: Date!
@@ -20,6 +20,7 @@ type Post {
   children: Int!               | eg. 100.  Number of replies to this post.
   curator_payout_value: Float! | eg. $123, payout value of post.
   trending: Int               | eg. 1, 2, 3, 4.  Lower values are trending
+  hot: Int
   post_type: Int!              | eg. 0 => Blog, 1 => Video, 2 => News
 }
 
@@ -35,7 +36,7 @@ type Post {
   id: Int!
   author: String!
   permlink: String!
-  tags: [Tag]!
+  tags: [Tag]
   title: String!
   body: String!
   created: Date!
@@ -43,6 +44,7 @@ type Post {
   children: Int!
   curator_payout_value: Float!
   trending: Int
+  hot: Int
   post_type: Int!
 }
 type Tag {

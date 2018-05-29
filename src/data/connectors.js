@@ -31,6 +31,7 @@ const PostModel = db.define('post', {
   children: { type: Sequelize.INTEGER },
   curator_payout_value: { type: Sequelize.FLOAT },
   trending: { type: Sequelize.INTEGER },
+  hot: { type: Sequelize.INTEGER },
   post_type: { type: Sequelize.INTEGER },
 });
 
@@ -57,6 +58,7 @@ db.sync({ force: true }).then(() => {
       children: casual.integer(from = 0, to = 1000),
       curator_payout_value: casual.integer(from = 0, to = 1000),
       trending: casual.integer(from = 0, to = 10000),
+      hot: casual.integer(from = 0, to = 10000),
       post_type: 0,
     }).then((post) => {
       _.times(3, () => {
