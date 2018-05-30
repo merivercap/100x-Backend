@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const casual = require('casual');
 const _ = require('lodash');
+const createClient = require('lightrpc').createClient;
 
 const RDS_HOSTNAME = process.env.RDS_HOSTNAME || '';
 const RDS_USERNAME = process.env.RDS_USERNAME || '';
@@ -83,7 +84,22 @@ const taggings = [
 const Post = db.models.post;
 const Tag = db.models.tag;
 
+const client = createClient(process.env.STEEMJS_URL || 'https://api.steemit.com');
+client.sendAsync = (message, params) => {
+  return new Promise((resolve, reject) => {
+    client.send(message, params, (err, result) => {
+      if (err !== null) return reject(err);
+      return resolve(result);
+    });
+  })
+    .then(result => {
+      // returning json rather than HTML probably...
+      return "something"
+    });
+}
+
 module.exports = {
   Post,
-  Tag
+  Tag,
+  client,
 }

@@ -1,3 +1,6 @@
+const { Post, Tag, client } = require('./connectors');
+
+
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
 
@@ -20,13 +23,15 @@ const resolverMap = {
   }),
 };
 
-const { Post, Tag } = require('./connectors');
 
 const resolvers = {
   Query: {
     allPosts(_, args) {
       return Post.findAll();
-    }
+    },
+    getPostContent() {
+      return client.sendAsync("get_content", ['steemit', 'firstpost'])
+    },
   },
   Post: {
     tags(post) {
