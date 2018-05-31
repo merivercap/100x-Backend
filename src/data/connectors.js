@@ -94,7 +94,7 @@ client.sendAsync = (message, params) => {
   })
     .then(result => {
       // returning json rather than HTML probably...
-      return "something"
+      return "respond in either HTML or JSON?"
     });
 }
 
