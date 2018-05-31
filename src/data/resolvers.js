@@ -29,8 +29,8 @@ const resolvers = {
     allPosts(_, args) {
       return Post.findAll();
     },
-    getPostContent() {
-      return client.sendAsync("get_content", ['steemit', 'firstpost'])
+    getPostContent(_, args) {
+      return client.sendAsync(args.message, args.params) // e.g. message: "get_content", params: ["steemit", "firstpost"]
     },
   },
   Post: {

@@ -31,7 +31,7 @@ scalar Date
 
 type Query {
   allPosts: [Post]
-  getPostContent(): String
+  getPostContent(message: String, params: [String]): String
 }
 type Post {
   id: Int!
