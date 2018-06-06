@@ -21,6 +21,15 @@ const db = new Sequelize(RDS_DB_NAME, RDS_USERNAME, RDS_PASSWORD, {
    language: 'en'
 })
 
+db
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
 
 const PostModel = db.define('post', {
   author: { type: Sequelize.STRING },
@@ -93,8 +102,7 @@ client.sendAsync = (message, params) => {
     });
   })
     .then(result => {
-      // returning json rather than HTML probably...
-      return "respond in either HTML or JSON?"
+      return 'replies';
     });
 }
 

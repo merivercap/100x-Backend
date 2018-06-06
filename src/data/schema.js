@@ -51,7 +51,6 @@ type Post {
 type Tag {
   id: Int!
   name: String!
-
 }
 `;
 

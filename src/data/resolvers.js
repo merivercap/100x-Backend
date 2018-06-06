@@ -23,7 +23,6 @@ const resolverMap = {
   }),
 };
 
-
 const resolvers = {
   Query: {
     allPosts(_, args) {
