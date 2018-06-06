@@ -32,21 +32,21 @@ db
 
 
 const PostModel = db.define('post', {
-  author: { type: Sequelize.STRING },
-  permlink: { type: Sequelize.STRING },
-  title: { type: Sequelize.STRING },
-  body: { type: Sequelize.STRING },
-  created: { type: Sequelize.DATE },
-  net_votes: { type: Sequelize.INTEGER },
-  children: { type: Sequelize.INTEGER },
-  curator_payout_value: { type: Sequelize.FLOAT },
+  author: { type: Sequelize.STRING, allowNull: false, unique: 'compositeIndex' },
+  permlink: { type: Sequelize.STRING, allowNull: false, unique: 'compositeIndex' },
+  title: { type: Sequelize.STRING, allowNull: false },
+  body: { type: Sequelize.STRING, allowNull: false },
+  created: { type: Sequelize.DATE, allowNull: false },
+  net_votes: { type: Sequelize.INTEGER, allowNull: false },
+  children: { type: Sequelize.INTEGER, allowNull: false },
+  curator_payout_value: { type: Sequelize.FLOAT, allowNull: false },
   trending: { type: Sequelize.INTEGER },
   hot: { type: Sequelize.INTEGER },
-  post_type: { type: Sequelize.INTEGER },
+  post_type: { type: Sequelize.INTEGER, allowNull: false },
 });
 
 const TagModel = db.define('tag', {
-  name: { type: Sequelize.STRING },
+  name: { type: Sequelize.STRING, allowNull: false },
 });
 
 PostModel.hasMany(TagModel);
