@@ -1,4 +1,5 @@
-const { Post, Tag, client } = require('./connectors');
+const { Post, Tag } = require('./connectors');
+const { client } = require('../server/steemAPI');
 
 
 const { GraphQLScalarType } = require('graphql');

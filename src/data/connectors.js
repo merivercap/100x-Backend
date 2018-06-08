@@ -1,13 +1,14 @@
 const Sequelize = require('sequelize');
 const casual = require('casual');
 const _ = require('lodash');
-const createClient = require('lightrpc').createClient;
 
 const RDS_HOSTNAME = process.env.RDS_HOSTNAME || '';
 const RDS_USERNAME = process.env.RDS_USERNAME || '';
 const RDS_PASSWORD = process.env.RDS_PASSWORD || '';
 const RDS_PORT = process.env.RDS_PORT || '3306';
 const RDS_DB_NAME = process.env.RDS_DB_NAME || '';
+
+const batchUpdate = require('../database_update/batch');
 
 
 
@@ -54,6 +55,7 @@ TagModel.belongsTo(PostModel);
 
 // create mock data with a seed, so we always get the same
 casual.seed(123);
+const numMinutes = 60;
 db.sync({ force: true }).then(() => {
   _.times(10, () => {
     return PostModel.create({
@@ -80,6 +82,7 @@ db.sync({ force: true }).then(() => {
   });
 });
 
+
 const taggings = [
   'bitcoin',
   'crypto',
@@ -93,21 +96,7 @@ const taggings = [
 const Post = db.models.post;
 const Tag = db.models.tag;
 
-const client = createClient(process.env.STEEMJS_URL || 'https://api.steemit.com');
-client.sendAsync = (message, params) => {
-  return new Promise((resolve, reject) => {
-    client.send(message, params, (err, result) => {
-      if (err !== null) return reject(err);
-      return resolve(result);
-    });
-  })
-    .then(result => {
-      return 'replies';
-    });
-}
-
 module.exports = {
   Post,
   Tag,
-  client,
 }
