@@ -8,7 +8,7 @@ const RDS_PASSWORD = process.env.RDS_PASSWORD || '';
 const RDS_PORT = process.env.RDS_PORT || '3306';
 const RDS_DB_NAME = process.env.RDS_DB_NAME || '';
 
-const batchUpdate = require('../database_update/batch');
+const { batchUpdate } = require('../database_update/batch');
 
 
 
@@ -57,29 +57,7 @@ TagModel.belongsTo(PostModel);
 casual.seed(123);
 const numMinutes = 60;
 db.sync({ force: true }).then(() => {
-  _.times(10, () => {
-    return PostModel.create({
-      firstName: casual.first_name,
-      lastName: casual.last_name,
-      author: casual.username,
-      permlink: casual.word,
-      title: casual.title,
-      body: casual.sentences(n = 3),
-      created: casual.unix_time,
-      net_votes: casual.integer(from = 0, to = 1000),
-      children: casual.integer(from = 0, to = 1000),
-      curator_payout_value: casual.integer(from = 0, to = 1000),
-      trending: casual.integer(from = 0, to = 10000),
-      hot: casual.integer(from = 0, to = 10000),
-      post_type: 0,
-    }).then((post) => {
-      _.times(3, () => {
-        return post.createTag({
-          name: taggings[Math.floor(Math.random()*taggings.length)],
-        });
-      })
-    });
-  });
+  batchUpdate({ PostModel })
 });
 
 
