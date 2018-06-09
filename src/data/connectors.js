@@ -56,8 +56,8 @@ TagModel.belongsTo(PostModel);
 // create mock data with a seed, so we always get the same
 casual.seed(123);
 const numMinutes = 60;
-db.sync({ force: true }).then(() => {
-  batchUpdate({ PostModel })
+db.sync().then(() => {
+  batchUpdate({ PostModel})
 });
 
 
