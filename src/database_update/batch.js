@@ -7,32 +7,52 @@ const Op = Sequelize.Op;
 
 const { Post } = require('../data/connectors');
 
+const taggings = [
+  'bitcoin',
+  'crypto',
+  'cryptocurrency',
+  'blockchain',
+  'beyondbitcoin',
+  'ethereum',
+  'eos',
+];
+
+
 const cb = (result, { PostModel }) => {
   resetRanking(PostModel).then(() => {
-    for (const [index, post] of result.entries()) {
-      updateIfUnique(post, index, PostModel)
+    for (let index = 0; index < result[0].length; index++) {
+      for (let tagIndex = 0; tagIndex < result.length; tagIndex++) {
+        let newHotRanking = (index + 1) * (tagIndex + 1);
+        let post = result[tagIndex][index];
+        let tag = taggings[tagIndex];
+        updateIfUnique(post, PostModel, { newHotRanking, tag });
+      }
     }
   });
-
 }
 
 const batchUpdate = ({PostModel}) => {
-  const result = client.sendAsync('get_discussions_by_hot', [{"tag":"bitcoin","limit":10}], cb, { PostModel});
+
+  params = taggings.map((tag) => {
+    return [{"tag":tag,"limit":10}]
+  })
+
+  client.sendAsync('get_discussions_by_hot', params, cb, { PostModel });
   return 0;
 };
 
-const updateIfUnique = (post, index, PostModel) => {
+const updateIfUnique = (post, PostModel, { newHotRanking, tag }) => {
   return PostModel.count({ where: {id: post.id}})
     .then(count => {
       if (count != 0) {
-        PostModel.update({ hot: index }, { where: {id: post.id} })
+        PostModel.update({ hot: newHotRanking }, { where: {id: post.id} })
       } else {
-        createPost(post, index, PostModel);
+        createPost(post, PostModel, { newHotRanking, tag });
       }
     });
 };
 
-const createPost = (post, index ,PostModel) => {
+const createPost = (post, PostModel, { newHotRanking, tag }) => {
   PostModel.create({
     id: post.id,
     author: post.author,
@@ -44,29 +64,14 @@ const createPost = (post, index ,PostModel) => {
     children: post.children,
     curator_payout_value: post.curator_payout_value,
     trending: 1,
-    hot: index,
+    hot: newHotRanking,
     post_type: 0
   }).then((post) => {
     return post.createTag({
-      name: "bitcoin",
+      name: tag,
     });
   });
 }
-
-// ==============
-
-// Now that we have 1 tag done....
-//
-// 1)  We can do for multiple tags.  Not sure if we can use the same lightrpc request.  Apparently we can send 20 get_content by X requewsts in a single command.
-//
-// Still not sure how to do that. Or how the results would come back.  Maybe we don't need to sort =).
-//
-// 2) Come up with algorithm that determines ordering of hot and trending for meshed api.steemit.com requests.
-//
-
-// =====
-
-// works for trending.
 
 const resetRanking = (PostModel) => {
   return PostModel.update({

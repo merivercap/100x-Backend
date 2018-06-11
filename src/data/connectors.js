@@ -56,7 +56,7 @@ TagModel.belongsTo(PostModel);
 // create mock data with a seed, so we always get the same
 casual.seed(123);
 const numMinutes = 60;
-db.sync().then(() => {
+db.sync().then(() => { // db.sync({force: true}) will drop all tables, effectively clearing the database...
   batchUpdate({ PostModel})
 });
 
