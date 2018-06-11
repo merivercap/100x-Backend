@@ -22,7 +22,7 @@ const cb = (result, { PostModel }) => {
   resetRanking(PostModel).then(() => {
     for (let index = 0; index < result[0].length; index++) {
       for (let tagIndex = 0; tagIndex < result.length; tagIndex++) {
-        let newHotRanking = (index + 1) * (tagIndex + 1);
+        let newHotRanking = index * 10 + tagIndex;
         let post = result[tagIndex][index];
         let tag = taggings[tagIndex];
         updateIfUnique(post, PostModel, { newHotRanking, tag });

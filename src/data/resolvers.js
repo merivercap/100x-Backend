@@ -27,7 +27,7 @@ const resolverMap = {
 const resolvers = {
   Query: {
     allPosts(_, args) {
-      return Post.findAll();
+      return Post.findAll({order: [['hot', 'ASC']]});
     },
     getPostContent(_, args) {
       return client.sendAsync(args.message, args.params) // e.g. message: "get_content", params: ["steemit", "firstpost"]
