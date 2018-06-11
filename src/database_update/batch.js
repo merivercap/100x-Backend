@@ -53,10 +53,11 @@ const updateIfUnique = (post, PostModel, { newHotRanking, tag }) => {
 };
 
 const createPost = (post, PostModel, { newHotRanking, tag }) => {
+  const actualLink = "https://busy.org/@" + post.author + "/" + post.permlink;
   PostModel.create({
     id: post.id,
     author: post.author,
-    permlink: post.permlink,
+    permlink: actualLink,
     title: post.title,
     body: post.body,
     created: post.created,
