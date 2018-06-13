@@ -4,9 +4,6 @@ const casual = require('casual');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-
-const { Post } = require('../data/connectors');
-
 const taggings = [
   'bitcoin',
   'crypto',
@@ -16,7 +13,6 @@ const taggings = [
   'ethereum',
   'eos',
 ];
-
 
 const cb = (result, { PostModel }) => {
   resetRanking(PostModel).then(() => {

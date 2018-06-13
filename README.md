@@ -44,9 +44,8 @@ Example getPostContent query
 ```
 // get specific post content such as replies and reply upvote/downvotes with
 
-message: "get_content", and params: [<AUTHOR>, <PERMLINK>]
 {
-  getPostContent(message: "get_content", params: [["steemit", "firstpost"]])
+  getPostContent(message: "get_content_replies", params: [["steemit", "firstpost"]])
 }
 ```
 

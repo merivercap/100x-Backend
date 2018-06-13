@@ -30,7 +30,7 @@ const resolvers = {
       return Post.findAll({order: [['hot', 'ASC']]});
     },
     getPostContent(_, args) {
-      return client.sendAsync(args.message, [args.params], (result) => console.log("replies")) // e.g. message: "get_content", params: ["steemit", "firstpost"]
+      return client.sendAsync(args.message, [args.params], (result) => {return result}) // e.g. message: "get_content", params: ["steemit", "firstpost"]
     },
   },
   Post: {}
