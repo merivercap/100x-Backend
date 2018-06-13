@@ -44,37 +44,19 @@ const PostModel = db.define('post', {
   trending: { type: Sequelize.INTEGER },
   hot: { type: Sequelize.INTEGER },
   post_type: { type: Sequelize.INTEGER, allowNull: false },
+  tag1: { type: Sequelize.STRING },
+  tag2: { type: Sequelize.STRING },
+  tag3: { type: Sequelize.STRING },
+  tag4: { type: Sequelize.STRING },
+  tag5: { type: Sequelize.STRING }
 });
 
-const TagModel = db.define('tag', {
-  name: { type: Sequelize.STRING, allowNull: false },
-});
-
-PostModel.hasMany(TagModel);
-TagModel.belongsTo(PostModel);
-
-// create mock data with a seed, so we always get the same
-casual.seed(123);
-const numMinutes = 60;
 db.sync().then(() => { // db.sync({force: true}) will drop all tables, effectively clearing the database...
-  batchUpdate({ PostModel})
+  batchUpdate({ PostModel});
 });
-
-
-const taggings = [
-  'bitcoin',
-  'crypto',
-  'cryptocurrency',
-  'blockchain',
-  'beyondbitcoin',
-  'ethereum',
-  'eos',
-];
 
 const Post = db.models.post;
-const Tag = db.models.tag;
 
 module.exports = {
   Post,
-  Tag,
 }

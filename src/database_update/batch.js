@@ -66,11 +66,8 @@ const createPost = (post, PostModel, { newHotRanking, tag }) => {
     curator_payout_value: post.curator_payout_value,
     trending: 1,
     hot: newHotRanking,
-    post_type: 0
-  }).then((post) => {
-    return post.createTag({
-      name: tag,
-    });
+    post_type: 0,
+    tag1: tag
   });
 }
 

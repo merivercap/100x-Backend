@@ -1,4 +1,4 @@
-const { Post, Tag } = require('./connectors');
+const { Post } = require('./connectors');
 const { client } = require('../server/steemAPI');
 
 
@@ -30,14 +30,10 @@ const resolvers = {
       return Post.findAll({order: [['hot', 'ASC']]});
     },
     getPostContent(_, args) {
-      return client.sendAsync(args.message, args.params) // e.g. message: "get_content", params: ["steemit", "firstpost"]
+      return client.sendAsync(args.message, [args.params], (result) => console.log("replies")) // e.g. message: "get_content", params: ["steemit", "firstpost"]
     },
   },
-  Post: {
-    tags(post) {
-      return post.getTags();
-    }
-  }
+  Post: {}
 };
 
 module.exports = {

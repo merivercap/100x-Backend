@@ -12,7 +12,11 @@ type Post {
   id: Int!
   author: String!
   permlink: String!
-  tags: [Tag]                 | eg. bitcoin, beyondbitocin, crypto
+  tag1: String!                | eg. bitcoin, beyondbitocin, crypto  There should be at least 1 tag.
+  tag2: String                 |
+  tag3: String
+  tag4: String
+  tag5: String
   title: String!               | eg. Trump releases Tweet Storm
   body: String!                | eg. I love blogging on steeem
   created: Date!
@@ -37,7 +41,11 @@ type Post {
   id: Int!
   author: String!
   permlink: String!
-  tags: [Tag]
+  tag1: String!
+  tag2: String
+  tag3: String
+  tag4: String
+  tag5: String
   title: String!
   body: String!
   created: Date!
@@ -47,10 +55,6 @@ type Post {
   trending: Int
   hot: Int
   post_type: Int!
-}
-type Tag {
-  id: Int!
-  name: String!
 }
 `;
 
