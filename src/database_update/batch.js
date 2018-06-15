@@ -1,21 +1,21 @@
+/**
+ * Looks like these functions belong in a model/controller 
+ */
+
 const { client } = require('../server/steemAPI');
 const casual = require('casual');
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-const taggings = [
-  'bitcoin',
-  'crypto',
-  'cryptocurrency',
-  'blockchain',
-  'beyondbitcoin',
-  'ethereum',
-  'eos',
-];
+const { Post } = require('../data/connectors');
+const taggings = require('../utils/tagging-subjects');
 
-const cb = (result, { PostModel }) => {
+const cb = (result, { PostModel }) => { // let's stay away from 
+  // 1/2 letter variable names and be descriptive as possible as to what the code block does
+  // and will we be needing callbacks since we're using promises?
   resetRanking(PostModel).then(() => {
+    // Is there a way to do this without nesting loops?
     for (let index = 0; index < result[0].length; index++) {
       for (let tagIndex = 0; tagIndex < result.length; tagIndex++) {
         let newHotRanking = index * 10 + tagIndex;
@@ -31,7 +31,7 @@ const batchUpdate = ({PostModel}) => {
 
   params = taggings.map((tag) => {
     return [{"tag":tag,"limit":10}]
-  })
+  });
 
   client.sendAsync('get_discussions_by_hot', params, cb, { PostModel });
   return 0;

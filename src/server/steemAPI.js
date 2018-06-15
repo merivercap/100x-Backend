@@ -3,14 +3,14 @@ const createClient = require('lightrpc').createClient;
 const client = createClient(process.env.STEEMJS_URL || 'https://api.steemit.com');
 client.sendAsync = (message, params, cb, PostModel = '') => {
   const post = PostModel.PostModel || null;
-  const allPromises = params.map((param) => {
-    return new Promise((resolve, reject) => {
+  const allPromises = params.map(param => (
+    new Promise((resolve, reject) => {
       client.send(message, param, (err, result) => {
         if (err !== null) return reject(err);
         resolve(result);
       });
     })
-  })
+  ));
 
   const handleResult = (result) => {
     console.log(result[0].replies);
@@ -20,6 +20,8 @@ client.sendAsync = (message, params, cb, PostModel = '') => {
   Promise.all(allPromises).then(handleResult);
 }
 
+// Is there a reason we're constructing client when exporting?
+// Will we be adding more exports to this file?
 module.exports = {
   client
 };
