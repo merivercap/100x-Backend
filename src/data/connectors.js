@@ -37,14 +37,39 @@ const PostModel = db.define('post', {
   permlink: { type: Sequelize.STRING, allowNull: false, unique: 'compositeIndex' },
   title: { type: Sequelize.STRING, allowNull: false },
   body: { type: Sequelize.STRING, allowNull: false },
-  created: { type: Sequelize.DATE, allowNull: false },
-  net_votes: { type: Sequelize.INTEGER, allowNull: false },
-  children: { type: Sequelize.INTEGER, allowNull: false },
-  curator_payout_value: { type: Sequelize.FLOAT, allowNull: false },
-  trending: { type: Sequelize.INTEGER },
-  hot: { type: Sequelize.INTEGER },
-  post_type: { type: Sequelize.INTEGER, allowNull: false },
-  tag1: { type: Sequelize.STRING },
+  created: {
+    type: Sequelize.DATE,
+    allowNull: false,
+    validate: { isDate: true }
+  },
+  net_votes: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    validate: { isInt: true, min: 0 }
+  },
+  children: { type: Sequelize.INTEGER,
+    allowNull: false,
+    validate: { isInt: true, min: 0 }
+  },
+  curator_payout_value: {
+    type: Sequelize.FLOAT,
+    allowNull: false,
+    validate: { isFloat: true, min: 0 }
+  },
+  trending: { type:
+    Sequelize.INTEGER,
+    validate: { isInt: true }
+  },
+  hot: {
+    type: Sequelize.INTEGER,
+    validate: { isInt: true }
+  },
+  post_type: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    validate: { isInt: true, min: 0, max: 2 }
+  },
+  tag1: { type: Sequelize.STRING, allowNull: false },
   tag2: { type: Sequelize.STRING },
   tag3: { type: Sequelize.STRING },
   tag4: { type: Sequelize.STRING },
