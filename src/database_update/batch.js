@@ -64,7 +64,10 @@ const createPost = (post, PostModel, { newHotRanking, tag }) => {
     hot: newHotRanking,
     post_type: 0,
     tag1: tag
-  });
+  }).catch(function(err) {
+    // print the error details
+    console.log(err);
+  });;
 }
 
 const resetRanking = (PostModel) => {
