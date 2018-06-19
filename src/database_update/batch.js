@@ -1,8 +1,13 @@
 const client = require('../server/steemAPI');
 const casual = require('casual');
 
-const Sequelize = require('sequelize');
+const db = require('../models/dao');
+
+
+const Sequelize = db.Sequelize;
+const PostModel = db.sequelize.models.post;
 const Op = Sequelize.Op;
+
 
 // const taggings = require('../utils/taggings');
 
@@ -10,30 +15,30 @@ const taggings = [
   'bitcoin',
 ];
 
-const cb = (result, { PostModel }) => {
-  resetRanking(PostModel).then(() => {
+const cb = (result) => {
+  resetRanking().then(() => {
     for (let index = 0; index < result[0].length; index++) {
       for (let tagIndex = 0; tagIndex < result.length; tagIndex++) {
         let newHotRanking = index * 10 + tagIndex;
         let post = result[tagIndex][index];
         let tag = taggings[tagIndex];
-        updateIfUnique(post, PostModel, { newHotRanking, tag });
+        updateIfUnique(post, { newHotRanking, tag });
       }
     }
   });
 }
 
-const batchUpdate = ({PostModel}) => {
+const batchUpdate = () => {
 
   params = taggings.map((tag) => {
     return [{"tag":tag,"limit":10}]
   })
 
-  client.sendAsync('get_discussions_by_hot', params, cb, { PostModel });
+  client.sendAsync('get_discussions_by_hot', params, cb);
   return 0;
 };
 
-const updateIfUnique = (post, PostModel, { newHotRanking, tag }) => {
+const updateIfUnique = (post, { newHotRanking, tag }) => {
   return PostModel.count({ where: {id: post.id}})
     .then(count => {
       if (count != 0) {
@@ -43,12 +48,12 @@ const updateIfUnique = (post, PostModel, { newHotRanking, tag }) => {
         )
         .catch(err => console.log(err));
       } else {
-        createPost(post, PostModel, { newHotRanking, tag });
+        createPost(post, { newHotRanking, tag });
       }
     });
 };
 
-const createPost = (post, PostModel, { newHotRanking, tag }) => {
+const createPost = (post, { newHotRanking, tag }) => {
   const actualLink = "https://busy.org/@" + post.author + "/" + post.permlink;
   PostModel.create({
     id: post.id,
@@ -70,7 +75,7 @@ const createPost = (post, PostModel, { newHotRanking, tag }) => {
   });;
 }
 
-const resetRanking = (PostModel) => {
+const resetRanking = () => {
   return PostModel.update({
     hot: 9999,
   }, {
@@ -83,6 +88,4 @@ const resetRanking = (PostModel) => {
   .catch(err => console.log(err));
 }
 
-module.exports = {
-  batchUpdate
-};
+module.exports = batchUpdate;
