@@ -20,6 +20,4 @@ client.sendAsync = (message, params, cb, PostModel = '') => {
   Promise.all(allPromises).then(handleResult).catch(err => console.log(err));
 }
 
-module.exports = {
-  client
-};
+module.exports = client;

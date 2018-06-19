@@ -1,11 +1,11 @@
-const { client } = require('../server/steemAPI');
+const client = require('../server/steemAPI');
 const casual = require('casual');
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 const taggings = [
-  'bitcoin'
+  'bitcoin',
 ];
 
 const cb = (result, { PostModel }) => {
