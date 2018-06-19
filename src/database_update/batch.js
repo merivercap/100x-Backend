@@ -4,6 +4,8 @@ const casual = require('casual');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
+// const taggings = require('../utils/taggings');
+
 const taggings = [
   'bitcoin',
 ];
