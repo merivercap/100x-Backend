@@ -5,13 +5,7 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 const taggings = [
-  'bitcoin',
-  'crypto',
-  'cryptocurrency',
-  'blockchain',
-  'beyondbitcoin',
-  'ethereum',
-  'eos',
+  'bitcoin'
 ];
 
 const cb = (result, { PostModel }) => {
@@ -41,7 +35,11 @@ const updateIfUnique = (post, PostModel, { newHotRanking, tag }) => {
   return PostModel.count({ where: {id: post.id}})
     .then(count => {
       if (count != 0) {
-        PostModel.update({ hot: newHotRanking }, { where: {id: post.id} })
+        PostModel.update(
+          { hot: newHotRanking },
+          { where: {id: post.id} }
+        )
+        .catch(err => console.log(err));
       } else {
         createPost(post, PostModel, { newHotRanking, tag });
       }
@@ -59,7 +57,7 @@ const createPost = (post, PostModel, { newHotRanking, tag }) => {
     created: post.created,
     net_votes: post.net_votes,
     children: post.children,
-    curator_payout_value: post.curator_payout_value,
+    curator_payout_value: 10,
     trending: 1,
     hot: newHotRanking,
     post_type: 0,
@@ -79,7 +77,8 @@ const resetRanking = (PostModel) => {
         [Op.gte]: 0
       }
     }
-  });
+  })
+  .catch(err => console.log(err));
 }
 
 module.exports = {
