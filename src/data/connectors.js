@@ -2,25 +2,16 @@ const Sequelize = require('sequelize');
 const casual = require('casual');
 const _ = require('lodash');
 
-const RDS_HOSTNAME = process.env.RDS_HOSTNAME || '';
-const RDS_USERNAME = process.env.RDS_USERNAME || '';
-const RDS_PASSWORD = process.env.RDS_PASSWORD || '';
-const RDS_PORT = process.env.RDS_PORT || '3306';
-const RDS_DB_NAME = process.env.RDS_DB_NAME || '';
-
+const config = require('../config/config');
 const { batchUpdate } = require('../database_update/batch');
 
 
-
-const db = new Sequelize(RDS_DB_NAME, RDS_USERNAME, RDS_PASSWORD, {
-   host: RDS_HOSTNAME,
-   port: RDS_PORT,
-   logging: console.log,
-   maxConcurrentQueries: 100,
-   dialect: 'mysql',
-   pool: { maxConnections: 5, maxIdleTime: 30},
-   language: 'en'
-})
+const db = new Sequelize(
+   config.connection.name,
+   config.connection.username,
+   config.connection.password,
+   config.sequelizeOpts
+ );
 
 db
   .authenticate()
