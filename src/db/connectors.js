@@ -9,6 +9,4 @@ db.sequelize.sync().then(() => {
   batchUpdate();
 });
 
-module.exports = {
-  db,
-}
+module.exports = db;

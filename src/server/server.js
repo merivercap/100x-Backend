@@ -15,11 +15,11 @@ const router = new koaRouter();
 // Serve static files
 // app.use(serve(path.join(__dirname, 'public')));
 
-const schema = require('../data/schema');
+const schema = require('../db/schema');
 
 
-router.post('/graphql', koaBody(), graphqlKoa({ schema: schema.schema }));
-router.get('/graphql', graphqlKoa({ schema: schema.schema }));
+router.post('/graphql', koaBody(), graphqlKoa({ schema }));
+router.get('/graphql', graphqlKoa({ schema }));
 
 router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
 

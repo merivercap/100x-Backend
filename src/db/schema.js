@@ -59,12 +59,8 @@ type Post {
 `;
 
 
-const schema = makeExecutableSchema({ typeDefs, resolvers: resolvers.resolvers });
+const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 // addMockFunctionsToSchema({ schema, mocks: mocks.mocks });
 
-module.exports.schema = schema;
-
-module.exports = {
-  schema
-};
+module.exports = schema;

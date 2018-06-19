@@ -1,9 +1,10 @@
-const { Post } = require('./connectors');
-const { client } = require('../server/steemAPI');
-
-
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
+
+const { client } = require('../server/steemAPI');
+const db = require('./connectors');
+const Post = db.sequelize.models.post;
+
 
 const resolverMap = {
   Date: new GraphQLScalarType({
@@ -36,6 +37,4 @@ const resolvers = {
   Post: {}
 };
 
-module.exports = {
-  resolvers
-};
+module.exports = resolvers;

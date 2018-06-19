@@ -70,7 +70,6 @@ const createPost = (post, { newHotRanking, tag }) => {
     post_type: 0,
     tag1: tag
   }).catch(function(err) {
-    // print the error details
     console.log(err);
   });;
 }
