@@ -1,7 +1,7 @@
 const createClient = require('lightrpc').createClient;
 
 const client = createClient(process.env.STEEMJS_URL || 'https://api.steemit.com');
-client.sendAsync = (message, params, cb) => {
+client.sendAsync = (message, params, handleResult) => {
   const allPromises = params.map((param) => {
     return new Promise((resolve, reject) => {
       client.send(message, param, (err, result) => {
@@ -10,10 +10,6 @@ client.sendAsync = (message, params, cb) => {
       });
     })
   })
-
-  const handleResult = (result) => {
-    return cb(result);
-  }
 
   Promise.all(allPromises).then(handleResult).catch(err => console.log(err));
 }

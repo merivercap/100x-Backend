@@ -12,10 +12,10 @@ const Op = Sequelize.Op;
 // const taggings = require('../utils/taggings');
 
 const taggings = [
-  'bitcoin',
+  'ethereum',
 ];
 
-const cb = (result) => {
+const handleResult = (result) => {
   resetRanking().then(() => {
     for (let index = 0; index < result[0].length; index++) {
       for (let tagIndex = 0; tagIndex < result.length; tagIndex++) {
@@ -34,7 +34,7 @@ const batchUpdate = () => {
     return [{"tag":tag,"limit":10}]
   })
 
-  client.sendAsync('get_discussions_by_hot', params, cb);
+  client.sendAsync('get_discussions_by_hot', params, handleResult);
   return 0;
 };
 
