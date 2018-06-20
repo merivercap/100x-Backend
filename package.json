@@ -44,5 +44,8 @@
     "sequelize": "^4.37.8",
     "short-uuid": "^2.3.4",
     "steem": "^0.7.1"
+  },
+  "devDependencies": {
+    "kill-port": "^1.2.0"
   }
 }

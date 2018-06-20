@@ -1,4 +1,4 @@
 {
  "watch": ["./src"],
- "exec": "node --inspect -r ./src/server/server.js"
+ "exec": "kill-port --port 9229 && node --inspect -r ./src/server/server.js"
 }
