@@ -2,7 +2,9 @@ const db        = require('../models/dao');
 const PostModel = db.sequelize.models.post;
 const Op        = db.Sequelize.Op;
 
-const createPost = (post, { newHotRanking, tag }) => {
+const createPost = (post, { newHotRanking }) => {
+  const metadata = JSON.parse(post.json_metadata);
+  const tags = metadata.tags;
   PostModel.create({
     id: post.id,
     author: post.author,
@@ -16,7 +18,11 @@ const createPost = (post, { newHotRanking, tag }) => {
     trending: 1,
     hot: newHotRanking,
     post_type: 0,
-    tag1: tag,
+    tag1: tags[0],
+    tag2: tags[1],
+    tag3: tags[2],
+    tag4: tags[3],
+    tag5: tags[4],
   }).catch(function(err) {
     console.log("Error creating post: ", err);
   });;
@@ -49,9 +55,9 @@ const postExists = (postId) => {
 
 const resetRanking = (rankType) => {
    //updates all posts of rankType, since children is always greater than 0
-  return PostModel.update({
-      hot: 9999
-  }, {
+   const keyVal = {};
+   keyVal[rankType] = 9999;
+  return PostModel.update(keyVal, {
     where: {children: {[Op.gte]: 0} }
   })
     .catch(err => console.log(err));
