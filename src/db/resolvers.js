@@ -27,10 +27,10 @@ const resolverMap = {
 
 const resolvers = {
   Query: {
-    allPosts(_, args) {
+    getAllPosts(_, args) {
       return Post.findAll({order: [['hot', 'ASC']]});
     },
-    getPostContent(_, args) {
+    getPostReplies(_, args) {
       return client.sendAsync(args.message, [args.params], (result) => {return result}) // e.g. message: "get_content_replies", params: ["steemit", "firstpost"]
     },
   },

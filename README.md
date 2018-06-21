@@ -19,7 +19,7 @@ Example Query
 
 ```  
 query {  
-  allPosts {
+  getAllPosts {
     id  
     author  
     permlink  
@@ -39,13 +39,13 @@ query {
 }
 ```
 
-Example getPostContent query
+Example getPostReplies query
 
 ```
-// get specific post content such as replies and reply upvote/downvotes with
+// get specific post content such as replies and upvote/downvote information with
 
 {
-  getPostContent(message: "get_content_replies", params: [["steemit", "firstpost"]])
+  getPostReplies(message: "get_content_replies", params: [["steemit", "firstpost"]])
 }
 ```
 

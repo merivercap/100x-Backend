@@ -10,6 +10,12 @@ const taggings = [ //just bitcoin for now...we seem to be getting rate limited b
   'ethereum',
 ];
 
+const batchUpdate = () => {
+  params = taggings.map((tag) => {
+    return [{"tag":tag,"limit":10}]
+  })
+  client.sendAsync('get_discussions_by_hot', params, handleResult);
+};
 
 const handleResult = (result) => {
   resetRanking().then(() => {
@@ -29,15 +35,6 @@ const handleResult = (result) => {
   });
 }
 
-const batchUpdate = () => {
-
-  params = taggings.map((tag) => {
-    return [{"tag":tag,"limit":10}]
-  })
-
-  client.sendAsync('get_discussions_by_hot', params, handleResult);
-  return 0;
-};
 
 const updateIfUnique = (post, { newHotRanking }) => {
   const postId = post.id;

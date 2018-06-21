@@ -34,8 +34,8 @@ const typeDefs = `
 scalar Date
 
 type Query {
-  allPosts: [Post]
-  getPostContent(message: String, params: [String]): String
+  getAllPosts: [Post]
+  getPostReplies(message: String, params: [String]): String
 }
 type Post {
   id: Int!
