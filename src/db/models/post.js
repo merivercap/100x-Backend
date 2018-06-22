@@ -1,6 +1,10 @@
-const db        = require('../models/dao');
+const db        = require('../database_connection/tables');
 const PostModel = db.sequelize.models.post;
 const Op        = db.Sequelize.Op;
+
+module.exports = class Post {
+
+};
 
 const createPost = (post, { newHotRanking }) => {
   const metadata = JSON.parse(post.json_metadata);
@@ -62,11 +66,9 @@ const resetRanking = (rankType) => {
   })
     .catch(err => console.log(err));
 }
-
-
 module.exports = {
+  createPost,
   updatePostRanking,
   postExists,
-  createPost,
   resetRanking,
 }

@@ -3,7 +3,7 @@ const _ = require('lodash');
 
 const batchUpdate = require('../database_update/batch');
 
-const db = require('../models/dao');
+const db = require('./database_connection/tables');
 
 db.sequelize.sync().then(() => {
   batchUpdate();
