@@ -17,7 +17,7 @@ type Query {
   updateComment: String
   deleteComment: String
   voteComment: String
-  userLogin: String
+  getLoginLink: String
 }
 `;
 

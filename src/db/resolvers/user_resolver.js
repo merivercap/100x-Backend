@@ -2,8 +2,8 @@ const userTypeDefs = ``;
 
 const userResolver = {
   Query: {
-    userLogin(_, args) {  // { accessToken: "aGwefh423" }
-      return "success";
+    getLoginLink(_,args) {
+      return "https://steemconnect.com/oauth2/authorize?client_id";
     },
   }
 };
@@ -12,4 +12,4 @@ const userResolver = {
 module.exports = {
   userTypeDefs,
   userResolver,
-}
+};
