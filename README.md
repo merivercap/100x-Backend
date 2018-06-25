@@ -42,11 +42,9 @@ query {
 Example getPostReplies query
 
 ```
-// get specific post content such as replies and upvote/downvote information with
+// get specific post replies using author and permlink
 
 {
-  getPostReplies(message: "get_content_replies", params: [["steemit", "firstpost"]])
+  getPostReplies(author: "steemit", permlink: "firstpost")
 }
 ```
-
-post columns are explained in src/data/schema

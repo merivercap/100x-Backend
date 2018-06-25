@@ -1,4 +1,4 @@
-const { client } = require('../../server/steemAPI');
+const client = require('../../server/steemAPI');
 const db = require('../connectors');
 const Post = db.sequelize.models.post;
 
@@ -79,7 +79,7 @@ const postResolver = {
       return Post.findAll({order: [['hot', 'ASC']]});
     },
     getPostReplies(_, args) {
-      return client.sendAsync(args.message, [args.params], (result) => {return result}); // e.g. message: "get_content_replies", params: ["steemit", "firstpost"]
+      return client.sendAsync("get_content_replies", [[args.author, args.permlink]], (result) => {return result[0][0].body}); // { author: "steemit", permlink: "firstpost" }
     },
     createNewPost(_, args) {  // { accessToken: "kjhDG5THrg", title: "Bitcoin is awesome", body: "This is my bitcoin post", tags: ["bitcoin", "ethereum"], author: "steemit", permlink: "firstpost" }
       return "success";

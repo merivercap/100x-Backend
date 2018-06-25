@@ -8,7 +8,7 @@ const { userTypeDefs, userResolver } = require('./resolvers/user_resolver');
 const typeDefs = `
 type Query {
   getAllPosts: [Post]
-  getPostReplies(message: String, params: [String]): String
+  getPostReplies(author: String, permlink: String): String
   createNewPost: String
   updatePost: String
   deletePost: String
