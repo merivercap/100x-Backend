@@ -2,7 +2,7 @@ const userTypeDefs = ``;
 
 const userResolver = {
   Query: {
-    userLogin(_, args) {
+    userLogin(_, args) {  // { accessToken: "aGwefh423" }
       return "success";
     },
   }

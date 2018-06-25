@@ -81,16 +81,16 @@ const postResolver = {
     getPostReplies(_, args) {
       return client.sendAsync(args.message, [args.params], (result) => {return result}); // e.g. message: "get_content_replies", params: ["steemit", "firstpost"]
     },
-    createNewPost(_, args) {
+    createNewPost(_, args) {  // { title: "Bitcoin is awesome", body: "This is my bitcoin post", tags: ["bitcoin", "ethereum"], author: "steemit", permlink: "firstpost" }
       return "success";
     },
-    updatePost(_, args) {
+    updatePost(_, args) {  // { title: "Bitcoin is awsome", body: "This is my bitcoin post", tags: ["bitcoin", "ethereum"], author: "steemit", permlink: "firstpost" }
       return "success";
     },
-    deletePost(_, args) {
+    deletePost(_, args) { // { author: "steemit", permlink: "firstpost" }
       return "success";
     },
-    votePost(_, args) {
+    votePost(_, args) { // { author: "steemit", permlink: "firstpost", upvote: 1, vote_percent: 50 }
       return "success"
     }
   }
