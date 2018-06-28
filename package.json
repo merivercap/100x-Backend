@@ -2,7 +2,7 @@
   "name": "100x-backend",
   "version": "1.0.0",
   "engines": {
-    "node": ">=7.10.1",
+    "node": "8.11.3",
     "npm": "=6.0.1"
   },
   "description": "",
@@ -32,7 +32,6 @@
     "http-auth": "^3.2.3",
     "koa": "^2.5.1",
     "koa-bodyparser": "^4.2.1",
-    "koa-cors": "^0.0.16",
     "koa-logger": "^3.2.0",
     "koa-router": "^7.4.0",
     "koa-static": "^4.0.2",
@@ -42,6 +41,7 @@
     "nodemon": "^1.17.4",
     "path": "^0.12.7",
     "reflect-metadata": "^0.1.12",
+    "sc2-sdk": "^1.0.2",
     "sequelize": "^4.37.8",
     "short-uuid": "^2.3.4",
     "steem": "^0.7.1"
