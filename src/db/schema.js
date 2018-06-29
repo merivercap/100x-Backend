@@ -21,9 +21,13 @@ type Query {
 }
 `;
 
+// Hey.  the type defs (endpoint signatures) and resovlers need to be kept in the same file or graphql throws an error.
+// Think we should just merge these in the schema file for now...
+const resolvers = merge(postResolver, commentResovler, userResolver);
+
 const schema = makeExecutableSchema({
   typeDefs: [ typeDefs, postTypeDefs, commentTypeDefs, userTypeDefs ],
-  resolvers: merge(postResolver, commentResovler, userResolver)
+  resolvers
 });
 
 module.exports = schema;
