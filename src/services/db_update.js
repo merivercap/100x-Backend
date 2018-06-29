@@ -1,14 +1,12 @@
-//move to services....
-
 const {
-        updatePostRanking,
-        postExists,
-        resetRanking,
-        createPost,
-}               = require('../db/models/dao');
-const client    = require('../server/steemAPI');
-// const taggings  = require('../utils/taggings');
-const taggings = [ //just bitcoin for now...we seem to be getting rate limited by the API.  I don't think it will be an issue for production.
+  updatePostRanking,
+  postExists,
+  resetRanking,
+  createPost,
+}                      = require('../db/models/dao');
+const client           = require('../server/steemAPI');
+// const taggings         = require('../utils/taggings');
+const taggings = [
   'ethereum',
 ];
 
@@ -22,10 +20,6 @@ const batchUpdate = () => {
 const handleResult = (result) => {
   resetRanking().then(() => {
 
-    // This nested loop just comes up with a way to mesh together hot or trending
-    // ranking for multiple tags from the API.  We are keeping this for now.
-    // No easy way to do this.  Probably just stick this in the services folder
-    // eventually.
 
     for (let index = 0; index < result[0].length; index++) {
       for (let tagIndex = 0; tagIndex < result.length; tagIndex++) {
