@@ -9,7 +9,7 @@ const typeDefs = `
 type Query {
   getAllPosts: [Post]
   getPostReplies(author: String, permlink: String): String
-  createNewPost: String
+  createPost: String
   updatePost: String
   deletePost: String
   votePost: String

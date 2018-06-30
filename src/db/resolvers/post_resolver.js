@@ -1,5 +1,9 @@
+const { AuthenticationError, gql } = require('apollo-server');
+const { makeExecutableSchema } = require('graphql-tools');
+
 const client = require('../../server/steemAPI');
 const db = require('../connectors');
+// TODO: create postService to communicate with model and import postService
 const Post = db.sequelize.models.post;
 
 const { GraphQLScalarType } = require('graphql');
@@ -49,8 +53,20 @@ type Post {
 
 */
 
-const postTypeDefs = `
+const typeDefs = `
   scalar Date
+
+  type Query {
+    getAllPosts: [Post]
+    getPostReplies: [Post]
+  }
+
+  type Mutation {
+    createPost: Post
+    updatePost(postId: String!): Post
+    deletePost(postId: String!): Post
+    votePost(postId: String!): Post
+  }
 
   type Post {
     id: Int!
@@ -73,30 +89,31 @@ const postTypeDefs = `
   }
 `;
 
-const postResolver = {
+const resolvers = {
   Query: {
     getAllPosts(_, args) {
       return Post.findAll({order: [['hot', 'ASC']]});
     },
     getPostReplies(_, args) {
-      return client.sendAsync("get_content_replies", [[args.author, args.permlink]], (result) => {return result[0][0].body}); // { author: "steemit", permlink: "firstpost" }
+      return client.sendAsync('get_content_replies', [[args.author, args.permlink]], (result) => {return result[0][0].body}); // { author: 'steemit', permlink: 'firstpost' }
     },
-    createNewPost(_, args) {  // { accessToken: "kjhDG5THrg", title: "Bitcoin is awesome", body: "This is my bitcoin post", tags: ["bitcoin", "ethereum"], author: "steemit", permlink: "firstpost" }
-      return "success";
+  },
+  Mutation: {
+    createPost: async (_, {}, { post }) => {  // { accessToken: 'kjhDG5THrg', title: 'Bitcoin is awesome', body: 'This is my bitcoin post', tags: ['bitcoin', 'ethereum'], author: 'steemit', permlink: 'firstpost' }
+    return !post
+      ? new AuthenticationError('ERROR_CREATING_POST')
+      : await PostService.createPost()
     },
-    updatePost(_, args) {  // { accessToken: "kjhDG5THrg", title: "Bitcoin is awsome", body: "This is my bitcoin post", tags: ["bitcoin", "ethereum"], author: "steemit", permlink: "firstpost" }
-      return "success";
+    updatePost(_, args) {  // { accessToken: 'kjhDG5THrg', title: 'Bitcoin is awsome', body: 'This is my bitcoin post', tags: ['bitcoin', 'ethereum'], author: 'steemit', permlink: 'firstpost' }
+      return 'success';
     },
-    deletePost(_, args) { // { accessToken: "kjhDG5THrg", author: "steemit", permlink: "firstpost" }
-      return "success";
+    deletePost(_, args) { // { accessToken: 'kjhDG5THrg', author: 'steemit', permlink: 'firstpost' }
+      return 'success';
     },
-    votePost(_, args) { // { accessToken: "kjhDG5THrg", author: "steemit", permlink: "firstpost", upvote: 1, vote_percent: 50 }
-      return "success"
+    votePost(_, args) { // { accessToken: 'kjhDG5THrg', author: 'steemit', permlink: 'firstpost', upvote: 1, vote_percent: 50 }
+      return 'success'
     }
   }
 };
 
-module.exports = {
-  postTypeDefs,
-  postResolver,
-}
+module.exports = makeExecutableSchema({ typeDefs, resolvers });
