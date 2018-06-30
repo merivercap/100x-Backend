@@ -3,6 +3,7 @@ const PORT = process.env.PORT || 3000;
 const Koa = require('koa');
 const koaRouter = require('koa-router');
 const koaBody = require('koa-bodyparser');
+const cors = require('koa-cors');
 
 const { graphqlKoa, graphiqlKoa } = require('apollo-server-koa')
 
@@ -25,4 +26,5 @@ router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
 app.use(logger());
 app.use(router.routes());
 app.use(router.allowedMethods());
+app.use(cors());
 app.listen(PORT);

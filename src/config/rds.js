@@ -1,3 +1,8 @@
+/** 
+ * TODO: fill out empty strings with default values
+ * ie:
+ * const RDS_HOSTNAME = process.env.RDS_HOSTNAME || 'hundredx-development.randomHash.us-west-2.rds.amazonaws.com';
+ */
 const RDS_HOSTNAME = process.env.RDS_HOSTNAME || '';
 const RDS_USERNAME = process.env.RDS_USERNAME || '';
 const RDS_PASSWORD = process.env.RDS_PASSWORD || '';

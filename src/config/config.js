@@ -24,7 +24,7 @@ const config = {
   },
   production: {
     connection: { name: rdsConfig.RDS_DB_NAME, username: rdsConfig.RDS_USERNAME, password: rdsConfig.RDS_PASSWORD },
-    sequelizeOpts: { dialect: 'mysql', host: rdsConfig.RDS_HOSTNAME, port: rdsConfig.RDS_PORT, operatorsAliases: false }
+    sequelizeOpts: { dialect: 'mysql', host: rdsConfig.RDS_HOSTNAME, port: rdsConfig.RDS_PORT, operatorsAliases: false, maxConcurrentQueries: 100, pool: { maxConnections: 5, maxIdleTime: 30}, language: 'en' }
   },
 };
 
