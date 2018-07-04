@@ -5,26 +5,34 @@
  * Staging - for features ready to be pushed to production
  * Production - production env. live
  */
-const rdsConfig = require('./rds');
+const {
+  APP_ENV,
+  RDS_HOSTNAME,
+  RDS_USERNAME,
+  RDS_PASSWORD,
+  RDS_PORT,
+  RDS_DB_NAME,
+} = require('rds');
+
 
 const env = process.env.APP_ENV || 'development';
 
 const config = {
   test: {
-    connection: { name: 'dhundredx', username: 'root', password: 'root' },
+    connection: { name: RDS_DB_NAME, username: 'root', password: 'root' },
     sequelizeOpts: { dialect: 'sqlite', storage: ':memory:', operatorsAliases: false }
   },
   development: {
-    connection: { name: rdsConfig.RDS_DB_NAME, username: rdsConfig.RDS_USERNAME, password: rdsConfig.RDS_PASSWORD },
-    sequelizeOpts: { dialect: 'mysql', host: rdsConfig.RDS_HOSTNAME, port: rdsConfig.RDS_PORT, operatorsAliases: false, maxConcurrentQueries: 100, pool: { maxConnections: 5, maxIdleTime: 30}, language: 'en'}
+    connection: { name: RDS_DB_NAME, username: RDS_USERNAME, password: RDS_PASSWORD },
+    sequelizeOpts: { dialect: 'mysql', host: RDS_HOSTNAME, port: RDS_PORT, operatorsAliases: false, maxConcurrentQueries: 100, pool: { maxConnections: 5, maxIdleTime: 30}, language: 'en'}
   },
   staging: {
-    connection: { name: rdsConfig.RDS_DB_NAME, username: rdsConfig.RDS_USERNAME, password: rdsConfig.RDS_PASSWORD },
-    sequelizeOpts: { dialect: 'mysql', host: rdsConfig.RDS_HOSTNAME, port: rdsConfig.RDS_PORT, operatorsAliases: false }
+    connection: { name: RDS_DB_NAME, username: RDS_USERNAME, password: RDS_PASSWORD },
+    sequelizeOpts: { dialect: 'mysql', host: RDS_HOSTNAME, port: RDS_PORT, operatorsAliases: false }
   },
   production: {
-    connection: { name: rdsConfig.RDS_DB_NAME, username: rdsConfig.RDS_USERNAME, password: rdsConfig.RDS_PASSWORD },
-    sequelizeOpts: { dialect: 'mysql', host: rdsConfig.RDS_HOSTNAME, port: rdsConfig.RDS_PORT, operatorsAliases: false }
+    connection: { name: RDS_DB_NAME, username: RDS_USERNAME, password: RDS_PASSWORD },
+    sequelizeOpts: { dialect: 'mysql', host: RDS_HOSTNAME, port: RDS_PORT, operatorsAliases: false }
   },
 };
 
