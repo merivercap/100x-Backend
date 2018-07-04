@@ -11,7 +11,7 @@ client.sendAsync = (message, params, handleResult) => {
     })
   })
 
-  Promise.all(allPromises).then(handleResult).catch(err => console.log(err));
+  return Promise.all(allPromises).then(handleResult).catch(err => console.log(err));
 }
 
 module.exports = client;
