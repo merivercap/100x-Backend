@@ -3,7 +3,6 @@ const AWSXRay = require('./../services/tracer');
 const mysql = AWSXRay.captureMYSql(require('mysql'));
 
 const {
-  APP_ENV,
   RDS_HOSTNAME,
   RDS_USERNAME,
   RDS_PASSWORD,
