@@ -4,7 +4,7 @@ const {
         resetRanking,
         createPost,
 }               = require('../controllers/post_controller');
-const client    = require('../server/steemAPI');
+const client    = require('../services/steem');
 // const taggings  = require('../utils/taggings');
 const taggings = [ //just bitcoin for now...we seem to be getting rate limited by the API.  I don't think it will be an issue for production.
   'ethereum',

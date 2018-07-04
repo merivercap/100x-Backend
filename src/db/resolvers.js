@@ -1,7 +1,7 @@
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
 
-const { client } = require('../server/steemAPI');
+const { client } = require('../services/steem');
 const db = require('./connectors');
 const Post = db.sequelize.models.post;
 
