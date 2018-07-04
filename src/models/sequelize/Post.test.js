@@ -27,10 +27,8 @@ describe('Post', () => {
       })
       .then(fetchedPost => {
         expect(fetchedPost.id).toBe(post.id);
-
-        const json = fetchedPost.toJSON();
-        expect(json.authorId).toBe(author.id);
-        expect(json.createdAt).not.toBe(null);
+        expect(fetchedPost.authorId).toBe(author.id);
+        expect(fetchedPost.createdAt).not.toBe(null);
       });
 
   });
