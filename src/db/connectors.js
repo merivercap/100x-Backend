@@ -1,9 +1,9 @@
 const casual = require('casual');
 const _ = require('lodash');
 
-const batchUpdate = require('../database_update/batch');
+const batchUpdate = require('../services/db_update');
 
-const db = require('../models/dao');
+const db = require('../models/sequelize/index');
 
 db.sequelize.sync().then(() => {
   batchUpdate();
