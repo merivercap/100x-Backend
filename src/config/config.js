@@ -12,7 +12,7 @@ const {
   RDS_PASSWORD,
   RDS_PORT,
   RDS_DB_NAME,
-} = require('rds');
+} = require('./rds');
 
 
 const env = process.env.APP_ENV || 'development';
