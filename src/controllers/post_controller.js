@@ -1,4 +1,4 @@
-const db        = require('../models/dao');
+const db        = require('../models/sequelize/index');
 const PostModel = db.sequelize.models.post;
 const Op        = db.Sequelize.Op;
 
