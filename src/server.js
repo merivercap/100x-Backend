@@ -5,7 +5,7 @@ const Koa = require('koa');
 const KoaRouter = require('koa-router');
 const koaBodyParser = require('koa-bodyparser');
 const logger = require('koa-logger');
-const helmer = require('helmet');
+const helmet = require('helmet');
 // const routes = require('./controllers');
 const cors = require('./middlewares/cors');
 const logger = require('./services/logger');
@@ -56,6 +56,7 @@ const server = new ApolloServer({
 
 // Security middleware
 app.use(cors, helmet());
+app.use(logger());
 
 // Graphql
 router.post('/graphql', koaBody(), graphqlKoa({ schema }));
@@ -63,7 +64,10 @@ router.get('/graphql', graphqlKoa({ schema }));
 router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
 
 // Parsers
-app.use(logger());
+app.use(
+  koaBodyParser.json({ limit: '50mb' }),
+  // koaBodyParser.urlencoded({ extended: false }) // Might not need this
+);
 
 // Connect routes 
 app.use(router.routes());
