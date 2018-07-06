@@ -4,17 +4,17 @@ const { graphqlKoa, graphiqlKoa } = require('apollo-server-koa');
 const Koa = require('koa');
 const KoaRouter = require('koa-router');
 const koaBodyParser = require('koa-bodyparser');
-const logger = require('koa-logger');
-const helmer = require('helmet');
+const koaLogger = require('koa-logger');
+const helmet = require('helmet');
 // const routes = require('./controllers');
 const cors = require('./middlewares/cors');
 const logger = require('./services/logger');
-const schema = require('../db/schema');
+const schema = require('./controllers/graphql/schemas');
 // const schema = require('./controllers/graphql/schemas');
-const { User } = require('./models/sequelize');
+const { User } = require('./models/sequelize').User;
 
-const app = new Koa();
-const router = new KoaRouter();
+// const app = new Koa();
+// const router = new KoaRouter();
 
 // Apollo GraphQL
 const server = new ApolloServer({
@@ -54,30 +54,42 @@ const server = new ApolloServer({
   schema,
 });
 
+
+
+server.listen().then(({ url }) => {
+  console.log('server is listening to localhost', url)
+})
+
 // Security middleware
-app.use(cors, helmet());
+// app.use(cors, helmet());
+// app.use(koaLogger());
 
-// Graphql
-router.post('/graphql', koaBody(), graphqlKoa({ schema }));
-router.get('/graphql', graphqlKoa({ schema }));
-router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
+// // // Graphql
+// // router.post('/graphql', koaBody(), graphqlKoa({ schema }));
+// // router.get('/graphql', graphqlKoa({ schema }));
+// // router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
 
-// Parsers
-app.use(logger());
+// // Parsers
+// // app.use(
+//   // koaBodyParser.json({ limit: '50mb' }),
+//   // koaBodyParser.urlencoded({ extended: false }) // Might not need this
+// // );
 
-// Connect routes 
-app.use(router.routes());
-app.use(router.allowedMethods());
+// // Apollo Server Middleware
+// server.applyMiddleware({ app });
 
-// Apollo Server Middleware
-server.applyMiddleware({ app });
+// // Connect routes 
+// // app.use(router.routes());
+// // app.use(router.allowedMethods());
 
-app.use((req, res) => res.status(404).json({ msg: '404: Sorry cant find that!' }));
+// app.use((req, res) => res.status(404).json({ msg: '404: Sorry cant find that!' }));
 
-app.use((err, req, res, next) => {
-  logger.error(err.stack);
-  const statusCode = err.statusCode || 500;
-  return res.status(statusCode).json({ msg: err.message });
-});
+// app.use((err, req, res, next) => {
+//   logger.error(err.stack);
+//   const statusCode = err.statusCode || 500;
+//   return res.status(statusCode).json({ msg: err.message });
+// });
 
-module.exports = app;
+// module.exports = {
+//   app: server
+// }

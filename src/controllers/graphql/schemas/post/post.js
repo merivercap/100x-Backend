@@ -1,31 +1,15 @@
 const { AuthenticationError, gql } = require('apollo-server');
 const { makeExecutableSchema } = require('graphql-tools');
 
-const db = require('../connectors');
+// const db = require('../connectors');
 // TODO: create postService to communicate with model and import postService
-const Post = db.sequelize.models.post;
+// const Post = db.sequelize.models.post;
+const { Post } = require('../../../../models/sequelize');
+
+console.log('*****', Post);
 
 const { GraphQLScalarType } = require('graphql');
 const { merge } = require('lodash');
-
-const resolverMap = {
-  Date: new GraphQLScalarType({
-    name: 'Date',
-    description: 'Date custom scalar type',
-    parseValue(value) {
-      return new Date(value); // value from the steemService
-    },
-    serialize(value) {
-      return value.getTime(); // value sent to the steemService
-    },
-    parseLiteral(ast) {
-      if (ast.kind === Kind.INT) {
-        return parseInt(ast.value, 10); // ast value is always in string format
-      }
-      return null;
-    },
-  }),
-};
 
 // https://developers.steem.io/apidefinitions/#condenser_api.get_discussions_by_blog
 // This end point will retrieve posts/discussions by tag, eg. bitcoin
@@ -59,9 +43,17 @@ const typeDefs = gql`
   scalar Date
 
   type Query {
-    allPosts: [Post]
-    getPostContent(message: String, params: [String]): String
+    getAllPosts: [Post]
+    getPostReplies(message: String, params: [String]): String
   }
+
+  type Mutation {
+    createPost: Post
+    updatePost: Post
+    deletePost: String
+    votePost: String
+  }
+  
   type Post {
     id: Int!
     author: String!
@@ -85,26 +77,27 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    getAllPosts(_, args) {
+    getAllPosts: async (_, args) => {
       return Post.findAll({ order: [['hot', 'ASC']] });
     },
-    getPostReplies(_, args) {
-      return steemService.sendAsync('get_content_replies', [[args.author, args.permlink]], (result) => { return result[0][0].body }); // { author: 'steemit', permlink: 'firstpost' }
+    getPostReplies: async (_, args) => {
+      return steemService.sendAsync('get_content_replies', [[args.author, args.permlink]], result => result[0][0].body ); // { author: 'steemit', permlink: 'firstpost' }
     },
   },
   Mutation: {
     createPost: async (_, { }, { post }) => {  // { accessToken: 'kjhDG5THrg', title: 'Bitcoin is awesome', body: 'This is my bitcoin post', tags: ['bitcoin', 'ethereum'], author: 'steemit', permlink: 'firstpost' }
-      return !post
-        ? new AuthenticationError('ERROR_CREATING_POST')
-        : await PostService.createPost()
+      return 'success';
+      // return !post
+      //   ? new AuthenticationError('ERROR_CREATING_POST')
+      //   : await PostService.createPost()
     },
-    updatePost(_, args) {  // { accessToken: 'kjhDG5THrg', title: 'Bitcoin is awsome', body: 'This is my bitcoin post', tags: ['bitcoin', 'ethereum'], author: 'steemit', permlink: 'firstpost' }
+    updatePost: async (_, args) => {  // { accessToken: 'kjhDG5THrg', title: 'Bitcoin is awsome', body: 'This is my bitcoin post', tags: ['bitcoin', 'ethereum'], author: 'steemit', permlink: 'firstpost' }
       return 'success';
     },
-    deletePost(_, args) { // { accessToken: 'kjhDG5THrg', author: 'steemit', permlink: 'firstpost' }
+    deletePost: async (_, args) => { // { accessToken: 'kjhDG5THrg', author: 'steemit', permlink: 'firstpost' }
       return 'success';
     },
-    votePost(_, args) { // { accessToken: 'kjhDG5THrg', author: 'steemit', permlink: 'firstpost', upvote: 1, vote_percent: 50 }
+    votePost: async (_, args) => { // { accessToken: 'kjhDG5THrg', author: 'steemit', permlink: 'firstpost', upvote: 1, vote_percent: 50 }
       return 'success'
     }
   }

@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   
-  // Post.prototype.toJSON = function () {
+  // Post.prototype.toJSON = () => {
   //   return dbUtils.jsonFormat(this.get());
   // }
 

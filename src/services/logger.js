@@ -6,7 +6,7 @@ const logger = new (winston.Logger)({
   ]
 });
 
-logger.on('error', function(error) {
+logger.on('error', error => {
   console.error(error);
 });
 

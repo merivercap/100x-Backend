@@ -25,14 +25,14 @@ const sequelize = new Sequelize(
    config.sequelizeOpts
  );
 
-sequelize
-  .authenticate()
-  .then(() => {
-    logger.info(`Sequelize: Connected to ${settings.connection.name} ${settings.connection.username} ${settings.sequelizeOpts.dialect}`);
-  })
-  .catch(err => {
-    logger.error('Unable to connect to the database:', err);
-  });
+// sequelize
+//   .authenticate()
+//   .then(() => {
+//     logger.info(`Sequelize: Connected to ${settings.connection.name} ${settings.connection.username} ${settings.sequelizeOpts.dialect}`);
+//   })
+//   .catch(err => {
+//     logger.error('Unable to connect to the database:', err);
+//   });
 
 /**
  * file reader isn't importing sequelize files correctly
