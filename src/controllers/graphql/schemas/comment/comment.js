@@ -2,6 +2,8 @@ const { AuthenticationError, gql } = require('apollo-server');
 const { makeExecutableSchema } = require('graphql-tools');
 
 const typeDefs = gql`
+  scalar Date 
+  
   type Query {
     allComments: [Comment]
   }

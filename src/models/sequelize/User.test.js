@@ -13,12 +13,13 @@ describe('User', () => {
   test('save() should save', () => {
     const user = User.build(testUtils.createTestUserOpts());
 
-    return user.save().then(() => {
-      return User.findById(user.id);
-    })
-    .then(fetchedUser => {
-      expect(fetchedUser.id).toBe(user.id);
-      expect(fetchedUser.name).toBe(user.name);
-    });
+    return user.save()
+      .then(() => (
+        User.findById(user.id)
+      ))
+      .then(fetchedUser => {
+        expect(fetchedUser.id).toBe(user.id);
+        expect(fetchedUser.name).toBe(user.name);
+      });
   });
 });

@@ -11,7 +11,7 @@
  *    but "incrementing" them by 1 (only in the case of a timestamp collision).
  */
 module.exports = {
-  generate: function () {
+  generate: () => {
     // Modeled after base64 web-safe chars, but ordered by ASCII.
     var PUSH_CHARS = '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
 

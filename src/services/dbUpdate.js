@@ -1,11 +1,12 @@
 const logger = require('./logger');
-const {
-  updatePostRanking,
-  postExists,
-  resetRanking,
-  createPost,
-} = require('../db/models/dao');
-const client = require('../server/steemAPI');
+// const {
+//   updatePostRanking,
+//   postExists,
+//   resetRanking,
+//   createPost,
+// } = require('../db/models/dao');
+const { Post } = require('../models/sequelize').Post;
+const client = require('../services/steem');
 // const taggings = require('../utils/taggings');
 const taggings = [ 'ethereum' ];
 
@@ -16,7 +17,7 @@ const batchUpdate = () => {
 };
 
 const handleResult = (result) => {
-  resetRanking()
+  Post.resetRanking()
     .then(() => {
       for (let index = 0; index < result[0].length; index++) {
         for (let tagIndex = 0; tagIndex < result.length; tagIndex++) {
@@ -32,9 +33,9 @@ const handleResult = (result) => {
 }
 
 const updateIfUnique = (post, { newHotRanking }) => (
-  postExists(post.id)
+  Post.postExists(post.id)
     .then(postIndeedExists => {
-      postIndeedExists ? updatePostRanking({ postId, newHotRanking }) : createPost(post, { newHotRanking });
+      postIndeedExists ? Post.updatePostRanking({ postId, newHotRanking }) : Post.createPost(post, { newHotRanking });
     })
     .catch(error => {
       logger.error(`ERROR: `, error);

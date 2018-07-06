@@ -1,1 +1,1 @@
-module.exports = require('./booking');
+module.exports = require('./post');
