@@ -6,8 +6,6 @@ const { makeExecutableSchema } = require('graphql-tools');
 // const Post = db.sequelize.models.post;
 const { Post } = require('../../../../models/sequelize');
 
-console.log('*****', Post);
-
 const { GraphQLScalarType } = require('graphql');
 const { merge } = require('lodash');
 
@@ -78,9 +76,11 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     getAllPosts: async (_, args) => {
+      console.log('getting all posts');
       return Post.findAll({ order: [['hot', 'ASC']] });
     },
     getPostReplies: async (_, args) => {
+      console.log('getting post replies');
       return steemService.sendAsync('get_content_replies', [[args.author, args.permlink]], result => result[0][0].body ); // { author: 'steemit', permlink: 'firstpost' }
     },
   },

@@ -34,6 +34,7 @@
     "aws-xray-sdk": "^1.2.0",
     "body-parser": "^1.18.3",
     "casual": "^1.5.19",
+    "cors": "^2.8.4",
     "db": "^1.0.6",
     "decamelize-keys": "^1.1.0",
     "dotenv": "^5.0.1",
