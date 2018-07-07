@@ -1,13 +1,10 @@
 const allowedOrigins = new Set([
   'http://www.100xcrypto.net.s3-website-us-west-1.amazonaws.com',
   'https://www.100xcrypto.net',
+  'http://api-100x-dev.us-west-1.elasticbeanstalk.com/graphql',
+  'http://localhost:4000',
+  'http://localhost:3000',
 ]);
-
-if (process.env.APP_ENV !== 'production' || process.env.APP_ENV !== 'staging') {
-  allowedOrigins.add('http://localhost:6200');
-  allowedOrigins.add('http://127.0.0.1:3000');
-  allowedOrigins.add('http://localhost:8000');
-}
 
 module.exports = function(req, res, next) {
   let origin = req.headers.origin;

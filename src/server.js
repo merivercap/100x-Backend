@@ -13,16 +13,15 @@ const schema = require('./controllers/graphql/schemas');
 // const schema = require('./controllers/graphql/schemas');
 const { User } = require('./models/sequelize').User;
 
-// const app = new Koa();
-// const router = new KoaRouter();
+const app = new Koa();
+const router = new KoaRouter();
 
 // Apollo GraphQL
 const server = new ApolloServer({
   context: async ({ req }) => {
     try {
-      // 
       const token = (req.headers.authorization || '').replace('Bearer ', '');
-      if (!token) {
+      if (!token) { 
         return {}; // Return empty object - users can still access public queries
       }
       /**
@@ -31,8 +30,9 @@ const server = new ApolloServer({
        * const { uid } = await steem.verifyTokenApiCall(token);
        */
       // Get User model from db and pass through context for secure queries/mutations
-      const user = await User.findOne({ where: { id: uid } });
-      return { user }; 
+      // db not connected yet so commenting out
+      // const user = await User.findOne({ where: { id: uid } });
+      // return { user }; 
     }
     catch (error) {
       /**
@@ -61,35 +61,35 @@ server.listen().then(({ url }) => {
 })
 
 // Security middleware
-// app.use(cors, helmet());
-// app.use(koaLogger());
+app.use(cors, helmet());
+app.use(koaLogger());
 
 // // // Graphql
-// // router.post('/graphql', koaBody(), graphqlKoa({ schema }));
-// // router.get('/graphql', graphqlKoa({ schema }));
-// // router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
+// router.post('/graphql', koaBody(), graphqlKoa({ schema }));
+// router.get('/graphql', graphqlKoa({ schema }));
+// router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
 
 // // Parsers
-// // app.use(
-//   // koaBodyParser.json({ limit: '50mb' }),
-//   // koaBodyParser.urlencoded({ extended: false }) // Might not need this
-// // );
+// app.use(
+//   koaBodyParser.json({ limit: '50mb' }),
+//   koaBodyParser.urlencoded({ extended: false }) // Might not need this
+// );
 
 // // Apollo Server Middleware
 // server.applyMiddleware({ app });
 
 // // Connect routes 
-// // app.use(router.routes());
-// // app.use(router.allowedMethods());
+app.use(router.routes());
+app.use(router.allowedMethods());
 
-// app.use((req, res) => res.status(404).json({ msg: '404: Sorry cant find that!' }));
+app.use((req, res) => res.status(404).json({ msg: '404: Sorry cant find that!' }));
 
-// app.use((err, req, res, next) => {
-//   logger.error(err.stack);
-//   const statusCode = err.statusCode || 500;
-//   return res.status(statusCode).json({ msg: err.message });
-// });
+app.use((err, req, res, next) => {
+  logger.error(err.stack);
+  const statusCode = err.statusCode || 500;
+  return res.status(statusCode).json({ msg: err.message });
+});
 
-// module.exports = {
-//   app: server
-// }
+module.exports = {
+  app: server
+}
