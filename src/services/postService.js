@@ -12,8 +12,14 @@ module.exports = {
   // for example, the tags come in in the json_metadata field.  Also the hot and trending ranks are our own ...
   // I guess we could construct a post properly somewhere else, and then just call PostModel.create(post) ??
   // Ill try to get to it tmrw...
+  // Maybe something like this...
+  // createPost: function(post) => {
+  //   PostModel.create(post);
+  // };
+
   createPost: function(post, { newHotRanking }) {
     const metadata = JSON.parse(post.json_metadata);
+    const convertedValue = Number.parseFloat(post.pending_payout_value.split("SBD")[0]);
     const tags = metadata.tags;
     PostModel.create({
       id: post.id,
@@ -24,7 +30,7 @@ module.exports = {
       createdAt: post.created,
       netVotes: post.net_votes,
       children: post.children,
-      pendingPayoutValue: 10,
+      pendingPayoutValue: convertedValue,
       trending: 1,
       hot: newHotRanking,
       postType: 0,
