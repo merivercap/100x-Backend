@@ -87,6 +87,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         field: 'post_type',
         allowNull: false,
+        default: 0, // default is blog
         validate: {
           isInt: true,
           min: 0,
@@ -175,7 +176,7 @@ module.exports = (sequelize, DataTypes) => {
       .update(keyVal, {
         where: { children: { [Op.gte]: 0 } }
       })
-      .catch(err => console.log(err)); 
+      .catch(err => console.log(err));
   }
 
   return Post;
