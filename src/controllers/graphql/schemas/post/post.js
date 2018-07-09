@@ -1,13 +1,11 @@
 const { AuthenticationError, gql } = require('apollo-server');
 const { makeExecutableSchema } = require('graphql-tools');
 
-// const db = require('../connectors');
 // TODO: create postService to communicate with model and import postService
 // const Post = db.sequelize.models.post;
-const { Post } = require('../../../../models/sequelize');
+const { Post } = require('../../connectors/connectors');
 
 const { GraphQLScalarType } = require('graphql');
-const { merge } = require('lodash');
 
 // https://developers.steem.io/apidefinitions/#condenser_api.get_discussions_by_blog
 // This end point will retrieve posts/discussions by tag, eg. bitcoin
@@ -41,7 +39,7 @@ const typeDefs = gql`
   scalar Date
 
   type Query {
-    getAllPosts: [Post]
+    getAllPosts: String
     getPostReplies(message: String, params: [String]): String
   }
 

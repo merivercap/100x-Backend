@@ -34,23 +34,6 @@ const sequelize = new Sequelize(
 //     logger.error('Unable to connect to the database:', err);
 //   });
 
-/**
- * file reader isn't importing sequelize files correctly
- * TODO: figure out why
- * manually importing files into db for now
- */
-// fs
-//   .readdirSync(__dirname)
-//   .filter(file => {
-//     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-//   })
-//   .forEach(file => {
-//     logger.info('file: ', file);
-//     // import and create each model
-//     const model = sequelize['import'](path.join(__dirname, file));
-//     db[model.name] = model;
-//   });
-
 db.Post = sequelize.import('./Post');
 db.User = sequelize.import('./User');
 
