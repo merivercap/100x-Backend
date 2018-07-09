@@ -51,25 +51,25 @@ const typeDefs = gql`
     deletePost: String
     votePost: String
   }
-  
+
   type Post {
     id: Int!
-    author: String!
-    permlink: String!
-    tag1: String!
-    tag2: String
-    tag3: String
-    tag4: String
-    tag5: String
+    author_id: String!
+    perm_link: String!
     title: String!
     body: String!
-    created: Date!
+    created_at: Date!
     net_votes: Int!
     children: Int!
     curator_payout_value: Float!
     trending: Int
     hot: Int
     post_type: Int!
+    tag1: String!
+    tag2: String
+    tag3: String
+    tag4: String
+    tag5: String
   }
 `;
 
