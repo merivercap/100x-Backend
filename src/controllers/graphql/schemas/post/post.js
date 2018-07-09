@@ -16,6 +16,7 @@ const typeDefs = gql`
 
   type Query {
     getAllPosts: [Post]
+    getPost(postId: Int): Post
     getPostReplies(message: String, params: [String]): String
   }
 
@@ -52,6 +53,9 @@ const resolvers = {
     getAllPosts: async (_, args) => {
       console.log('getting all posts');
       return Post.findAll({order: [['hot', 'ASC']], limit: 100});
+    },
+    getPost(_,args) {
+      return Post.findById(args.postId);
     },
     getPostReplies: async (_, args) => {
       console.log('getting post replies');
