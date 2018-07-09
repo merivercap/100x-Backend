@@ -1,45 +1,21 @@
 const { AuthenticationError, gql } = require('apollo-server');
 const { makeExecutableSchema } = require('graphql-tools');
 
+// const db = require('../connectors');
 // TODO: create postService to communicate with model and import postService
 // const Post = db.sequelize.models.post;
-const { Post } = require('../../connectors/connectors');
+// const { Post } = require('../../../../models/sequelize');
+const Post = require('../../connectors/connectors');
 
 const { GraphQLScalarType } = require('graphql');
-
 // https://developers.steem.io/apidefinitions/#condenser_api.get_discussions_by_blog
 // This end point will retrieve posts/discussions by tag, eg. bitcoin
-
-/*
-POST TABLE EXPLANATION
-
-type Post {
-  id: Int!
-  author: String!
-  permlink: String!
-  tag1: String!                | eg. bitcoin, beyondbitocin, crypto  There should be at least 1 tag.
-  tag2: String                 |
-  tag3: String
-  tag4: String
-  tag5: String
-  title: String!               | eg. Trump releases Tweet Storm
-  body: String!                | eg. I love blogging on steeem
-  created: Date!
-  net_votes: Int!              | number of upvotes, eg. 300
-  children: Int!               | eg. 100.  Number of replies to this post.
-  pending_payout_value: Float! | eg. $123, payout value of post.
-  trending: Int               | eg. 1, 2, 3, 4.  Lower values are trending
-  hot: Int
-  post_type: Int!              | eg. 0 => Blog, 1 => Video, 2 => News
-}
-
-*/
 
 const typeDefs = gql`
   scalar Date
 
   type Query {
-    getAllPosts: String
+    getAllPosts: [Post]
     getPostReplies(message: String, params: [String]): String
   }
 
@@ -52,17 +28,17 @@ const typeDefs = gql`
 
   type Post {
     id: Int!
-    author_id: String!
-    perm_link: String!
+    authorId: String!
+    permLink: String!
     title: String!
     body: String!
-    created_at: Date!
-    net_votes: Int!
+    createdAat: Date!
+    netVotes: Int!
     children: Int!
-    pending_payout_value: Float!
+    pendingPayoutValue: Float!
     trending: Int
     hot: Int
-    post_type: Int!
+    postType: Int!
     tag1: String!
     tag2: String
     tag3: String
@@ -75,7 +51,7 @@ const resolvers = {
   Query: {
     getAllPosts: async (_, args) => {
       console.log('getting all posts');
-      return Post.findAll({ order: [['hot', 'ASC']] });
+      return Post.findAll({order: [['hot', 'ASC']], limit: 100});
     },
     getPostReplies: async (_, args) => {
       console.log('getting post replies');
