@@ -29,7 +29,7 @@ type Post {
   created: Date!
   net_votes: Int!              | number of upvotes, eg. 300
   children: Int!               | eg. 100.  Number of replies to this post.
-  curator_payout_value: Float! | eg. $123, payout value of post.
+  pending_payout_value: Float! | eg. $123, payout value of post.
   trending: Int               | eg. 1, 2, 3, 4.  Lower values are trending
   hot: Int
   post_type: Int!              | eg. 0 => Blog, 1 => Video, 2 => News
@@ -61,7 +61,7 @@ const typeDefs = gql`
     created_at: Date!
     net_votes: Int!
     children: Int!
-    curator_payout_value: Float!
+    pending_payout_value: Float!
     trending: Int
     hot: Int
     post_type: Int!

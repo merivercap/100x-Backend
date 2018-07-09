@@ -60,9 +60,9 @@ module.exports = (sequelize, DataTypes) => {
           min: 0
         }
       },
-      curatorPayoutValue: {
+      pendingPayoutValue: {
         type: DataTypes.FLOAT,
-        field: 'curator_payout_value',
+        field: 'pending_payout_value',
         allowNull: false,
         validate: {
           isFloat: true,
@@ -127,7 +127,7 @@ module.exports = (sequelize, DataTypes) => {
   //     created: post.created,
   //     net_votes: post.net_votes,
   //     children: post.children,
-  //     curator_payout_value: 10,
+  //     pending_payout_value: 10,
   //     trending: 1,
   //     hot: newHotRanking,
   //     post_type: 0,
