@@ -6,13 +6,13 @@ module.exports = (sequelize, DataTypes) => {
     'post',
     {
       id: {
-        type: DataTypes.STRING(60),
+        type: DataTypes.INTEGER,
         defaultValue: () => idGenerator.generate(),
         primaryKey: true,
         allowNull: false
       },
       authorId: {
-        type: DataTypes.STRING(60),
+        type: DataTypes.INTEGER,
         field: 'authorId',
         index: true,
         allowNull: false,
@@ -106,6 +106,15 @@ module.exports = (sequelize, DataTypes) => {
       freezeTableName: true
     }
   );
+
+  Post.associate = function (models) {
+    models.Post.belongsTo(models.User, {
+      foreignKey: {
+        name: 'authorId',
+        allowNull: false
+      }
+    });
+  };
 
   // Post.prototype.toJSON = () => {
   //   return dbUtils.jsonFormat(this.get());
