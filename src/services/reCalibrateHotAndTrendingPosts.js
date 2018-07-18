@@ -4,11 +4,11 @@ const PostService = require('./postService');
 const client = require('./steem');
 // const taggings = require('../utils/taggings');
 const taggings = [ 'ethereum' ];
-const TOP_X_TAGS_PER_POST = 10;
+const POSTS_PER_TAG = 10;
 
 
 const batchUpdate = () => {
-  const params = taggings.map(tag => [{ "tag": tag, "limit": TOP_X_TAGS_PER_POST }] );
+  const params = taggings.map(tag => [{ "tag": tag, "limit": POSTS_PER_TAG }] );
   client.sendAsync('get_discussions_by_hot', params, calibrateNewPostRankings);
 };
 
@@ -17,7 +17,7 @@ const calibrateNewPostRankings = (result) => {
     .then(() => {
       for (let index = 0; index < result[0].length; index++) {
         for (let tagIndex = 0; tagIndex < result.length; tagIndex++) {
-          let newHotRanking = index * 10 + tagIndex;
+          let newHotRanking = index * POSTS_PER_TAG + tagIndex;
           let post = result[tagIndex][index];
           updateIfUnique(post, { newHotRanking });
         }

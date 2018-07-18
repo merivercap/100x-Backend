@@ -29,7 +29,7 @@ const typeDefs = gql`
 
   type Post {
     id: Int!
-    authorId: String!
+    authorId: Int!
     permLink: String!
     title: String!
     body: String!

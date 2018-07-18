@@ -8,14 +8,6 @@ const PostModel = db.sequelize.models.post;
 const Op        = db.Sequelize.Op;
 
 module.exports = {
-  //Reason I build this was cause the fields from the steem api don't come in exactly as we need them.
-  // for example, the tags come in in the json_metadata field.  Also the hot and trending ranks are our own ...
-  // I guess we could construct a post properly somewhere else, and then just call PostModel.create(post) ??
-  // Ill try to get to it tmrw...
-  // Maybe something like this...
-  // createPost: function(post) => {
-  //   PostModel.create(post);
-  // };
 
   createPost: function(post, { newHotRanking }) {
     const metadata = JSON.parse(post.json_metadata);
@@ -23,7 +15,7 @@ module.exports = {
     const tags = metadata.tags;
     PostModel.create({
       id: post.id,
-      authorId: post.author,
+      authorId: 1,
       permLink: post.permlink,
       title: post.title,
       body: post.body,
