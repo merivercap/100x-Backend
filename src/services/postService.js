@@ -63,11 +63,11 @@ const postProperFormat = (post) => {
   }
 };
 
-const findOrCreatePost = (post, user, updateRankType) => {
+const findOrCreatePost = (post, author, updateRankType) => {
   return PostModel
     .findOrCreate({
       where: {id: post.id},
-      defaults: { ...postProperFormat(post), userId: user.id }
+      defaults: { ...postProperFormat(post), userId: author.id }
     }).spread((post, created) => {
       post.update(updateRankType);
     });

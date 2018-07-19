@@ -9,8 +9,8 @@ const helmet = require('helmet');
 // const routes = require('./controllers');
 const cors = require('./middlewares/cors');
 const logger = require('./services/logger');
-const schema = require('./controllers/graphql/schemas');
-// const schema = require('./controllers/graphql/schemas');
+const schema = require('./controllers/graphql');
+
 const { User } = require('./models/sequelize').User;
 
 const app = new Koa();
