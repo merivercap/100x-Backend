@@ -108,6 +108,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       }
     });
+    models.Post.hasMany(models.Reply);
   };
 
 
