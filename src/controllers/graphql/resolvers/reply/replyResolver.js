@@ -8,5 +8,8 @@ module.exports = {
     commenter(post) {
       return post.getReply();
     }
+    parent(reply) {
+      return reply.getParent();
+    }
   }
 };

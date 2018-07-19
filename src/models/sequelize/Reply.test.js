@@ -33,4 +33,29 @@ describe('Reply', () => {
 
   });
 
+  test('save() should save (Reply can have Replies)', () => {
+    const commenter = User.build(testUtils.createTestUserOpts(1));
+    const post = Post.build(testUtils.createTestPostOpts(1));
+    const parentReply = Reply.build(testUtils.createTestReplyOpts(2));
+    post.userId = commenter.id;
+    parentReply.postId = post.id;
+    parentReply.commenterId = commenter.id;
+
+    return Promise.all([ commenter.save(), post.save(), parentReply.save() ])
+      .then(() => {
+        const nestedReply = Reply.build(testUtils.createTestReplyOpts(3));
+        nestedReply.parentId = parentReply.id;
+        nestedReply.postId = post.id;
+        nestedReply.userId = commenter.id;
+        return nestedReply.save();
+      })
+      .then((reply) => {
+        return Reply.findById(reply.id);
+      })
+      .then(nestedReply => {
+        expect(nestedReply.parentId).toBe(parentReply.id);
+      });
+
+  });
+
 });
