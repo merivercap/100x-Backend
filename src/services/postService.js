@@ -9,6 +9,7 @@ const UserModel = db.sequelize.models.user;
 const Op        = db.Sequelize.Op;
 const _ = require('lodash');
 const POSTS_PER_TAG = require('../utils/postsPerTag');
+const VIDEO_URLS = require('../utils/videoUrls');
 
 const determinePostType = links => {
    if (!links) {
@@ -23,7 +24,7 @@ const determinePostType = links => {
 }
 
 const linkContainsVideoUrl = (link) => {
-  for (const videoUrl of videoUrls) {
+  for (const videoUrl of VIDEO_URLS) {
     if (link.includes(videoUrl)) {
       return true;
     }
