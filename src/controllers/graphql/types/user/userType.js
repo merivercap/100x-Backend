@@ -6,6 +6,7 @@ type User {
   createdAt: Date
   name: String
   posts: [Post]
+  replies: [Reply]
 }
 
 type Query {

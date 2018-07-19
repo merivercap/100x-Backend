@@ -1,10 +1,12 @@
 const { mergeTypes } = require('merge-graphql-schemas');
-const postType = require('./post');
 const userType = require('./user');
+const postType = require('./post');
+const replyType = require('./reply');
 
 const types = [
-  postType,
   userType,
+  postType,
+  replyType,
 ];
 
 module.exports = mergeTypes(types);
