@@ -1,28 +1,34 @@
-const logger = require('./logger');
-const db = require('../models/sequelize/index');
-const PostService = require('./postService');
-const client = require('./steem');
-const _ = require('lodash');
+const logger       = require('./logger');
+const db           = require('../models/sequelize/index');
+const PostService  = require('./postService');
+const client       = require('./steem');
+const _            = require('lodash');
 
-// const taggings = require('../utils/taggings');
-const taggings = [ 'bitcoin' ];
-const POSTS_PER_TAG = require('../utils/postsPerTag');
+const {
+  FETCH_POSTS_PER_TAG,
+  GET_DISCUSSIONS_BY_HOT,
+  GET_DISCUSSIONS_BY_TRENDING,
+  HOT,
+  TRENDING
+}                  = require('../utils/constants');
+// const taggings     = require('../utils/taggings');
+const taggings     = [ 'bitcoin' ];
 
 
 const batchUpdate = () => {
-  const params = taggings.map(tag => [{ "tag": tag, "limit": POSTS_PER_TAG }] );
-  client.sendAsync('get_discussions_by_hot', params, calibrateHotPostRankings);
-  client.sendAsync('get_discussions_by_trending', params, calibrateTrendingPostRankings);
+  const params = taggings.map(tag => [{ "tag": tag, "limit": FETCH_POSTS_PER_TAG }] );
+  client.sendAsync(GET_DISCUSSIONS_BY_HOT, params, calibrateHotPostRankings);
+  client.sendAsync(GET_DISCUSSIONS_BY_TRENDING, params, calibrateTrendingPostRankings);
 };
 
 const calibrateHotPostRankings = (posts) => {
-  return PostService.resetRanking('hot')
-    .then(PostService.reSyncPosts(posts, 'hot'));
+  return PostService.resetRanking(HOT)
+    .then(PostService.reSyncPosts(posts, HOT));
 }
 
 const calibrateTrendingPostRankings = (posts) => {
-  return PostService.resetRanking('trending')
-    .then(PostService.reSyncPosts(posts, 'trending'));
+  return PostService.resetRanking(TRENDING)
+    .then(PostService.reSyncPosts(posts, TRENDING));
 }
 
 
