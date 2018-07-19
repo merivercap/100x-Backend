@@ -27,6 +27,7 @@ const sequelize = new Sequelize(
 
 db.User = sequelize.import('./User');
 db.Post = sequelize.import('./Post');
+db.Reply = sequelize.import('./Reply');
 
 // model relationships...has many...belongs...
 Object.keys(db).forEach(modelName => {
