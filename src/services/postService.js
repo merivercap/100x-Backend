@@ -1,4 +1,4 @@
-const db         = require('../models/sequelize/index');
+const db         = require('../models/sequelize');
 const PostModel  = db.sequelize.models.post;
 const UserModel  = db.sequelize.models.user;
 const Op         = db.Sequelize.Op;

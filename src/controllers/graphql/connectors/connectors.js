@@ -1,7 +1,7 @@
 const reCalibrateHotAndTrendingPosts = require('../../../services/reCalibrateHotAndTrendingPosts');
 const scheduler = require('node-schedule');
 
-const db = require('../../../models/sequelize/index');
+const db = require('../../../models/sequelize');
 
 db.sequelize.sync({force: true}).then(() => {
   reCalibrateHotAndTrendingPosts();
