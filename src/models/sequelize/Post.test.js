@@ -13,8 +13,7 @@ describe('Post', () => {
   test('save() should save', () => {
     const author = User.build(testUtils.createTestUserOpts());
     const user = User.build(testUtils.createTestUserOpts());
-    var post;
-
+    let postId;
     return Promise.all([ author.save(), user.save() ])
       .then(() => {
         return author.createPost(testUtils.createTestPostOpts());
