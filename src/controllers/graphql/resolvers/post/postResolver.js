@@ -15,5 +15,8 @@ module.exports = {
     author(post) {
       return post.getUser();
     }
+    author(reply) {
+      return post.getReply();
+    }
   }
 };
