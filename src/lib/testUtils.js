@@ -20,7 +20,7 @@ module.exports = {
     };
   },
 
-  createTestPostOpts: (authorId) => {
+  createTestPostOpts: (author) => {
     const randomNum = _.random(10000);
     const title = `Test post title ${randomNum}`;
     const body = `
@@ -29,7 +29,7 @@ module.exports = {
 
     return {
       id: randomNum,
-      authorId,
+      author,
       permLink: 'https://perm.link.io/09u909078k9/u9=?u09uhv/?hul923',
       title,
       body,

@@ -29,7 +29,7 @@ const typeDefs = gql`
 
   type Post {
     id: Int!
-    authorId: Int!
+    author: User
     permLink: String!
     title: String!
     body: String!
@@ -77,6 +77,11 @@ const resolvers = {
     },
     votePost: async (_, args) => { // { accessToken: 'kjhDG5THrg', author: 'steemit', permlink: 'firstpost', upvote: 1, vote_percent: 50 }
       return 'success'
+    }
+  },
+  Post: {
+    user(post) {
+      return post.getUser();
     }
   }
 };

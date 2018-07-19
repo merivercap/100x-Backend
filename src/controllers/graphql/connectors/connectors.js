@@ -8,5 +8,4 @@ db.sequelize.sync({force:true}).then(() => {
   // const j = scheduler.scheduleJob('*/30 * * * *', reCalibrateHotAndTrendingPosts);
 });
 
-const Post = db.sequelize.models.post;
-module.exports = Post;
+module.exports = db;
