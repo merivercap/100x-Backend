@@ -55,21 +55,23 @@ module.exports = (sequelize, DataTypes) => {
 
   Reply.associate = function (models) {
     models.Reply.belongsTo(models.User, {
+      onDelete: "CASCADE",
       foreignKey: {
         allowNull: false
       }
     });
     models.Reply.belongsTo(models.Post, {
+      onDelete: "CASCADE",
       foreignKey: {
         allowNull: false
       }
     });
-    // models.Reply.belongsTo(models.Reply, {
-    //   foreignKey: {
-    //     allowNull: true
-    //   }
-    // });
-    // models.Reply.hasMany(models.Reply);
+    models.Reply.hasOne(models.Reply, {
+      onDelete: "CASCADE",
+      as: 'parent',
+      foreignKey: 'parentId',
+      useJunctionTable: false
+    });
   };
   return Reply;
 };
