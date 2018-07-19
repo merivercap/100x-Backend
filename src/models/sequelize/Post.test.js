@@ -17,7 +17,7 @@ describe('Post', () => {
 
     return Promise.all([ author.save(), user.save() ])
       .then(() => {
-        post = Post.build(testUtils.createTestPostOpts(author.id));
+        post = Post.build(testUtils.createTestPostOpts(author));
         return post.save();
       })
       .then(() => {

@@ -11,13 +11,6 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         allowNull: false
       },
-      authorId: {
-        type: DataTypes.INTEGER,
-        field: 'authorId',
-        index: true,
-        allowNull: false,
-        unique: 'compositeIndex'
-      },
       permLink: {
         type: DataTypes.STRING,
         field: 'permLink',
@@ -110,7 +103,6 @@ module.exports = (sequelize, DataTypes) => {
   Post.associate = function (models) {
     models.Post.belongsTo(models.User, {
       foreignKey: {
-        name: 'authorId',
         allowNull: false
       }
     });
