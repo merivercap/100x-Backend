@@ -4,8 +4,8 @@ const PostService = require('./postService');
 const client = require('./steem');
 const _ = require('lodash');
 
-const taggings = require('../utils/taggings');
-// const taggings = [ 'bitcoin' ];
+// const taggings = require('../utils/taggings');
+const taggings = [ 'bitcoin' ];
 const POSTS_PER_TAG = require('../utils/postsPerTag');
 
 
