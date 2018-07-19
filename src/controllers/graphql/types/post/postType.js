@@ -5,7 +5,7 @@ scalar Date
 
 type Post {
   id: Int!
-  author: User
+  author: User!
   replies: [Reply]
   permLink: String!
   title: String!
