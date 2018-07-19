@@ -1,6 +1,6 @@
 const db = require('../../connectors');
 
-const USer = db.sequelize.models.user;
+const User = db.sequelize.models.user;
 
 module.exports = {
   Query: {
@@ -11,6 +11,9 @@ module.exports = {
   User: {
     posts(author) {
       return author.getPosts();
+    }
+    replies(commenter) {
+      return commenter.getReplies();
     }
   }
 };
