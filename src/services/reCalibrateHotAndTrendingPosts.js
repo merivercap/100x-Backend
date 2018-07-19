@@ -1,5 +1,5 @@
 const logger       = require('./logger');
-const db           = require('../models/sequelize/index');
+const db           = require('../models/sequelize');
 const PostService  = require('./postService');
 const client       = require('./steem');
 const _            = require('lodash');
