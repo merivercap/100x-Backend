@@ -1,8 +1,9 @@
-const db         = require('../models/sequelize');
-const PostModel  = db.sequelize.models.post;
-const UserModel  = db.sequelize.models.user;
-const Op         = db.Sequelize.Op;
-const _          = require('lodash');
+const db           = require('../models/sequelize');
+const PostModel    = db.sequelize.models.post;
+const UserModel    = db.sequelize.models.user;
+const Op           = db.Sequelize.Op;
+const _            = require('lodash');
+const ReplyService = require('./replyService');
 const {
   FETCH_POSTS_PER_TAG,
   VIDEO_POST,
@@ -93,7 +94,13 @@ module.exports = {
         where: {id: post.id},
         defaults: { ...this.postProperFormat(post), userId: author.id }
       }).spread((post, created) => {
-        post.update(updateRankType);
+        if (created) {
+          const replyFetcher = new ReplyService(post);
+          return post.update(updateRankType)
+            .then(replyFetcher.getAllComments());
+        } else {
+          return post.update(updateRankType);
+        }
       });
   },
 }

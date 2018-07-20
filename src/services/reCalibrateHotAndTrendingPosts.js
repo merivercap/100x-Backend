@@ -23,12 +23,14 @@ const batchUpdate = () => {
 
 const calibrateHotPostRankings = (posts) => {
   return PostService.resetRanking(HOT)
-    .then(PostService.reSyncPosts(posts, HOT));
+    .then(PostService.reSyncPosts(posts, HOT))
+    .catch(err => console.log(err, 'err syncing hot posts'));
 }
 
 const calibrateTrendingPostRankings = (posts) => {
   return PostService.resetRanking(TRENDING)
-    .then(PostService.reSyncPosts(posts, TRENDING));
+    .then(PostService.reSyncPosts(posts, TRENDING))
+    .catch(err => console.log(err, 'err syncing trending posts'));
 }
 
 module.exports = batchUpdate;
