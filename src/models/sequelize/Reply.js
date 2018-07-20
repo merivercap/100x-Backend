@@ -46,6 +46,24 @@ module.exports = (sequelize, DataTypes) => {
           min: 0
         }
       },
+      children: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        field: 'children',
+        allowNull: false,
+        validate: {
+          isInt: true,
+          min: 0
+        }
+      },
+      depth: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        field: 'depth',
+        allowNull: false,
+        validate: {
+          isInt: true,
+          min: 1
+        }
+      },
     },
     {
       tableName: 'replies',
