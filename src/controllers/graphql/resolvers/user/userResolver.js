@@ -11,7 +11,7 @@ module.exports = {
   User: {
     posts(author) {
       return author.getPosts();
-    }
+    },
     replies(commenter) {
       return commenter.getReplies();
     }

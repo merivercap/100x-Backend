@@ -1,8 +1,6 @@
 const { AuthenticationError, gql } = require('apollo-server');
 
 module.exports = gql `
-scalar Date
-
 type Reply {
   id: Int!
   commenter: User!
@@ -13,10 +11,12 @@ type Reply {
   createdAt: Date!
   netVotes: Int!
   pendingPayoutValue: Float!
+  children: Int!
+  depth: Int!
+}
+
+type Query {
+    getAllPostReplies(postId: Int): [Reply]
 }
 
 `;
-
-// type Query {
-//   getReplies(postId: Int): [Reply]
-// }

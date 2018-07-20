@@ -32,6 +32,8 @@ module.exports = {
       body,
       netVotes: 1,
       pendingPayoutValue: 33.33,
+      children: 0,
+      depth: 1,
     }
   },
 
