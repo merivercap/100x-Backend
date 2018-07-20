@@ -1,6 +1,7 @@
 const db = require('../../connectors');
 
 const Post = db.sequelize.models.post;
+const ReplyService = require('../../../../services/replyService');
 
 module.exports = {
   Query: {
@@ -14,9 +15,9 @@ module.exports = {
   Post: {
     author(post) {
       return post.getUser();
-    }
-    author(reply) {
-      return post.getReply();
+    },
+    replies(post) {
+      return post.getReplies();
     }
   }
 };
