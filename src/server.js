@@ -12,6 +12,7 @@ const logger = require('./services/logger');
 const schema = require('./controllers/graphql');
 
 const { User } = require('./models/sequelize').User;
+const UserAuthentication = require('./services/userAuthentication');
 
 const app = new Koa();
 const router = new KoaRouter();
@@ -24,24 +25,16 @@ const server = new ApolloServer({
       if (!token) {
         return {}; // Return empty object - users can still access public queries
       }
-      /**
-       * TODO:
-       * Validate token with Steem here
-       * const { uid } = await steem.verifyTokenApiCall(token);
-       */
-      // Get User model from db and pass through context for secure queries/mutations
-      // db not connected yet so commenting out
-      // const user = await User.findOne({ where: { id: uid } });
-      // return { user };
+      const steemUser = new UserAuthentication();
+      const user = await steemUser.verifyTokenApiCall(token);
+      return { user };
     }
     catch (error) {
-      /**
-       * TODO:
-       * check error.code received from steem verify call and update case statement
-       */
-      switch(error.code) {
-        case 'verify-token-failure-code':
+      switch(error.error_description) {
+        case 'todo-get-expired-token-code':
           throw new Error('EXPIRED_TOKEN');
+        case 'The token has invalid role':
+          throw new Error('INVALID TOKEN');
         default:
           throw new Error('SERVER_ERROR');
       }

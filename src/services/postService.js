@@ -97,7 +97,7 @@ module.exports = {
         if (created) {
           const replyFetcher = new ReplyService(post);
           return post.update(updateRankType)
-            .then(replyFetcher.getAllComments());
+            // .then(replyFetcher.getAllComments());
         } else {
           return post.update(updateRankType);
         }
