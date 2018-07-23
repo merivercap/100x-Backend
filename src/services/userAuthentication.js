@@ -11,14 +11,8 @@ const _            = require('lodash');
 class UserAuthentication {
   constructor() {
     this.username;
-  }
-
-  initializeSteemUser(accessToken) {
-    return sc2.Initialize({
-      app: 'hundredx.app',
-      callbackURL: process.env.DEV_URL,
-      accessToken,
-    });
+    this.steemUser;
+    this.userInOurDb;
   }
 
   verifyTokenApiCall(accessToken) {
@@ -28,15 +22,40 @@ class UserAuthentication {
         throw err
       } else {
         that.username=res['user'];
-        return that.findOrCreateUser(that.username);
+        return that.userInOurDb = that.findOrCreateUser(that.username);
       }
     });
+  }
+  followSteemUser(steemUserNameToFollow) {
+    let that=this;
+    return this.steemUser.follow(
+      this.username,
+      steemUserNameToFollow,
+      function(err, res) {
+        console.log(err);
+        return err
+          ? new Error(err.error_description)
+          : that.userInOurDb;
+      }
+    );
+  }
+
+  unFollowSteemUser(steemUserNameToUnfollow) {
+    return this.steemUser.unfollow(
+      this.username,
+      steemUserNameToUnfollow,
+      function(err, res) {
+        return err
+          ? new Error(err.error_description)
+          : that.userInOurDb;
+      }
+    );
   }
 
   findOrCreateUser(username) {
     return UserModel
       .findOrCreate({
-        where: {name: this.username },
+        where: {name: username },
         defaults: { id: _.random(10000)}
       })
       .spread((user, created) => {
@@ -44,6 +63,13 @@ class UserAuthentication {
     });
   }
 
+  initializeSteemUser(accessToken) {
+    return this.steemUser = sc2.Initialize({
+      app: 'hundredx.app',
+      callbackURL: process.env.DEV_URL,
+      accessToken,
+    });
+  }
 
 }
 
