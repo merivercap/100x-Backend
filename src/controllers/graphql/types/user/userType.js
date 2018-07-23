@@ -12,5 +12,7 @@ type User {
 type Query {
   user(name: String): User
   allUsers: [User]
+  follow(steemUsernameToFollow: String): User
+  unfollow(steemUsernameToUnfollow: String): User
 }
 `;
