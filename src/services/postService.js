@@ -4,8 +4,12 @@ const UserModel    = db.sequelize.models.user;
 const Op           = db.Sequelize.Op;
 const _            = require('lodash');
 const ReplyService = require('./replyService');
+const client       = require('./steem');
 const {
-  FETCH_POSTS_PER_TAG
+  FETCH_POSTS_PER_TAG,
+  FETCH_TOP_X_POSTS,
+  HUNDREDX_USERNAME,
+  GET_BLOG_ENTRIES,
 }                  = require('../utils/constants');
 const VIDEO_URLS   = require('../utils/videoUrls');
 
@@ -28,6 +32,7 @@ module.exports = {
       }
     }
   },
+
   resetRanking: function(rankType) {
      //updates all posts of rankType, since children is always greater than 0
      const keyVal = {};
@@ -37,18 +42,37 @@ module.exports = {
     })
       .catch(err => console.log(err));
   },
+
   getPostsOfAuthors: function(authors) {
     const authorObjs = authors.map(name => {
       return { name };
     });
     return PostModel.findAll({
       include: [
-         { model: UserModel, where: {
-           [Op.or]: authorObjs
-         }}
+         { model: UserModel,
+           where: {
+             [Op.or]: authorObjs
+           }
+         }
       ],
     });
   },
+
+  fetchHundredxResteemedPosts: function() {
+    const getHundredxPosts = (posts) => {
+      const permLinkAndAuthors = this.extractFromSteemitResponse(posts[0]);
+      const allHundredxResteemedPosts = permLinkAndAuthors.map(({ permLink, name }) => (
+        this.findByPermLinkAndAuthor(permLink, name)
+      ));
+
+      return Promise.all(allHundredxResteemedPosts).catch(err => console.log(err));
+    }
+    const params = [[HUNDREDX_USERNAME,0,FETCH_TOP_X_POSTS]];
+    return client.sendAsync(GET_BLOG_ENTRIES, params, getHundredxPosts);
+  },
+
+  // ===== PRIVATE
+
   determinePostType: function(links) {
      if (!links) {
        // blog
@@ -111,5 +135,20 @@ module.exports = {
           return post.update(updateRankType);
         }
       });
+  },
+  extractFromSteemitResponse: function(posts) {
+    return posts.map(post => (
+      { permLink: post.permlink, name: post.author }
+    ))
+  },
+  findByPermLinkAndAuthor: function(permLink, name) {
+    return PostModel.findOne({
+      where: { permLink },
+      include: [
+        { model: UserModel,
+          where: { name }
+        }
+      ]
+    });
   },
 }
