@@ -7,13 +7,13 @@ module.exports = {
     user(_, args) {
       return User.find({ where: args });
     },
-    follow: async (_, args, { user, authenticatedUserInstance }) => {
-      return !user
+    follow: async (_, args, { authenticatedUserInstance }) => {
+      return !authenticatedUserInstance
         ? new AuthenticationError('ERROR_FOLLOWING_USER')
         : await authenticatedUserInstance.followSteemUser(args.steemUsernameToFollow);
     },
-    unfollow: async (_, args, { user, steemUser }) => {
-      return !user
+    unfollow: async (_, args, { authenticatedUserInstance }) => {
+      return !authenticatedUserInstance
         ? new AuthenticationError('ERROR_UNFOLLOWING_USER')
         : await authenticatedUserInstance.unFollowSteemUser(args.steemUsernameToUnfollow);
     }
