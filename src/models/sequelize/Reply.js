@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         field: 'permLink',
         allowNull: false,
-        unique: 'compositeIndex'
+        unique: true,
+        index: true,
       },
       body: {
         type: DataTypes.TEXT,
