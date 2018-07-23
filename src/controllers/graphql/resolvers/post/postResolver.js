@@ -8,13 +8,9 @@ module.exports = {
   Query: {
     getAllPosts: async (_, args, { user }) => {
       return await Post.findAll({order: [['hot', 'ASC']], limit: 100});
-      // example of user authentication require posts
-      // return !user
-      //   ? new AuthenticationError('ERROR_CREATING_POST')
-      //   : await Post.findAll({order: [['hot', 'ASC']], limit: 100});
     },
-    getPost(_,args) {
-      return Post.findById(args.postId);
+    getPost: async (_,args) => {
+      return await Post.findById(args.postId);
     },
   },
   Post: {
