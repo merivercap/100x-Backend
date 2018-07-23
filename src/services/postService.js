@@ -37,6 +37,18 @@ module.exports = {
     })
       .catch(err => console.log(err));
   },
+  getPostsOfAuthors: function(authors) {
+    const authorObjs = authors.map(name => {
+      return { name };
+    });
+    return PostModel.findAll({
+      include: [
+         { model: UserModel, where: {
+           [Op.or]: authorObjs
+         }}
+      ],
+    });
+  },
   determinePostType: function(links) {
      if (!links) {
        // blog

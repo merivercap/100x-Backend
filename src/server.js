@@ -27,7 +27,7 @@ const server = new ApolloServer({
       }
       const authenticatedUserInstance = new UserAuthentication();
       const user = await authenticatedUserInstance.verifyTokenApiCall(token); // user is user in our db.
-      return { user, authenticatedUserInstance };
+      return { authenticatedUserInstance };
     }
     catch (error) {
       switch(error.error_description) {
