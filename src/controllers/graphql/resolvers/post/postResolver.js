@@ -3,11 +3,13 @@ const db = require('../../connectors');
 
 const Post = db.sequelize.models.post;
 const ReplyService = require('../../../../services/replyService');
+const PostService = require('../../../../services/postService');
+const { FETCH_TOP_X_POSTS } = require('../../../../utils/constants');
 
 module.exports = {
   Query: {
     getAllPosts: async (_, args) => {
-      return await Post.findAll({order: [['hot', 'ASC']], limit: 100});
+      return await Post.findAll({order: [['hot', 'ASC']], limit: FETCH_TOP_X_POSTS});
     },
     getPost: async (_,args) => {
       return await Post.findById(args.postId);
@@ -16,6 +18,9 @@ module.exports = {
       return !authenticatedUserInstance
         ? new AuthenticationError('ERROR_GETTING_FOLLOWER_POSTS')
         : await authenticatedUserInstance.getUsersFollowerPosts();
+    },
+    getHundredxPosts: async (_, args) => {
+      return await PostService.fetchHundredxResteemedPosts();
     }
   },
   Post: {
