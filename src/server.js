@@ -9,10 +9,9 @@ const helmet = require('helmet');
 // const routes = require('./controllers');
 const cors = require('./middlewares/cors');
 const logger = require('./services/logger');
-const schema = require('./controllers/graphql');
-
+const schema = require('./controllers/graphql/schemas');
+// const schema = require('./controllers/graphql/schemas');
 const { User } = require('./models/sequelize').User;
-const UserAuthentication = require('./services/userAuthentication');
 
 const app = new Koa();
 const router = new KoaRouter();
@@ -22,19 +21,27 @@ const server = new ApolloServer({
   context: async ({ req }) => {
     try {
       const token = (req.headers.authorization || '').replace('Bearer ', '');
-      if (!token) {
+      if (!token) { 
         return {}; // Return empty object - users can still access public queries
       }
-      const authenticatedUserInstance = new UserAuthentication();
-      const user = await authenticatedUserInstance.verifyTokenApiCall(token); // user is user in our db.
-      return { authenticatedUserInstance };
+      /**
+       * TODO:
+       * Validate token with Steem here
+       * const { uid } = await steem.verifyTokenApiCall(token);
+       */
+      // Get User model from db and pass through context for secure queries/mutations
+      // db not connected yet so commenting out
+      // const user = await User.findOne({ where: { id: uid } });
+      // return { user }; 
     }
     catch (error) {
-      switch(error.error_description) {
-        case 'todo-get-expired-token-code':
+      /**
+       * TODO:
+       * check error.code received from steem verify call and update case statement
+       */
+      switch(error.code) {
+        case 'verify-token-failure-code':
           throw new Error('EXPIRED_TOKEN');
-        case 'The token has invalid role':
-          throw new Error('INVALID TOKEN');
         default:
           throw new Error('SERVER_ERROR');
       }
@@ -57,10 +64,10 @@ server.listen().then(({ url }) => {
 app.use(cors, helmet());
 app.use(koaLogger());
 
-// // Graphql
-router.post('/graphql', koaBodyParser(), graphqlKoa({ schema }));
-router.get('/graphql', graphqlKoa({ schema }));
-router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
+// // // Graphql
+// router.post('/graphql', koaBody(), graphqlKoa({ schema }));
+// router.get('/graphql', graphqlKoa({ schema }));
+// router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
 
 // // Parsers
 // app.use(
@@ -71,7 +78,7 @@ router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
 // // Apollo Server Middleware
 // server.applyMiddleware({ app });
 
-// // Connect routes
+// // Connect routes 
 app.use(router.routes());
 app.use(router.allowedMethods());
 

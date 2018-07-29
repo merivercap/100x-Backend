@@ -1,69 +1,25 @@
 const dbUtils = require('./dbUtils');
 const idGenerator = require('../../services/idGenerator');
 
+/**
+ * TODO: implement the rest of Reply model and write tests
+ */
+
 module.exports = (sequelize, DataTypes) => {
   const Reply = sequelize.define(
-    'reply',
+    'post',
     {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(60),
         defaultValue: () => idGenerator.generate(),
-        primaryKey: true,
-        allowNull: false
+        primaryKey: true
       },
-      permLink: {
-        type: DataTypes.STRING,
-        field: 'permLink',
-        allowNull: false,
-        unique: true,
+      authorId: {
+        type: DataTypes.STRING(60),
+        field: 'author_id',
         index: true,
-      },
-      body: {
-        type: DataTypes.TEXT,
-        field: 'body',
-        allowNull: false
-      },
-      createdAt: {
-        type: DataTypes.DATE,
-        field: 'createdAt',
-        defaultValue: DataTypes.NOW,
-        validate: { isDate: true }
-      },
-      netVotes: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        field: 'netVotes',
         allowNull: false,
-        validate: {
-          isInt: true,
-          min: 0
-        }
-      },
-      pendingPayoutValue: {
-        type: DataTypes.FLOAT,
-        field: 'pendingPayoutValue',
-        allowNull: false,
-        validate: {
-          isFloat: true,
-          min: 0
-        }
-      },
-      children: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        field: 'children',
-        allowNull: false,
-        validate: {
-          isInt: true,
-          min: 0
-        }
-      },
-      depth: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        field: 'depth',
-        allowNull: false,
-        validate: {
-          isInt: true,
-          min: 1
-        }
+        unique: 'compositeIndex'
       },
     },
     {
@@ -71,26 +27,10 @@ module.exports = (sequelize, DataTypes) => {
       freezeTableName: true
     }
   );
+  
+  // Post.prototype.toJSON = () => {
+  //   return dbUtils.jsonFormat(this.get());
+  // }
 
-  Reply.associate = function (models) {
-    models.Reply.belongsTo(models.User, {
-      onDelete: "CASCADE",
-      foreignKey: {
-        allowNull: false
-      }
-    });
-    models.Reply.belongsTo(models.Post, {
-      onDelete: "CASCADE",
-      foreignKey: {
-        allowNull: false
-      }
-    });
-    models.Reply.hasOne(models.Reply, {
-      onDelete: "CASCADE",
-      as: 'parent',
-      foreignKey: 'parentId',
-      useJunctionTable: false
-    });
-  };
   return Reply;
 };
