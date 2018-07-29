@@ -6,22 +6,17 @@ module.exports = (sequelize, DataTypes) => {
     'post',
     {
       id: {
-        type: DataTypes.STRING(60),
+        type: DataTypes.INTEGER,
         defaultValue: () => idGenerator.generate(),
-        primaryKey: true
-      },
-      authorId: {
-        type: DataTypes.STRING(60),
-        field: 'author_id',
-        index: true,
-        allowNull: false,
-        unique: 'compositeIndex'
+        primaryKey: true,
+        allowNull: false
       },
       permLink: {
         type: DataTypes.STRING,
-        field: 'perm_link',
+        field: 'permLink',
         allowNull: false,
-        unique: 'compositeIndex'
+        unique: true,
+        index: true,
       },
       title: {
         type: DataTypes.STRING(48),
@@ -38,13 +33,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       createdAt: {
         type: DataTypes.DATE,
-        field: 'created_at',
+        field: 'createdAt',
         defaultValue: DataTypes.NOW,
         validate: { isDate: true }
       },
       netVotes: {
         type: DataTypes.INTEGER.UNSIGNED,
-        field: 'net_votes',
+        field: 'netVotes',
         allowNull: false,
         validate: {
           isInt: true,
@@ -60,9 +55,9 @@ module.exports = (sequelize, DataTypes) => {
           min: 0
         }
       },
-      curatorPayoutValue: {
+      pendingPayoutValue: {
         type: DataTypes.FLOAT,
-        field: 'curator_payout_value',
+        field: 'pendingPayoutValue',
         allowNull: false,
         validate: {
           isFloat: true,
@@ -72,6 +67,7 @@ module.exports = (sequelize, DataTypes) => {
       trending: {
         type: DataTypes.INTEGER,
         field: 'trending',
+        defaultValue: 9999,
         validate: {
           isInt: true
         }
@@ -79,14 +75,16 @@ module.exports = (sequelize, DataTypes) => {
       hot: {
         type: DataTypes.INTEGER,
         field: 'hot',
+        defaultValue: 9999,
         validate: {
           isInt: true
         }
       },
       postType: {
         type: DataTypes.INTEGER,
-        field: 'post_type',
+        field: 'postType',
         allowNull: false,
+        default: 0, // default is blog
         validate: {
           isInt: true,
           min: 0,
@@ -105,78 +103,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  // Post.prototype.toJSON = () => {
-  //   return dbUtils.jsonFormat(this.get());
-  // }
+  Post.associate = function (models) {
+    models.Post.belongsTo(models.User, {
+      onDelete: "CASCADE",
+      foreignKey: {
+        allowNull: false
+      }
+    });
+    models.Post.hasMany(models.Reply);
+  };
 
-  /**
-   * Sequelize models come with built in #build & #save methods so
-   * we probably don't have to make a custom create method ourselves
-   * leaving commented just in case
-   */
-  // Post.prototype.createPost = (post, { newHotRanking }) => {
-  //   const metadata = JSON.parse(post.json_metadata);
-  //   const tags = metadata.tags;
-  //   PostModel.create({
-  //     id: post.id,
-  //     author: post.author,
-  //     permlink: post.permlink,
-  //     title: post.title,
-  //     body: post.body,
-  //     created: post.created,
-  //     net_votes: post.net_votes,
-  //     children: post.children,
-  //     curator_payout_value: 10,
-  //     trending: 1,
-  //     hot: newHotRanking,
-  //     post_type: 0,
-  //     tag1: tags[0],
-  //     tag2: tags[1],
-  //     tag3: tags[2],
-  //     tag4: tags[3],
-  //     tag5: tags[4],
-  //   })
-  //   .catch(err => {
-  //     console.log('Error creating post: ', err);
-  //   });;
-  // }
 
-  Post.prototype.updatePostRanking = options => {
-    const postId = options.postId || '';
-    const newHotRanking = options.newHotRanking || null;
-    const newTrendingRanking = options.newTrendingRanking || null;
-
-    if (newHotRanking) {
-      PostModel.update(
-        { hot: newHotRanking },
-        { where: { id: postId } }
-      )
-        .catch(err => console.log("Trouble updating hot ranking", err));
-    } else if (newTrendingRanking) {
-      PostModel.update(
-        { trending: newTrendingRanking },
-        { where: { id: postId } }
-      )
-        .catch(err => console.log("Trouble updating trending ranking", err));
-    }
-  }
-
-  Post.prototype.postExists = postId => {
-    return PostModel
-      .count({ where: { id: postId } })
-      .catch(err => console.log('Failed to count post', err));
-  }
-
-  Post.prototype.resetRanking = rankType => {
-    //updates all posts of rankType, since children is always greater than 0
-    const keyVal = {};
-    keyVal[rankType] = 9999;
-    return PostModel
-      .update(keyVal, {
-        where: { children: { [Op.gte]: 0 } }
-      })
-      .catch(err => console.log(err)); 
-  }
 
   return Post;
 };

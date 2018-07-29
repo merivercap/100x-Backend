@@ -24,7 +24,7 @@ const config = {
   },
   development: {
     connection: { name: RDS_DB_NAME, username: RDS_USERNAME, password: RDS_PASSWORD },
-    sequelizeOpts: { dialect: 'mysql', host: RDS_HOSTNAME, port: RDS_PORT, operatorsAliases: false, maxConcurrentQueries: 100, pool: { maxConnections: 5, maxIdleTime: 30}, language: 'en'}
+    sequelizeOpts: { dialect: 'mysql', host: RDS_HOSTNAME, port: RDS_PORT, operatorsAliases: false, maxConcurrentQueries: 100, pool: { maxConnections: 5, maxIdleTime: 30, idle: 20000, acquire: 20000}, language: 'en'}
   },
   staging: {
     connection: { name: RDS_DB_NAME, username: RDS_USERNAME, password: RDS_PASSWORD },

@@ -6,9 +6,9 @@ module.exports = (sequelize, DataTypes) => {
     'user',
     {
       id: {
-        type: DataTypes.STRING(60),
+        type: DataTypes.INTEGER,
         primaryKey: true,
-        field: 'user_id',
+        allowNull: false
       },
       name: {
         type: DataTypes.STRING(20),
@@ -30,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
       freezeTableName: true
     }
   );
+
+  User.associate = function(models) {
+    models.User.hasMany(models.Post);
+    models.User.hasMany(models.Reply);
+  };
 
   // User.prototype.toJSON = () => {
   //   return dbUtils.jsonFormat(this.get());

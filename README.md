@@ -27,7 +27,7 @@ query {
     body  
     net_votes  
     children  
-    curator_payout_value  
+    pending_payout_value  
     trending
     post_type  
     tag1
