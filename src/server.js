@@ -17,6 +17,8 @@ const UserAuthentication = require('./services/userAuthentication');
 const app = new Koa();
 const router = new KoaRouter();
 
+const config = require('./config/config');
+
 // Apollo GraphQL
 const server = new ApolloServer({
   context: async ({ req }) => {
@@ -49,7 +51,7 @@ const server = new ApolloServer({
 
 
 
-server.listen().then(({ url }) => {
+server.listen(config.server.port).then(({ url }) => {
   console.log('server is listening to localhost', url)
 })
 
