@@ -35,7 +35,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           isInt: true,
-          min: 0
         }
       },
       pendingPayoutValue: {
