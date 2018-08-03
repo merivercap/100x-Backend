@@ -57,8 +57,7 @@ class UserAuthentication {
   findOrCreateUser(username) {
     return UserModel
       .findOrCreate({
-        where: {name: username },
-        defaults: { id: _.random(10000)}
+        where: {id: username },
       })
       .spread((user, created) => {
         return user;
