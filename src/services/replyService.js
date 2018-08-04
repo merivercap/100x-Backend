@@ -34,26 +34,20 @@ class ReplyService {
       })
   }
 
-  fetchRepliesFromSteemit(options = {}) {
-    // if (options.parent) {
-    //   const params = [[ options.parent.userId, options.parent.permLink ]];
-    //   const parentId = options.parent.id;
-    // } else {
-    //   const params = [[ this.postAuthor, this.postPermLink ]];
-    //   const parentId = null;
-    // }
-    // let that = this;
+  fetchRepliesFromSteemit(options) {
+    const {
+      params,
+      parentId
+    } = this.determineParamOptions(options);
 
     const addRepliesToDb = (replies) => {
        const storeAllReplies = replies[0].map(steemitReply => {
-         const formattedReply = {...this.replyProperFormat(steemitReply)};
+         const formattedReply = {...this.replyProperFormat(steemitReply), parentId};
          return this.addReplyToDb(formattedReply)
        });
        return Promise.all(storeAllReplies);
      }
 
-
-     const params = [[ this.postAuthor, this.postPermLink]];
      return client.sendAsync(GET_CONTENT_REPLIES, params, addRepliesToDb);
   }
 
@@ -76,8 +70,7 @@ class ReplyService {
       })
       .spread((replyInOurDb, created) => {
         if (replyInOurDb.children > 0 && created) {
-            // console.log("\n\n\n\n\n\\FEGTHINC REPLIES FOR \n\n\n\n\n\n\n", replyInOurDb.userId, replyInOurDb.permLink);
-            this.fetchRepliesFromSteemit({ parent: replyInOurDb })
+          return this.fetchRepliesFromSteemit({ parentReply: replyInOurDb });
         }
       })
       .catch(err => console.log("trouble finding or creating reply", err));
@@ -96,6 +89,22 @@ class ReplyService {
       depth: steemitReply.depth,
       children: steemitReply.children,
     }
+  }
+
+  determineParamOptions(options = {}) {
+    let params;
+    let parentId;
+    if (options.parentReply) {
+      params = [[ options.parentReply.userId, options.parentReply.permLink ]];
+      parentId = options.parentReply.id;
+    } else {
+      params = [[ this.postAuthor, this.postPermLink ]];
+      parentId = null;
+    }
+
+    return {
+      params, parentId
+    };
   }
 }
 

@@ -82,11 +82,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       }
     });
-    models.Reply.hasOne(models.Reply, {
-      as: 'parent',
-      foreignKey: 'parentId',
-      useJunctionTable: false
-    });
+    models.Reply.belongsTo(models.Reply, {as: 'parent'});
   };
   return Reply;
 };
