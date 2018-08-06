@@ -8,18 +8,19 @@ module.exports = (sequelize, DataTypes) => {
       id: {
         type: DataTypes.STRING(60),
         defaultValue: () => idGenerator.generate(),
-        primaryKey: true
+        primaryKey: true,
+        allowNull: false
       },
       authorId: {
         type: DataTypes.STRING(60),
-        field: 'author_id',
+        field: 'authorId',
         index: true,
         allowNull: false,
         unique: 'compositeIndex'
       },
       permLink: {
         type: DataTypes.STRING,
-        field: 'perm_link',
+        field: 'permLink',
         allowNull: false,
         unique: 'compositeIndex'
       },
@@ -38,13 +39,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       createdAt: {
         type: DataTypes.DATE,
-        field: 'created_at',
+        field: 'createdAt',
         defaultValue: DataTypes.NOW,
         validate: { isDate: true }
       },
       netVotes: {
         type: DataTypes.INTEGER.UNSIGNED,
-        field: 'net_votes',
+        field: 'netVotes',
         allowNull: false,
         validate: {
           isInt: true,
@@ -60,9 +61,9 @@ module.exports = (sequelize, DataTypes) => {
           min: 0
         }
       },
-      curatorPayoutValue: {
+      pendingPayoutValue: {
         type: DataTypes.FLOAT,
-        field: 'curator_payout_value',
+        field: 'pendingPayoutValue',
         allowNull: false,
         validate: {
           isFloat: true,
@@ -85,8 +86,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       postType: {
         type: DataTypes.INTEGER,
-        field: 'post_type',
+        field: 'postType',
         allowNull: false,
+        default: 0, // default is blog
         validate: {
           isInt: true,
           min: 0,
@@ -126,7 +128,7 @@ module.exports = (sequelize, DataTypes) => {
   //     created: post.created,
   //     net_votes: post.net_votes,
   //     children: post.children,
-  //     curator_payout_value: 10,
+  //     pending_payout_value: 10,
   //     trending: 1,
   //     hot: newHotRanking,
   //     post_type: 0,
@@ -141,42 +143,40 @@ module.exports = (sequelize, DataTypes) => {
   //   });;
   // }
 
-  Post.prototype.updatePostRanking = options => {
-    const postId = options.postId || '';
-    const newHotRanking = options.newHotRanking || null;
-    const newTrendingRanking = options.newTrendingRanking || null;
-
-    if (newHotRanking) {
-      PostModel.update(
-        { hot: newHotRanking },
-        { where: { id: postId } }
-      )
-        .catch(err => console.log("Trouble updating hot ranking", err));
-    } else if (newTrendingRanking) {
-      PostModel.update(
-        { trending: newTrendingRanking },
-        { where: { id: postId } }
-      )
-        .catch(err => console.log("Trouble updating trending ranking", err));
-    }
-  }
-
-  Post.prototype.postExists = postId => {
-    return PostModel
-      .count({ where: { id: postId } })
-      .catch(err => console.log('Failed to count post', err));
-  }
-
-  Post.prototype.resetRanking = rankType => {
-    //updates all posts of rankType, since children is always greater than 0
-    const keyVal = {};
-    keyVal[rankType] = 9999;
-    return PostModel
-      .update(keyVal, {
-        where: { children: { [Op.gte]: 0 } }
-      })
-      .catch(err => console.log(err)); 
-  }
+//   Post.prototype.updatePostRanking = options => {
+//   const postId = options.postId || '';
+//   const newHotRanking = options.newHotRanking || null;
+//   const newTrendingRanking = options.newTrendingRanking || null;
+//
+//   if (newHotRanking) {
+//     PostModel.update(
+//       { hot: newHotRanking },
+//       { where: { id: postId } }
+//     )
+//     .catch(err => console.log('Trouble updating hot ranking', err));
+//   } else if (newTrendingRanking) {
+//     PostModel.update(
+//       { trending: newTrendingRanking },
+//       { where: { id: postId } }
+//     )
+//     .catch(err => console.log('Trouble updating trending ranking', err));
+//   }
+// }
+//
+//   Post.prototype.postExists = postId => {
+//   return PostModel.count({ where: {id: postId} })
+//                   .catch(err => console.log('Failed to count post', err));
+// }
+//
+//   Post.prototype.resetRanking = rankType => {
+//    //updates all posts of rankType, since children is always greater than 0
+//    const keyVal = {};
+//    keyVal[rankType] = 9999;
+//   return PostModel.update(keyVal, {
+//     where: {children: {[Op.gte]: 0} }
+//   })
+//     .catch(err => console.log(err));
+// }
 
   return Post;
 };

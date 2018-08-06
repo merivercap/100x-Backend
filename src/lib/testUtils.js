@@ -34,7 +34,7 @@ module.exports = {
       body,
       netVotes: 1,
       children: 1,
-      curatorPayoutValue: 33.33,
+      pendingPayoutValue: 33.33,
       trending: 1,
       hot: 1,
       postType: 2,
