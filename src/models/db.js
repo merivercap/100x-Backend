@@ -3,22 +3,22 @@
 // const mysql = AWSXRay.captureMYSql(require('mysql'));
 
 // const {
-//   RDS_HOSTNAME,
-//   RDS_USERNAME,
-//   RDS_PASSWORD,
-//   RDS_PORT,
-//   RDS_DB_NAME,
+//   HUNDREDX_RDS_HOSTNAME,
+//   HUNDREDX_RDS_USERNAME,
+//   HUNDREDX_RDS_PASSWORD,
+//   HUNDREDX_RDS_PORT,
+//   HUNDREDX_RDS_DB_NAME,
 // } = require('../config/rds');
 
 // var pool = mysql.createPool({
-//   host: RDS_HOSTNAME,
-//   user: RDS_USERNAME,
-//   password: RDS_PASSWORD,
-//   port: RDS_PORT,
-//   database: RDS_DB_NAME,
+//   host: HUNDREDX_RDS_HOSTNAME,
+//   user: HUNDREDX_RDS_USERNAME,
+//   password: HUNDREDX_RDS_PASSWORD,
+//   port: HUNDREDX_RDS_PORT,
+//   database: HUNDREDX_RDS_DB_NAME,
 // });
 
-// logger.info(`DB connected to ${RDS_HOSTNAME}`);
+// logger.info(`DB connected to ${HUNDREDX_RDS_HOSTNAME}`);
 
 // module.exports = pool;
 // module.export.format = mysql.format;

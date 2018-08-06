@@ -6,33 +6,33 @@
  * Production - production env. live
  */
 const {
-  APP_ENV,
-  RDS_HOSTNAME,
-  RDS_USERNAME,
-  RDS_PASSWORD,
-  RDS_PORT,
-  RDS_DB_NAME,
+  HUNDREDX_APP_ENV,
+  HUNDREDX_RDS_HOSTNAME,
+  HUNDREDX_RDS_USERNAME,
+  HUNDREDX_RDS_PASSWORD,
+  HUNDREDX_RDS_PORT,
+  HUNDREDX_RDS_DB_NAME,
 } = require('./rds');
 
 
-const env = process.env.APP_ENV || 'development';
+const env = process.env.HUNDREDX_APP_ENV || 'development';
 
 const config = {
   test: {
-    connection: { name: RDS_DB_NAME, username: 'root', password: 'root' },
+    connection: { name: HUNDREDX_RDS_DB_NAME, username: 'root', password: 'root' },
     sequelizeOpts: { dialect: 'sqlite', storage: ':memory:', operatorsAliases: false }
   },
   development: {
-    connection: { name: RDS_DB_NAME, username: RDS_USERNAME, password: RDS_PASSWORD },
-    sequelizeOpts: { dialect: 'mysql', host: RDS_HOSTNAME, port: RDS_PORT, operatorsAliases: false, maxConcurrentQueries: 100, pool: { maxConnections: 5, maxIdleTime: 30}, language: 'en'}
+    connection: { name: HUNDREDX_RDS_DB_NAME, username: HUNDREDX_RDS_USERNAME, password: HUNDREDX_RDS_PASSWORD },
+    sequelizeOpts: { dialect: 'mysql', host: HUNDREDX_RDS_HOSTNAME, port: HUNDREDX_RDS_PORT, operatorsAliases: false, maxConcurrentQueries: 100, pool: { maxConnections: 5, maxIdleTime: 30}, language: 'en'}
   },
   staging: {
-    connection: { name: RDS_DB_NAME, username: RDS_USERNAME, password: RDS_PASSWORD },
-    sequelizeOpts: { dialect: 'mysql', host: RDS_HOSTNAME, port: RDS_PORT, operatorsAliases: false }
+    connection: { name: HUNDREDX_RDS_DB_NAME, username: HUNDREDX_RDS_USERNAME, password: HUNDREDX_RDS_PASSWORD },
+    sequelizeOpts: { dialect: 'mysql', host: HUNDREDX_RDS_HOSTNAME, port: HUNDREDX_RDS_PORT, operatorsAliases: false }
   },
   production: {
-    connection: { name: RDS_DB_NAME, username: RDS_USERNAME, password: RDS_PASSWORD },
-    sequelizeOpts: { dialect: 'mysql', host: RDS_HOSTNAME, port: RDS_PORT, operatorsAliases: false }
+    connection: { name: HUNDREDX_RDS_DB_NAME, username: HUNDREDX_RDS_USERNAME, password: HUNDREDX_RDS_PASSWORD },
+    sequelizeOpts: { dialect: 'mysql', host: HUNDREDX_RDS_HOSTNAME, port: HUNDREDX_RDS_PORT, operatorsAliases: false }
   },
 };
 
