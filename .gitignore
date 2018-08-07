@@ -27,7 +27,3 @@ node_modules
 .env
 
 build/
-
-# auto generated files
-yarn.lock
-package-lock.json

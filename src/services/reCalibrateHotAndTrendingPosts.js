@@ -11,8 +11,8 @@ const {
   HOT,
   TRENDING
 }                  = require('../utils/constants');
-// const taggings     = require('../utils/taggings');
-const taggings     = [ 'bitcoin' ];
+
+const taggings = require('../utils/taggings');
 
 
 const batchUpdate = () => {
@@ -24,12 +24,13 @@ const batchUpdate = () => {
 const calibrateHotPostRankings = (posts) => {
   return PostService.resetRanking(HOT)
     .then(PostService.reSyncPosts(posts, HOT));
-}
+};
 
 const calibrateTrendingPostRankings = (posts) => {
+
   return PostService.resetRanking(TRENDING)
     .then(PostService.reSyncPosts(posts, TRENDING));
-}
+};
 
 
 module.exports = batchUpdate;
