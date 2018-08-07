@@ -29,7 +29,11 @@ const typeDefs = gql`
 
   type Post {
     id: Int!
+<<<<<<< HEAD
     author: User
+=======
+    authorId: String!
+>>>>>>> master
     permLink: String!
     title: String!
     body: String!
