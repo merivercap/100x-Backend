@@ -37,7 +37,7 @@ module.exports = {
       pendingPayoutValue: 33.33,
       trending: 1,
       hot: 1,
-      postType: 2,
+      postType: 'post',
       tag1: 'tag'
     };
   },
