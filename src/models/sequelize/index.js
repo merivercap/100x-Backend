@@ -25,17 +25,8 @@ const sequelize = new Sequelize(
    config.sequelizeOpts
  );
 
-// sequelize
-//   .authenticate()
-//   .then(() => {
-//     logger.info(`Sequelize: Connected to ${settings.connection.name} ${settings.connection.username} ${settings.sequelizeOpts.dialect}`);
-//   })
-//   .catch(err => {
-//     logger.error('Unable to connect to the database:', err);
-//   });
-
-db.Post = sequelize.import('./Post');
 db.User = sequelize.import('./User');
+db.Post = sequelize.import('./Post');
 
 // model relationships...has many...belongs...
 Object.keys(db).forEach(modelName => {

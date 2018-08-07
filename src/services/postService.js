@@ -1,71 +1,34 @@
-// This is what you meant by post service right?
-
-// TODO: create postService to communicate with model and import postService
-// const Post = db.sequelize.models.post;
-
-const db        = require('../models/sequelize/index');
-const PostModel = db.sequelize.models.post;
-const Op        = db.Sequelize.Op;
+const db         = require('../models/sequelize/index');
+const PostModel  = db.sequelize.models.post;
+const UserModel  = db.sequelize.models.user;
+const Op         = db.Sequelize.Op;
+const _          = require('lodash');
+const {
+  FETCH_POSTS_PER_TAG,
+  VIDEO_POST,
+  NEWS_POST,
+  BLOG_POST
+}                = require('../utils/constants');
+const VIDEO_URLS = require('../utils/videoUrls');
 
 module.exports = {
-  //Reason I build this was cause the fields from the steem api don't come in exactly as we need them.
-  // for example, the tags come in in the json_metadata field.  Also the hot and trending ranks are our own ...
-  // I guess we could construct a post properly somewhere else, and then just call PostModel.create(post) ??
-  // Ill try to get to it tmrw...
-  // Maybe something like this...
-  // createPost: function(post) => {
-  //   PostModel.create(post);
-  // };
+  reSyncPosts: function(posts, rankType) {
+    for (const [tagIndex, postsByTag] of Object.entries(posts)) {
+      for (const [index, post] of Object.entries(postsByTag)) {
+        const newRanking = (tagIndex) * FETCH_POSTS_PER_TAG + parseInt(index);
+        const updateRankType = {};
+        updateRankType[rankType] = newRanking;
+        UserModel
+          .findOrCreate({
+            where: {name: post.author},
+            defaults: { id: _.random(10000)}
+          })
+          .spread((user, created) => {
+            return this.findOrCreatePost(post, user, updateRankType);
+          });
 
-  createPost: function(post, { newHotRanking }) {
-    const metadata = JSON.parse(post.json_metadata);
-    const convertedValue = Number.parseFloat(post.pending_payout_value.split("SBD")[0]);
-    const tags = metadata.tags;
-    PostModel.create({
-      id: post.id,
-      authorId: post.author,
-      permLink: post.permlink,
-      title: post.title,
-      body: post.body,
-      createdAt: post.created,
-      netVotes: post.net_votes,
-      children: post.children,
-      pendingPayoutValue: convertedValue,
-      trending: 1,
-      hot: newHotRanking,
-      postType: 0,
-      tag1: tags[0],
-      tag2: tags[1],
-      tag3: tags[2],
-      tag4: tags[3],
-      tag5: tags[4],
-    })
-    .catch(err => {
-      console.log('Error creating post: ', err);
-    });;
-  },
-  updatePostRanking: function(options) {
-    const postId = options.postId || '';
-    const newHotRanking = options.newHotRanking || null;
-    const newTrendingRanking = options.newTrendingRanking || null;
-
-    if (newHotRanking) {
-      PostModel.update(
-        { hot: newHotRanking },
-        { where: { id: postId } }
-      )
-      .catch(err => console.log('Trouble updating hot ranking', err));
-    } else if (newTrendingRanking) {
-      PostModel.update(
-        { trending: newTrendingRanking },
-        { where: { id: postId } }
-      )
-      .catch(err => console.log('Trouble updating trending ranking', err));
+      }
     }
-  },
-  postExists: function(postId) {
-    return PostModel.count({ where: {id: postId} })
-                    .catch(err => console.log('Failed to count post', err));
   },
   resetRanking: function(rankType) {
      //updates all posts of rankType, since children is always greater than 0
@@ -75,5 +38,62 @@ module.exports = {
       where: {children: {[Op.gte]: 0} }
     })
       .catch(err => console.log(err));
-  }
+  },
+  determinePostType: function(links) {
+     if (!links) {
+       // blog
+       return BLOG_POST;
+     } else if (this.containsVideo(links)) {
+       // is video
+       return VIDEO_POST;
+     } else {
+       // news
+       return NEWS_POST;
+     }
+  },
+  linkContainsVideoUrl: function(link) {
+    for (const videoUrl of VIDEO_URLS) {
+      if (link.includes(videoUrl)) {
+        return true;
+      }
+    }
+  },
+  containsVideo: function(links) {
+    for (let link of links) {
+      if (this.linkContainsVideoUrl(link)) {
+        return true;
+      }
+    }
+      return false;
+  },
+  postProperFormat: function(post) {
+    const metadata = JSON.parse(post.json_metadata);
+    const convertedValue = Number.parseFloat(post.pending_payout_value.split("SBD")[0]);
+    const tags = metadata.tags;
+    const links = metadata.links;
+    return {
+      permLink: post.permlink,
+      title: post.title,
+      body: post.body,
+      createdAt: post.created,
+      netVotes: post.net_votes,
+      children: post.children,
+      pendingPayoutValue: convertedValue,
+      postType: this.determinePostType(links),
+      tag1: tags[0],
+      tag2: tags[2],
+      tag3: tags[3],
+      tag4: tags[4],
+      tag5: tags[5],
+    }
+  },
+  findOrCreatePost: function(post, author, updateRankType) {
+    return PostModel
+      .findOrCreate({
+        where: {id: post.id},
+        defaults: { ...this.postProperFormat(post), userId: author.id }
+      }).spread((post, created) => {
+        post.update(updateRankType);
+      });
+  },
 }
