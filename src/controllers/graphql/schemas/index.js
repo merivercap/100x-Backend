@@ -17,16 +17,6 @@ const resolvers = {
       return Post.findById(args.postId);
     },
   },
-  User: {
-    posts(user) {
-      return user.getPosts();
-    }
-  },
-  Post: {
-    user(post) {
-      return post.getUser();
-    }
-  }
 };
 
 const typeDefs = `
