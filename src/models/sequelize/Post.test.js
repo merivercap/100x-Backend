@@ -17,17 +17,15 @@ describe('Post', () => {
 
     return Promise.all([ author.save(), user.save() ])
       .then(() => {
-        post = Post.build(testUtils.createTestPostOpts());
-        post.authorId = author.id;
-
-        return post.save();
+        return author.createPost(testUtils.createTestPostOpts());
       })
-      .then(() => {
+      .then((post) => {
+        postId = post.id;
         return Post.findById(post.id);
       })
       .then(fetchedPost => {
-        expect(fetchedPost.id).toBe(post.id);
-        expect(fetchedPost.authorId).toBe(author.id);
+        expect(fetchedPost.id).toBe(postId);
+        expect(fetchedPost.userId).toBe(author.id);
         expect(fetchedPost.createdAt).not.toBe(null);
       });
 

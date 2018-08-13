@@ -5,7 +5,7 @@ module.exports = {
   initializeDatabase: () => {
     return sequelize.sync({ force: true });
   },
-  
+
   clearDatabase: () => {
     return true;//sequelize.dropAllTables();
   },
@@ -15,11 +15,11 @@ module.exports = {
     const name = `name${randomNum}`;
 
     return {
-      id: `${randomNum}`,
+      id: randomNum,
       name
     };
   },
-  
+
   createTestPostOpts: () => {
     const randomNum = _.random(10000);
     const title = `Test post title ${randomNum}`;
@@ -28,7 +28,7 @@ module.exports = {
     `;
 
     return {
-      authorId: 'steem-username',
+      id: randomNum,
       permLink: 'https://perm.link.io/09u909078k9/u9=?u09uhv/?hul923',
       title,
       body,
