@@ -11,7 +11,6 @@ const _ = require('lodash');
 const POSTS_PER_TAG = require('../utils/postsPerTag');
 const VIDEO_URLS = require('../utils/videoUrls');
 
-<<<<<<< HEAD
 const determinePostType = links => {
    if (!links) {
      return 0;
@@ -31,49 +30,7 @@ const linkContainsVideoUrl = (link) => {
     }
   }
 }
-=======
-module.exports = {
-  //Reason I build this was cause the fields from the steem api don't come in exactly as we need them.
-  // for example, the tags come in in the json_metadata field.  Also the hot and trending ranks are our own ...
-  // I guess we could construct a post properly somewhere else, and then just call PostModel.create(post) ??
-  // Ill try to get to it tmrw...
-  // Maybe something like this...
-  // createPost: function(post) => {
-  //   PostModel.create(post);
-  // };
 
-  createPost: function(post, { newHotRanking }) {
-    const metadata = JSON.parse(post.json_metadata);
-    const convertedValue = Number.parseFloat(post.pending_payout_value.split("SBD")[0]);
-    const tags = metadata.tags;
-    PostModel.create({
-      id: post.id,
-      authorId: post.author,
-      permLink: post.permlink,
-      title: post.title,
-      body: post.body,
-      createdAt: post.created,
-      netVotes: post.net_votes,
-      children: post.children,
-      pendingPayoutValue: convertedValue,
-      trending: 1,
-      hot: newHotRanking,
-      postType: 0,
-      tag1: tags[0],
-      tag2: tags[1],
-      tag3: tags[2],
-      tag4: tags[3],
-      tag5: tags[4],
-    })
-    .catch(err => {
-      console.log('Error creating post: ', err);
-    });;
-  },
-  updatePostRanking: function(options) {
-    const postId = options.postId || '';
-    const newHotRanking = options.newHotRanking || null;
-    const newTrendingRanking = options.newTrendingRanking || null;
->>>>>>> master
 
 const containsVideo = links => {
   for (let link of links) {
