@@ -34,7 +34,6 @@ class UserAuthentication {
       this.username,
       steemUserNameToFollow,
       function(err, res) {
-        console.log(err);
         return err
           ? new Error(err.error_description)
           : that.userInOurDb;
@@ -43,6 +42,7 @@ class UserAuthentication {
   }
 
   unFollowSteemUser(steemUserNameToUnfollow) {
+    let that=this;
     return this.steemUser.unfollow(
       this.username,
       steemUserNameToUnfollow,
