@@ -52,7 +52,8 @@ module.exports = {
     });
     return PostModel.findAll({
       include: [
-         { model: UserModel,
+         {
+           model: UserModel,
            where: {
              [Op.or]: authorObjs
            }
@@ -148,7 +149,8 @@ module.exports = {
     return PostModel.findOne({
       where: { permLink },
       include: [
-        { model: UserModel,
+        {
+          model: UserModel,
           where: { name }
         }
       ]
