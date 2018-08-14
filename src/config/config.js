@@ -14,6 +14,9 @@ const {
   HUNDREDX_RDS_DB_NAME,
 } = require('./rds');
 
+const {
+  SERVER_PORT
+} = require('./apollo');
 
 const env = process.env.HUNDREDX_APP_ENV || 'development';
 
