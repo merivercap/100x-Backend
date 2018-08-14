@@ -73,7 +73,7 @@ class UserAuthentication {
     });
   }
 
-  getUsersFollowerPosts() {
+  getMyFollowersPosts() {
     const getFollowerPostsFromOurDb = (followingObjects) => {
       const authorUsernames = [];
       for (const followingObject of followingObjects[0]) { // replies returned in 2-D array.  Our client.sendAsync supports multiple requests..

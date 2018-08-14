@@ -17,7 +17,7 @@ module.exports = {
     getFollowerPosts: async (_, args, { authenticatedUserInstance }) => {
       return !authenticatedUserInstance
         ? new AuthenticationError('ERROR_GETTING_FOLLOWER_POSTS')
-        : await authenticatedUserInstance.getUsersFollowerPosts();
+        : await authenticatedUserInstance.getMyFollowersPosts();
     },
     getHundredxPosts: async (_, args) => {
       return await PostService.fetchHundredxResteemedPosts();
