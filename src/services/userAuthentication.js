@@ -18,38 +18,38 @@ class UserAuthentication {
   }
 
   verifyTokenApiCall(accessToken) {
-    let that=this;
+    let self=this;
     return this.initializeSteemUser(accessToken).me(function (err, res) {
       if (err) {
         throw new Error(`Invalid Access Token: ${err}`);
       } else {
-        that.username=res['user'];
-        return that.userInOurDb = that.findOrCreateUser(that.username);
+        self.username=res['user'];
+        return self.userInOurDb = self.findOrCreateUser(self.username);
       }
     });
   }
   followSteemUser(steemUserNameToFollow) {
-    let that=this;
+    const self=this;
     return this.steemUser.follow(
       this.username,
       steemUserNameToFollow,
       function(err, res) {
         return err
           ? new Error(err.error_description)
-          : that.userInOurDb;
+          : self.userInOurDb;
       }
     );
   }
 
   unFollowSteemUser(steemUserNameToUnfollow) {
-    let that=this;
+    const self=this;
     return this.steemUser.unfollow(
       this.username,
       steemUserNameToUnfollow,
       function(err, res) {
         return err
           ? new Error(err.error_description)
-          : that.userInOurDb;
+          : self.userInOurDb;
       }
     );
   }
