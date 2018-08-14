@@ -11,7 +11,7 @@ module.exports = function(req, res, next) {
   // allow relaxed policy for local dev
   if (!origin) {
     return next();
-  } else if (process.env.APP_ENV !== 'production' || process.env.APP_ENV !== 'staging' || allowedOrigins.has(origin)) {
+  } else if (process.env.HUNDREDX_APP_ENV !== 'production' || process.env.HUNDREDX_APP_ENV !== 'staging' || allowedOrigins.has(origin)) {
     // set access control origin to be that of the requester
     res.setHeader('Access-Control-Allow-Origin', origin);
   } else {
