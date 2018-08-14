@@ -15,7 +15,7 @@ type Post {
   pendingPayoutValue: Float!
   trending: Int
   hot: Int
-  postType: Int!
+  postType: String!
   tag1: String!
   tag2: String
   tag3: String

@@ -4,7 +4,10 @@ const UserModel  = db.sequelize.models.user;
 const Op         = db.Sequelize.Op;
 const _          = require('lodash');
 const {
-  FETCH_POSTS_PER_TAG
+  FETCH_POSTS_PER_TAG,
+  VIDEO_POST,
+  NEWS_POST,
+  BLOG_POST
 }                = require('../utils/constants');
 const VIDEO_URLS = require('../utils/videoUrls');
 
@@ -39,13 +42,13 @@ module.exports = {
   determinePostType: function(links) {
      if (!links) {
        // blog
-       return 0;
+       return BLOG_POST;
      } else if (this.containsVideo(links)) {
        // is video
-       return 1;
+       return VIDEO_POST;
      } else {
        // news
-       return 2;
+       return NEWS_POST;
      }
   },
   linkContainsVideoUrl: function(link) {

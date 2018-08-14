@@ -3,7 +3,7 @@ const scheduler = require('node-schedule');
 
 const db = require('../../../models/sequelize/index');
 
-db.sequelize.sync({force: true}).then(() => {
+db.sequelize.sync({force: false}).then(() => {
   reCalibrateHotAndTrendingPosts();
   // const j = scheduler.scheduleJob('*/30 * * * *', reCalibrateHotAndTrendingPosts);
 });

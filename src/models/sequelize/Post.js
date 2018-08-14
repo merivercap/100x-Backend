@@ -80,14 +80,11 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       postType: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         field: 'postType',
         allowNull: false,
-        default: 0, // default is blog
-        validate: {
-          isInt: true,
-          min: 0,
-          max: 2
+        validates: {
+          len: [9,10]
         }
       },
       tag1: { type: DataTypes.STRING, allowNull: false },
