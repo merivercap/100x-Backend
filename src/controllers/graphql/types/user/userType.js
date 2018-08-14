@@ -10,8 +10,8 @@ type User {
 }
 
 type Query {
-  user(name: String): User
-  allUsers: [User]
+  getUserByArgs(name: String): User
+  getAllUsers: [User]
   follow(steemUsernameToFollow: String): User
   unfollow(steemUsernameToUnfollow: String): User
 }

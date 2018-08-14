@@ -4,8 +4,11 @@ const User = db.sequelize.models.user;
 
 module.exports = {
   Query: {
-    user(_, args) {
-      return User.find({ where: args });
+    getUserByArgs: async(_, args) => {
+      return await User.find({ where: args });
+    },
+    getAllUsers: async (_, args) => {
+      return await User.findAll();
     },
     follow: async (_, args, { authenticatedUserInstance }) => {
       return !authenticatedUserInstance
