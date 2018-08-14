@@ -62,7 +62,7 @@ module.exports = {
     });
   },
 
-  fetchHundredxResteemedPosts: function() {
+  fetchHundredxResteemedPosts: async function() {
     const getHundredxPosts = (posts) => {
       const permLinkAndAuthors = this.extractFromSteemitResponse(posts[0]);
       const allHundredxResteemedPosts = permLinkAndAuthors.map(({ permLink, name }) => (
