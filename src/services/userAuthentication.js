@@ -21,7 +21,7 @@ class UserAuthentication {
     let that=this;
     return this.initializeSteemUser(accessToken).me(function (err, res) {
       if (err) {
-        throw err
+        throw new Error(`Invalid Access Token: ${err}`);
       } else {
         that.username=res['user'];
         return that.userInOurDb = that.findOrCreateUser(that.username);
@@ -88,4 +88,4 @@ class UserAuthentication {
 
 }
 
-module.exports = UserAuthentication
+module.exports = UserAuthentication;
