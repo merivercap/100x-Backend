@@ -18,6 +18,21 @@ const {
 const VIDEO_URLS   = require('../utils/videoUrls');
 
 module.exports = {
+  broadcastAndStorePost: function({ authenticatedUserInstance, permLink, title, body, tags }) {
+    return authenticatedUserInstance.broadcastPost({ permLink, title, body, tags })
+      .then(broadcastSuccess => {
+        return broadcastSuccess
+          ? authenticatedUserInstance.userInOurDb
+          : null
+      })
+      .then(userRecord => {
+        return this.fetchSingleSteemitPost(permLink, userRecord);
+      })
+      .catch(err => {
+        new Error(err.error_description);
+      })
+  },
+
   reSyncPosts: function(posts, rankType) {
     for (const [tagIndex, postsByTag] of Object.entries(posts)) {
       for (const [postIndex, steemitPost] of Object.entries(postsByTag)) {
@@ -55,12 +70,12 @@ module.exports = {
     });
   },
 
- fetchSingleSteemitPost: function(permlink, userInOurDb) {
+ fetchSingleSteemitPost: async function(permlink, userRecord) {
    const storeSteemitPostInOurDb = (post) => {
      const postForOurDb = this.formatSteemitPost(post[0]);
-     return this.findOrCreatePost(postForOurDb, userInOurDb);
+     return this.findOrCreatePost(postForOurDb, userRecord);
     }
-    const params = [[userInOurDb.name, permlink]];
+    const params = [[userRecord.id, permlink]];
     return client.sendAsync(GET_CONTENT, params, storeSteemitPostInOurDb);
   },
 
@@ -119,7 +134,6 @@ module.exports = {
   formatSteemitPost: function(steemitPost) {
     const metadata = JSON.parse(steemitPost.json_metadata);
     const convertedValue = Number.parseFloat(steemitPost.pending_payout_value.split("SBD")[0]);
-
     const tags = metadata.tags;
     const links = metadata.links;
     return {
