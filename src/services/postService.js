@@ -18,15 +18,33 @@ const {
 const VIDEO_URLS   = require('../utils/videoUrls');
 
 module.exports = {
+  broadcastAndStorePost: function({ authenticatedUserInstance, permLink, title, body, tags }) {
+    return authenticatedUserInstance.broadcastPost({ permLink, title, body, tags })
+      .then(broadcastSuccess => {
+        return broadcastSuccess
+          ? authenticatedUserInstance.userInOurDb
+          : null
+      })
+      .then(userRecord => {
+        return this.fetchSingleSteemitPost(permLink, userRecord);
+      })
+      .catch(err => {
+        new Error(err.error_description);
+      })
+  },
+
   reSyncPosts: function(posts, rankType) {
     for (const [tagIndex, postsByTag] of Object.entries(posts)) {
       for (const [postIndex, steemitPost] of Object.entries(postsByTag)) {
+        if (!this.postIsEnglish(steemitPost)) {
+          return;
+        }
         // for each post from Steemit API...
         const newRanking = this.calculateNewRank(tagIndex, postIndex);
         const newRankingObj = this.generateProprietaryRankObject(rankType, newRanking);
         const postForOurDb = this.formatSteemitPost(steemitPost);
 
-        UserModel
+          UserModel
           .findOrCreate({
             where: {id: steemitPost.author},
           })
@@ -34,7 +52,6 @@ module.exports = {
             return this.findOrCreatePost({...postForOurDb, ...newRankingObj}, userRecord);
           })
           .catch(err => console.log("trouble finding or creating post author", err));
-
       }
     }
   },
@@ -55,12 +72,12 @@ module.exports = {
     });
   },
 
- fetchSingleSteemitPost: function(permlink, userInOurDb) {
+ fetchSingleSteemitPost: async function(permlink, userRecord) {
    const storeSteemitPostInOurDb = (post) => {
      const postForOurDb = this.formatSteemitPost(post[0]);
-     return this.findOrCreatePost(postForOurDb, userInOurDb);
+     return this.findOrCreatePost(postForOurDb, userRecord);
     }
-    const params = [[userInOurDb.name, permlink]];
+    const params = [[userRecord.id, permlink]];
     return client.sendAsync(GET_CONTENT, params, storeSteemitPostInOurDb);
   },
 
@@ -89,7 +106,26 @@ module.exports = {
 
   // ===== PRIVATE
 
+  postIsEnglish: function(post) {
+    const body = post.body;
+    const nonAsciiCharacters = /[^\u0000-\u00ff]/;  // if this regex matches, there are unicode characters
+    let numberOfNonAsciiCharacters = 0;
+    //for each character...
+    for (let i = 0; i < body.length; i++) {
+      if (nonAsciiCharacters.test(body[i])) {
+        numberOfNonAsciiCharacters++;
+      }
+    }
+
+    // if the percent of unicode characters is less than ten, we will
+    // make an educated guess that this post is english
+    const percentOfUnicodeCharacters = (100 * numberOfNonAsciiCharacters / body.length);
+    return percentOfUnicodeCharacters < 10;
+  },
+
+
   determinePostType: function(links, body) {
+     if (!links) return BLOG_POST;
      if (links[0] === body) {
        return NEWS_POST;
      } else if (this.containsVideo(links)) {
@@ -119,7 +155,6 @@ module.exports = {
   formatSteemitPost: function(steemitPost) {
     const metadata = JSON.parse(steemitPost.json_metadata);
     const convertedValue = Number.parseFloat(steemitPost.pending_payout_value.split("SBD")[0]);
-
     const tags = metadata.tags;
     const links = metadata.links;
     return {
