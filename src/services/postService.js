@@ -77,16 +77,13 @@ module.exports = {
 
   // ===== PRIVATE
 
-  determinePostType: function(links) {
-     if (!links) {
-       // blog
-       return BLOG_POST;
+  determinePostType: function(links, body) {
+     if (links[0] === body) {
+       return NEWS_POST;
      } else if (this.containsVideo(links)) {
-       // is video
        return VIDEO_POST;
      } else {
-       // news
-       return NEWS_POST;
+       return BLOG_POST;
      }
   },
   linkContainsVideoUrl: function(link) {
@@ -117,7 +114,7 @@ module.exports = {
       netVotes: post.net_votes,
       children: post.children,
       pendingPayoutValue: convertedValue,
-      postType: this.determinePostType(links),
+      postType: this.determinePostType(links, post.body),
       tag1: tags[0],
       tag2: tags[2],
       tag3: tags[3],
