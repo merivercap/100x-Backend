@@ -6,18 +6,9 @@ module.exports = (sequelize, DataTypes) => {
     'user',
     {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         primaryKey: true,
         allowNull: false
-      },
-      name: {
-        type: DataTypes.STRING(20),
-        field: 'name',
-        unique: true,
-        index: true,
-        validate: {
-          len: [2, 20]
-        }
       },
       createdAt: {
         type: DataTypes.DATE,

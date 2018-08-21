@@ -12,65 +12,75 @@ const {
 }                = require('../utils/constants');
 
 class ReplyService {
-  constructor(postFromOurDb) {
-    this.post = postFromOurDb;
+  constructor({ postId }) {
+    this.postId = postId;
     this.postAuthor;
-    this.parent;
+    this.postPermLink;
   }
 
-  getAllComments() {
-    return UserModel.findById(this.post.userId)
-      .then(author => {
-        this.postAuthor = author;
-        return this.fetchRepliesFromSteemit({
-          usersSteemitName: this.postAuthor.name,
-          permLink: this.post.permLink,
-        })
+  fetchAllPostReplies() {
+    return PostModel.findById(this.postId) //find post
+      .then(postRecord => {
+        // store post info...
+        this.postAuthor = postRecord.userId;
+        this.postPermLink = postRecord.permLink;
+        return this.fetchRepliesFromSteemit();
       })
-      .catch(err => console.log("trouble adding replies to db: ", err));
-  }
-  // user and permlink can be info of the Steemit POST OR COMMENT
-  fetchRepliesFromSteemit({ usersSteemitName, permLink }) {
-    const addRepliesToDb = (replies) => {
-      for (const reply of replies[0]) { // replies returned in 2-D array.  Our client.sendAsync supports multiple requests..
-        this.addReplyToDb(reply);
-      }
-    }
-    const params = [[ usersSteemitName, permLink]];
-    return client.sendAsync(GET_CONTENT_REPLIES, params, addRepliesToDb);
+      .then(result => {
+        return ReplyModel.findAll({ where: { postId: this.postId } })
+      })
+      .catch(err => {
+        console.log(err, "post doesnt exist in the db, or error fetching replies.");
+      })
   }
 
-  addReplyToDb(steemitReply) {
-    UserModel
+  fetchRepliesFromSteemit(options) {
+    const {
+      params,
+      parentId
+    } = this.determineParamOptions(options);
+
+    const addRepliesToDb = (replies) => {
+       const storeAllReplies = replies[0].map(steemitReply => {
+         const formattedReply = {...this.replyProperFormat(steemitReply), parentId};
+         return this.addReplyToDb(formattedReply)
+       });
+       return Promise.all(storeAllReplies);
+     }
+
+     return client.sendAsync(GET_CONTENT_REPLIES, params, addRepliesToDb);
+  }
+
+  addReplyToDb(replyObj) {
+    return UserModel
       .findOrCreate({
-        where: {name: steemitReply.author},
-        defaults: { id: _.random(10000) }
+        where: {id: replyObj.userId},
       })
       .spread((commenter, created) => {
-        return this.findOrCreateReply(steemitReply, commenter);
-      });
+        return this.findOrCreateReply(replyObj, commenter);
+      })
+      .catch(err => console.log("trouble adding replies to db", err));
   }
 
-  findOrCreateReply(steemitReply, commenter) {
+  findOrCreateReply(replyObj, commenter) {
     return ReplyModel
       .findOrCreate({
-        where: {id: steemitReply.id},
-        defaults: { ...this.replyProperFormat(steemitReply), userId: commenter.id }
+        where: {id: replyObj.id},
+        defaults: { ...replyObj, userId: commenter.id }
       })
       .spread((replyInOurDb, created) => {
-        replyInOurDb.update({body: steemitReply.body})
-          // NestedReplies require seperate calls to Steemit Api...
-          // .then(replyInOurDb => {
-          //   if (replyInOurDb.children && created) {
-          //     return this.fetchRepliesFromSteemit({ usersSteemitName: steemitReply.name, permLink: steemitReply.permlink })
-          //   }
-          // });
-      });
+        if (replyInOurDb.children > 0 && created) {
+          return this.fetchRepliesFromSteemit({ parentReply: replyInOurDb });
+        }
+      })
+      .catch(err => console.log("trouble finding or creating reply", err));
   }
   replyProperFormat(steemitReply) {
     const convertedValue = Number.parseFloat(steemitReply.pending_payout_value.split("SBD")[0]);
     return {
-      postId: this.post.id,
+      id: steemitReply.id,
+      postId: this.postId,
+      userId: steemitReply.author,
       permLink: steemitReply.permlink,
       body: steemitReply.body,
       createdAt: steemitReply.created,
@@ -79,6 +89,22 @@ class ReplyService {
       depth: steemitReply.depth,
       children: steemitReply.children,
     }
+  }
+
+  determineParamOptions(options = {}) {
+    let params;
+    let parentId;
+    if (options.parentReply) {
+      params = [[ options.parentReply.userId, options.parentReply.permLink ]];
+      parentId = options.parentReply.id;
+    } else {
+      params = [[ this.postAuthor, this.postPermLink ]];
+      parentId = null;
+    }
+
+    return {
+      params, parentId
+    };
   }
 }
 

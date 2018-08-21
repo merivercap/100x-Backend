@@ -17,6 +17,8 @@ type Reply {
 
 type Query {
     getAllPostReplies(postId: Int): [Reply]
+    returnAllReplies: [Reply]
+    replyCountById(postId: Int): Int
 }
 
 `;

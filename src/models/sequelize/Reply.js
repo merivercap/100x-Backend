@@ -61,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           isInt: true,
-          min: 1
+          min: 0
         }
       },
     },
@@ -73,23 +73,16 @@ module.exports = (sequelize, DataTypes) => {
 
   Reply.associate = function (models) {
     models.Reply.belongsTo(models.User, {
-      onDelete: "CASCADE",
       foreignKey: {
         allowNull: false
       }
     });
     models.Reply.belongsTo(models.Post, {
-      onDelete: "CASCADE",
       foreignKey: {
         allowNull: false
       }
     });
-    models.Reply.hasOne(models.Reply, {
-      onDelete: "CASCADE",
-      as: 'parent',
-      foreignKey: 'parentId',
-      useJunctionTable: false
-    });
+    models.Reply.belongsTo(models.Reply, {as: 'parent'});
   };
   return Reply;
 };
