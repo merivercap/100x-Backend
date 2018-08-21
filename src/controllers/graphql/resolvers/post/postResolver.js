@@ -47,8 +47,8 @@ const resolvers = {
       });
     },
 
-    getPost: async (_, args) => {
-      return await Post.findById(args.postId);
+    getPostById: async (_, { postId }) => {
+      return await Post.findById(postId);
     },
 
     getFollowerPosts: async (_, args, { authenticatedUserInstance }) => {
