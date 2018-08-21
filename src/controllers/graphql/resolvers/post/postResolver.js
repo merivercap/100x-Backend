@@ -21,7 +21,14 @@ module.exports = {
     },
     getHundredxPosts: async (_, args) => {
       return await PostService.fetchHundredxResteemedPosts();
-    }
+    },
+  },
+  Mutation: {
+    broadcastPost: async (_, { permLink, title, body, tags }, { authenticatedUserInstance } ) => {
+      return !authenticatedUserInstance
+        ? new AuthenticationError('ERROR_CREATING_OR_EDTING_POST')
+        : await PostService.broadcastAndStorePost({ authenticatedUserInstance, permLink, title, body, tags });
+    },
   },
   Post: {
     author(post) {
@@ -29,6 +36,6 @@ module.exports = {
     },
     replies(post) {
       return post.getReplies();
-    }
+    },
   }
 };

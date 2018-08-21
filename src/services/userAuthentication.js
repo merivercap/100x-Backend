@@ -85,6 +85,23 @@ class UserAuthentication {
     return client.sendAsync(GET_FOLLOWING, params, getFollowerPostsFromOurDb);
   }
 
+  broadcastPost({ permLink, title, body, tags }) { // create or edit
+    return this.steemUser.comment(
+      '',
+      tags[0],
+      this.username,
+      permLink,
+      title,
+      body,
+      { "tags": tags },
+      function (err, res) {
+        return err
+          ? new Error(err.error_description)
+          : true
+      }
+    );
+  }
+
 }
 
 module.exports = UserAuthentication;
