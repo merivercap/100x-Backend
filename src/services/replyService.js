@@ -6,6 +6,7 @@ const ReplyModel = models.reply;
 const Op         = db.Sequelize.Op;
 const _          = require('lodash');
 const client     = require('./steem');
+const idGenerator = require('./idGenerator');
 
 const {
   GET_CONTENT_REPLIES,
@@ -21,9 +22,12 @@ class ReplyService {
   fetchAllPostReplies() {
     return PostModel.findById(this.postId) //find post
       .then(postRecord => {
-        // store post info...
-        this.postAuthor = postRecord.userId;
         this.postPermLink = postRecord.permLink;
+        return UserModel.findById(postRecord.userId);
+      })
+      .then(userRecord => {
+        // store post info...
+        this.postAuthor = userRecord.name;
         return this.fetchRepliesFromSteemit();
       })
       .then(result => {
@@ -39,11 +43,11 @@ class ReplyService {
       params,
       parentId
     } = this.determineParamOptions(options);
-
+    console.log("the params are", params);
     const addRepliesToDb = (replies) => {
        const storeAllReplies = replies[0].map(steemitReply => {
          const formattedReply = {...this.replyProperFormat(steemitReply), parentId};
-         return this.addReplyToDb(formattedReply)
+         return this.addReplyToDb(formattedReply, steemitReply.author);
        });
        return Promise.all(storeAllReplies);
      }
@@ -51,10 +55,11 @@ class ReplyService {
      return client.sendAsync(GET_CONTENT_REPLIES, params, addRepliesToDb);
   }
 
-  addReplyToDb(replyObj) {
+  addReplyToDb(replyObj, authorUserName) {
     return UserModel
       .findOrCreate({
-        where: {id: replyObj.userId},
+        where: {id: authorUserName + idGenerator.generate() },
+        defaults: { name: authorUserName }
       })
       .spread((commenter, created) => {
         return this.findOrCreateReply(replyObj, commenter);
@@ -80,7 +85,6 @@ class ReplyService {
     return {
       id: steemitReply.id,
       postId: this.postId,
-      userId: steemitReply.author,
       permLink: steemitReply.permlink,
       body: steemitReply.body,
       createdAt: steemitReply.created,

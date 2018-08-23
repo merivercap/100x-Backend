@@ -16,6 +16,7 @@ const {
   GET_CONTENT,
 }                  = require('../utils/constants');
 const VIDEO_URLS   = require('../utils/videoUrls');
+const idGenerator  = require('./idGenerator');
 
 module.exports = {
   reSyncPosts: function(posts, rankType) {
@@ -28,7 +29,8 @@ module.exports = {
 
         UserModel
           .findOrCreate({
-            where: {id: steemitPost.author},
+            where: {id: steemitPost.author + idGenerator.generate() },
+            defaults: { name: steemitPost.author }
           })
           .spread((userRecord, created) => {
             return this.findOrCreatePost({...postForOurDb, ...newRankingObj}, userRecord);
@@ -41,7 +43,7 @@ module.exports = {
 
   getPostsOfAuthors: function(authors) {
     const authorObjs = authors.map(name => {
-      return { id: name };
+      return { name };
     });
     return PostModel.findAll({
       include: [
@@ -131,7 +133,7 @@ module.exports = {
       netVotes: steemitPost.net_votes,
       children: steemitPost.children,
       pendingPayoutValue: convertedValue,
-      postType: this.determinePostType(links, post.body),
+      postType: this.determinePostType(links, steemitPost.body),
       tag1: tags[0],
       tag2: tags[2],
       tag3: tags[3],
@@ -147,7 +149,7 @@ module.exports = {
   },
   findByPermLinkAndAuthor: function(permLink, name) {
     return PostModel.findOne({
-      where: { permLink }, //might work with userId is name....?
+      where: { permLink },
       include: [
         {
           model: UserModel,
