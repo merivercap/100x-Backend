@@ -90,6 +90,7 @@ module.exports = {
   // ===== PRIVATE
 
   determinePostType: function(links, body) {
+     if (!links) return BLOG_POST;
      if (links[0] === body) {
        return NEWS_POST;
      } else if (this.containsVideo(links)) {
@@ -131,7 +132,7 @@ module.exports = {
       netVotes: steemitPost.net_votes,
       children: steemitPost.children,
       pendingPayoutValue: convertedValue,
-      postType: this.determinePostType(links, post.body),
+      postType: this.determinePostType(links, steemitPost.body),
       tag1: tags[0],
       tag2: tags[2],
       tag3: tags[3],
