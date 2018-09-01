@@ -26,7 +26,7 @@ module.exports = {
   Mutation: {
     broadcastPost: async (_, { permLink, title, body, tags }, { authenticatedUserInstance } ) => {
       return !authenticatedUserInstance
-        ? new AuthenticationError('ERROR_CREATING_OR_EDTING_POST')
+        ? new AuthenticationError('ERROR_CREATING_OR_EDITING_POST')
         : await PostService.broadcastAndStorePost({ authenticatedUserInstance, permLink, title, body, tags });
     },
   },

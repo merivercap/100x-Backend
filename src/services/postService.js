@@ -43,7 +43,7 @@ module.exports = {
 
         UserModel
           .findOrCreate({
-            where: {id: steemitPost.author},
+            where: {name: steemitPost.author},
           })
           .spread((userRecord, created) => {
             return this.findOrCreatePost({...postForOurDb, ...newRankingObj}, userRecord);
@@ -56,7 +56,7 @@ module.exports = {
 
   getPostsOfAuthors: function(authors) {
     const authorObjs = authors.map(name => {
-      return { id: name };
+      return { name };
     });
     return PostModel.findAll({
       include: [
