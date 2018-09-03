@@ -1,15 +1,12 @@
-const db         = require('../models/sequelize');
-const models     = db.sequelize.models;
-const PostModel  = models.post;
-const UserModel  = models.user;
+const _ = require('lodash');
+const client = require('./steem');
+const db = require('../models/sequelize');
+const { GET_CONTENT_REPLIES } = require('../utils/constants');
+const models = db.sequelize.models;
+const Op = db.Sequelize.Op;
+const PostModel = models.post;
 const ReplyModel = models.reply;
-const Op         = db.Sequelize.Op;
-const _          = require('lodash');
-const client     = require('./steem');
-
-const {
-  GET_CONTENT_REPLIES,
-}                = require('../utils/constants');
+const UserModel = models.user;
 
 class ReplyService {
   constructor({ postId }) {
@@ -30,7 +27,7 @@ class ReplyService {
         return ReplyModel.findAll({ where: { postId } })
       })
       .catch(err => {
-        console.log(err, "post doesnt exist in the db, or error fetching replies.");
+        console.log(err, 'post does not exist in the db, or error fetching replies.');
       })
   }
 
@@ -59,7 +56,7 @@ class ReplyService {
       .spread((commenter, created) => {
         return this.findOrCreateReply(replyObj, commenter);
       })
-      .catch(err => console.log("trouble adding replies to db", err));
+      .catch(err => console.log('trouble adding replies to db', err));
   }
 
   findOrCreateReply(replyObj, commenter) {
@@ -73,10 +70,11 @@ class ReplyService {
           return this.fetchRepliesFromSteemit({ parentReply: replyInOurDb });
         }
       })
-      .catch(err => console.log("trouble finding or creating reply", err));
+      .catch(err => console.log('trouble finding or creating reply', err));
   }
+  
   replyProperFormat(steemitReply) {
-    const convertedValue = Number.parseFloat(steemitReply.pending_payout_value.split("SBD")[0]);
+    const convertedValue = Number.parseFloat(steemitReply.pending_payout_value.split('SBD')[0]);
     return {
       id: steemitReply.id,
       postId: this.postId,
