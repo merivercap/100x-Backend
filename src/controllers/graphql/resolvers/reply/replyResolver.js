@@ -1,20 +1,17 @@
 const db = require('../../connectors');
 const Reply = db.sequelize.models.reply;
-const ReplyService = require('../../../../services/replyService');
+const replyService = require('../../../../services/replyService');
 
 module.exports = {
   Query: {
     getAllPostReplies: async (_, args) => {
-      const fetchPostReplies = new ReplyService({
-        postId: args.postId,
-      });
-      return await fetchPostReplies.fetchAllPostReplies();
+      return await replyService.fetchAllPostReplies(args.postId);
     },
     returnAllReplies: async (_, args) => {
       return await Reply.findAll();
     },
     replyCountById: async (_, args) => {
-      return await Reply.count( {where:{ postId: args.postId}} );
+      return await Reply.count({ where: { postId: args.postId } });
     }
   },
   Reply: {
