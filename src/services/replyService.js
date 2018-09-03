@@ -39,7 +39,7 @@ class ReplyService {
 
     const addRepliesToDb = (replies) => {
        const storeAllReplies = replies[0].map(steemitReply => {
-         const formattedReply = {...this.replyProperFormat(steemitReply), parentId};
+         const formattedReply = {...formatSteemitReply(steemitReply), parentId};
          return this.addReplyToDb(formattedReply)
        });
        return Promise.all(storeAllReplies);
@@ -72,22 +72,6 @@ class ReplyService {
       })
       .catch(err => console.log('trouble finding or creating reply', err));
   }
-  
-  replyProperFormat(steemitReply) {
-    const convertedValue = Number.parseFloat(steemitReply.pending_payout_value.split('SBD')[0]);
-    return {
-      id: steemitReply.id,
-      postId: this.postId,
-      userId: steemitReply.author,
-      permLink: steemitReply.permlink,
-      body: steemitReply.body,
-      createdAt: steemitReply.created,
-      netVotes: steemitReply.net_votes,
-      pendingPayoutValue: convertedValue,
-      depth: steemitReply.depth,
-      children: steemitReply.children,
-    }
-  }
 
   determineParamOptions(options = {}) {
     let params;
@@ -107,3 +91,26 @@ class ReplyService {
 }
 
 module.exports = ReplyService;
+
+
+/** Helper Functions */
+
+function formatSteemitReply({ postId, steemitReply }) {
+  const convertedPendingPayoutValue = parsePendingPayoutValue(steemitReply);
+  return {
+    id: steemitReply.id,
+    postId,
+    userId: steemitReply.author,
+    permLink: steemitReply.permlink,
+    body: steemitReply.body,
+    createdAt: steemitReply.created,
+    netVotes: steemitReply.net_votes,
+    pendingPayoutValue: convertedPendingPayoutValue,
+    depth: steemitReply.depth,
+    children: steemitReply.children,
+  }
+}
+
+function parsePendingPayoutValue({ pending_payout_value }) {
+  return Number.parseFloat(pending_payout_value.split('SBD')[0]);
+}
