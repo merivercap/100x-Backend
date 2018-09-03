@@ -18,8 +18,8 @@ class ReplyService {
     this.postPermLink;
   }
 
-  fetchAllPostReplies() {
-    return PostModel.findById(this.postId) //find post
+  fetchAllPostReplies(postId) {
+    return PostModel.findById(postId) //find post
       .then(postRecord => {
         // store post info...
         this.postAuthor = postRecord.userId;
@@ -27,7 +27,7 @@ class ReplyService {
         return this.fetchRepliesFromSteemit();
       })
       .then(result => {
-        return ReplyModel.findAll({ where: { postId: this.postId } })
+        return ReplyModel.findAll({ where: { postId } })
       })
       .catch(err => {
         console.log(err, "post doesnt exist in the db, or error fetching replies.");
