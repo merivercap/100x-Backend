@@ -4,11 +4,8 @@ const ReplyService = require('../../../../services/replyService');
 
 module.exports = {
   Query: {
-    getAllPostReplies: async (_, args) => {
-      const fetchPostReplies = new ReplyService({
-        postId: args.postId,
-      });
-      return await fetchPostReplies.fetchAllPostReplies();
+    getAllPostReplies: async (_, { postId }) => {
+      return await ReplyService.fetchAllPostReplies(postId);
     },
     returnAllReplies: async (_, args) => {
       return await Reply.findAll();

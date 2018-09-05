@@ -34,9 +34,7 @@ class UserAuthentication {
       this.username,
       steemUserNameToFollow,
       function(err, res) {
-        return err
-          ? new Error(err.error_description)
-          : self.userInOurDb;
+        return err ? new Error(err.error_description) : self.userInOurDb;
       }
     );
   }
@@ -47,9 +45,7 @@ class UserAuthentication {
       this.username,
       steemUserNameToUnfollow,
       function(err, res) {
-        return err
-          ? new Error(err.error_description)
-          : self.userInOurDb;
+        return err ? new Error(err.error_description) : self.userInOurDb;
       }
     );
   }
@@ -83,6 +79,21 @@ class UserAuthentication {
     // const params = [account (string)	start (string)	type (string)	limit (int)];
     const params = [[this.username,null,"blog",10]];
     return client.sendAsync(GET_FOLLOWING, params, getFollowerPostsFromOurDb);
+  }
+
+  broadcastPost({ permLink, title, body, tags }) { // create or edit
+    return this.steemUser.comment(
+      '',
+      tags[0],
+      this.username,
+      permLink,
+      title,
+      body,
+      { "tags": tags },
+      function (err, res) {
+        return err ? new Error(err.error_description) : true;
+      }
+    );
   }
 
 }

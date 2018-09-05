@@ -12,62 +12,52 @@ const {
   GET_CONTENT_REPLIES,
 }                = require('../utils/constants');
 
-class ReplyService {
-  constructor({ postId }) {
-    this.postId = postId;
-    this.postAuthor;
-    this.postPermLink;
-  }
-
-  fetchAllPostReplies() {
-    return PostModel.findById(this.postId) //find post
+module.exports = {
+  fetchAllPostReplies: function(postId) {
+    return PostModel.findById(postId) //find post
       .then(postRecord => {
-        this.postPermLink = postRecord.permLink;
-        return UserModel.findById(postRecord.userId);
-      })
-      .then(userRecord => {
         // store post info...
-        this.postAuthor = userRecord.name;
-        return this.fetchRepliesFromSteemit();
+        const postAuthor = postRecord.userId;
+        const postPermLink = postRecord.permLink;
+        return this.fetchRepliesFromSteemit(postId, postAuthor, postPermLink);
       })
       .then(result => {
-        return ReplyModel.findAll({ where: { postId: this.postId } })
+        return ReplyModel.findAll({ where: { postId } })
       })
       .catch(err => {
         console.log(err, "post doesnt exist in the db, or error fetching replies.");
       })
-  }
+  },
 
-  fetchRepliesFromSteemit(options) {
+  fetchRepliesFromSteemit: function(postId, postAuthor, postPermLink, options) {
     const {
       params,
       parentId
-    } = this.determineParamOptions(options);
+    } = this.determineParamOptions(postAuthor, postPermLink, options);
 
     const addRepliesToDb = (replies) => {
        const storeAllReplies = replies[0].map(steemitReply => {
-         const formattedReply = {...this.replyProperFormat(steemitReply), parentId};
-         return this.addReplyToDb(formattedReply, steemitReply.author);
+         const formattedReply = {...this.replyProperFormat(postId, steemitReply), parentId};
+         return this.addReplyToDb(formattedReply)
        });
        return Promise.all(storeAllReplies);
      }
 
      return client.sendAsync(GET_CONTENT_REPLIES, params, addRepliesToDb);
-  }
+  },
 
-  addReplyToDb(replyObj, authorUserName) {
+  addReplyToDb: function(replyObj) {
     return UserModel
       .findOrCreate({
-        where: {id: authorUserName + idGenerator.generate() },
-        defaults: { name: authorUserName }
+        where: {id: replyObj.userId},
       })
       .spread((commenter, created) => {
         return this.findOrCreateReply(replyObj, commenter);
       })
       .catch(err => console.log("trouble adding replies to db", err));
-  }
+  },
 
-  findOrCreateReply(replyObj, commenter) {
+  findOrCreateReply: function(replyObj, commenter) {
     return ReplyModel
       .findOrCreate({
         where: {id: replyObj.id},
@@ -75,16 +65,17 @@ class ReplyService {
       })
       .spread((replyInOurDb, created) => {
         if (replyInOurDb.children > 0 && created) {
-          return this.fetchRepliesFromSteemit({ parentReply: replyInOurDb });
+          return this.fetchRepliesFromSteemit(replyInOurDb.postId, null, null, { parentReply: replyInOurDb });
         }
       })
       .catch(err => console.log("trouble finding or creating reply", err));
-  }
-  replyProperFormat(steemitReply) {
+  },
+  replyProperFormat: function(postId, steemitReply) {
     const convertedValue = Number.parseFloat(steemitReply.pending_payout_value.split("SBD")[0]);
     return {
       id: steemitReply.id,
-      postId: this.postId,
+      postId: postId,
+      userId: steemitReply.author,
       permLink: steemitReply.permlink,
       body: steemitReply.body,
       createdAt: steemitReply.created,
@@ -93,23 +84,21 @@ class ReplyService {
       depth: steemitReply.depth,
       children: steemitReply.children,
     }
-  }
+  },
 
-  determineParamOptions(options = {}) {
+  determineParamOptions: function(postAuthor, postPermLink, options = {}) {
     let params;
     let parentId;
     if (options.parentReply) {
       params = [[ options.parentReply.userId, options.parentReply.permLink ]];
       parentId = options.parentReply.id;
     } else {
-      params = [[ this.postAuthor, this.postPermLink ]];
+      params = [[ postAuthor, postPermLink ]];
       parentId = null;
     }
 
     return {
       params, parentId
     };
-  }
+  },
 }
-
-module.exports = ReplyService;

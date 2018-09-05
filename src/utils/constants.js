@@ -1,4 +1,4 @@
-module.exports.FETCH_POSTS_PER_TAG = 5;
+module.exports.FETCH_POSTS_PER_TAG = 10;
 module.exports.FETCH_TOP_X_POSTS = 100;
 module.exports.HOT = 'hot';
 module.exports.TRENDING = 'trending';
@@ -11,3 +11,4 @@ module.exports.BLOG_POST = 'blog_post';
 module.exports.GET_CONTENT_REPLIES = 'get_content_replies';
 module.exports.GET_FOLLOWING = 'get_following';
 module.exports.GET_BLOG_ENTRIES = 'get_blog_entries';
+module.exports.GET_CONTENT = 'get_content';

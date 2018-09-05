@@ -1,11 +1,11 @@
 const taggings = [
-  // 'bitcoin',
+  'bitcoin',
   'crypto',
-  // 'cryptocurrency',
-  // 'blockchain',
-  // 'beyondbitcoin',
-  // 'ethereum',
-  // 'eos',
+  'cryptocurrency',
+  'blockchain',
+  'beyondbitcoin',
+  'ethereum',
+  'eos',
 ];
 
 module.exports = taggings;
