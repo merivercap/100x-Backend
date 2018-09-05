@@ -21,9 +21,9 @@ module.exports = {
   broadcastAndStorePost: function({ authenticatedUserInstance, permLink, title, body, tags }) {
     return authenticatedUserInstance.broadcastPost({ permLink, title, body, tags })
       .then(broadcastSuccess => {
-        return broadcastSuccess
-          ? authenticatedUserInstance.userInOurDb
-          : null
+        if (broadcastSuccess) {
+          return authenticatedUserInstance.userInOurDb;
+        }
       })
       .then(userRecord => {
         return this.fetchSingleSteemitPost(permLink, userRecord);
