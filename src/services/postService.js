@@ -42,15 +42,13 @@ module.exports = {
   },
 
   getPostsOfAuthors: function(authors) {
-    const authorObjs = authors.map(name => {
-      return { name };
-    });
+    const authorNames =  authors.map(name => { name });
     return PostModel.findAll({
       include: [
          {
            model: UserModel,
            where: {
-             [Op.or]: authorObjs
+             [Op.or]: authorNames
            }
          }
       ],

@@ -43,7 +43,7 @@ class ReplyService {
       params,
       parentId
     } = this.determineParamOptions(options);
-    console.log("the params are", params);
+
     const addRepliesToDb = (replies) => {
        const storeAllReplies = replies[0].map(steemitReply => {
          const formattedReply = {...this.replyProperFormat(steemitReply), parentId};
