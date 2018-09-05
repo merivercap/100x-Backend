@@ -95,9 +95,7 @@ class UserAuthentication {
       body,
       { "tags": tags },
       function (err, res) {
-        return err
-          ? new Error(err.error_description)
-          : true
+        return err ? new Error(err.error_description) : true
       }
     );
   }
