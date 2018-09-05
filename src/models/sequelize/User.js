@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       createdAt: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
-        field: 'created_at',
+        field: 'createdAt',
         allowNull: true
       },
       voteValue: {
