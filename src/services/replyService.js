@@ -6,6 +6,7 @@ const ReplyModel = models.reply;
 const Op         = db.Sequelize.Op;
 const _          = require('lodash');
 const client     = require('./steem');
+const idGenerator = require('./idGenerator');
 
 const {
   GET_CONTENT_REPLIES,

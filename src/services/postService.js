@@ -16,6 +16,7 @@ const {
   GET_CONTENT,
 }                  = require('../utils/constants');
 const VIDEO_URLS   = require('../utils/videoUrls');
+const idGenerator  = require('./idGenerator');
 
 module.exports = {
   broadcastAndStorePost: function({ authenticatedUserInstance, permLink, title, body, tags }) {
@@ -46,7 +47,8 @@ module.exports = {
 
           UserModel
           .findOrCreate({
-            where: {id: steemitPost.author},
+            where: {id: steemitPost.author + idGenerator.generate() },
+            defaults: { name: steemitPost.author }
           })
           .spread((userRecord, created) => {
             return this.findOrCreatePost({...postForOurDb, ...newRankingObj}, userRecord);
@@ -57,15 +59,13 @@ module.exports = {
   },
 
   getPostsOfAuthors: function(authors) {
-    const authorObjs = authors.map(name => {
-      return { id: name };
-    });
+    const authorNames =  authors.map(name => { name });
     return PostModel.findAll({
       include: [
          {
            model: UserModel,
            where: {
-             [Op.or]: authorObjs
+             [Op.or]: authorNames
            }
          }
       ],
@@ -182,7 +182,7 @@ module.exports = {
   },
   findByPermLinkAndAuthor: function(permLink, name) {
     return PostModel.findOne({
-      where: { permLink }, //might work with userId is name....?
+      where: { permLink },
       include: [
         {
           model: UserModel,

@@ -16,6 +16,7 @@ module.exports = {
 
     return {
       id,
+      name: id,
     };
   },
 
