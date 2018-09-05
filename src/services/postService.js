@@ -16,14 +16,15 @@ const {
   GET_CONTENT,
 }                  = require('../utils/constants');
 const VIDEO_URLS   = require('../utils/videoUrls');
+const idGenerator  = require('./idGenerator');
 
 module.exports = {
   broadcastAndStorePost: function({ authenticatedUserInstance, permLink, title, body, tags }) {
     return authenticatedUserInstance.broadcastPost({ permLink, title, body, tags })
       .then(broadcastSuccess => {
-        return broadcastSuccess
-          ? authenticatedUserInstance.userInOurDb
-          : null
+        if (broadcastSuccess) {
+          return authenticatedUserInstance.userInOurDb;
+        }
       })
       .then(userRecord => {
         return this.fetchSingleSteemitPost(permLink, userRecord);
@@ -36,34 +37,35 @@ module.exports = {
   reSyncPosts: function(posts, rankType) {
     for (const [tagIndex, postsByTag] of Object.entries(posts)) {
       for (const [postIndex, steemitPost] of Object.entries(postsByTag)) {
+        if (!this.postIsEnglish(steemitPost)) {
+          return;
+        }
         // for each post from Steemit API...
         const newRanking = this.calculateNewRank(tagIndex, postIndex);
         const newRankingObj = this.generateProprietaryRankObject(rankType, newRanking);
         const postForOurDb = this.formatSteemitPost(steemitPost);
 
-        UserModel
+          UserModel
           .findOrCreate({
-            where: {name: steemitPost.author},
+            where: {id: steemitPost.author + idGenerator.generate() },
+            defaults: { name: steemitPost.author }
           })
           .spread((userRecord, created) => {
             return this.findOrCreatePost({...postForOurDb, ...newRankingObj}, userRecord);
           })
           .catch(err => console.log("trouble finding or creating post author", err));
-
       }
     }
   },
 
   getPostsOfAuthors: function(authors) {
-    const authorObjs = authors.map(name => {
-      return { name };
-    });
+    const authorNames =  authors.map(name => { name });
     return PostModel.findAll({
       include: [
          {
            model: UserModel,
            where: {
-             [Op.or]: authorObjs
+             [Op.or]: authorNames
            }
          }
       ],
@@ -104,7 +106,26 @@ module.exports = {
 
   // ===== PRIVATE
 
+  postIsEnglish: function(post) {
+    const body = post.body;
+    const nonAsciiCharacters = /[^\u0000-\u00ff]/;  // if this regex matches, there are unicode characters
+    let numberOfNonAsciiCharacters = 0;
+    //for each character...
+    for (let i = 0; i < body.length; i++) {
+      if (nonAsciiCharacters.test(body[i])) {
+        numberOfNonAsciiCharacters++;
+      }
+    }
+
+    // if the percent of unicode characters is less than ten, we will
+    // make an educated guess that this post is english
+    const percentOfUnicodeCharacters = (100 * numberOfNonAsciiCharacters / body.length);
+    return percentOfUnicodeCharacters < 10;
+  },
+
+
   determinePostType: function(links, body) {
+     if (!links) return BLOG_POST;
      if (links[0] === body) {
        return NEWS_POST;
      } else if (this.containsVideo(links)) {
@@ -145,7 +166,7 @@ module.exports = {
       netVotes: steemitPost.net_votes,
       children: steemitPost.children,
       pendingPayoutValue: convertedValue,
-      postType: this.determinePostType(links, post.body),
+      postType: this.determinePostType(links, steemitPost.body),
       tag1: tags[0],
       tag2: tags[2],
       tag3: tags[3],
@@ -161,7 +182,7 @@ module.exports = {
   },
   findByPermLinkAndAuthor: function(permLink, name) {
     return PostModel.findOne({
-      where: { permLink }, //might work with userId is name....?
+      where: { permLink },
       include: [
         {
           model: UserModel,

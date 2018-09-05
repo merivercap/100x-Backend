@@ -17,7 +17,7 @@ module.exports = {
 
     return {
       id,
-      name
+      name: id,
     };
   },
 
