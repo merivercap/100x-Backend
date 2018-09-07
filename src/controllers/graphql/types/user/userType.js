@@ -5,7 +5,7 @@ type User {
   id: String!
   name: String!
   createdAt: Date
-  voteValue: String
+  votingPower: String
   location: String
   realLifeName: String
   introBlurb: String
@@ -20,5 +20,6 @@ type Query {
   getAllUsers: [User]
   follow(steemUsernameToFollow: String): User
   unfollow(steemUsernameToUnfollow: String): User
+  getProfileInformation(name: String): User
 }
 `;

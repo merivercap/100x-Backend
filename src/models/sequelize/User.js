@@ -23,9 +23,9 @@ module.exports = (sequelize, DataTypes) => {
         field: 'createdAt',
         allowNull: true
       },
-      voteValue: {
+      votingPower: {
         type: DataTypes.STRING,
-        field: 'voteValue',
+        field: 'votingPower',
         allowNull: true
       },
       location: {
