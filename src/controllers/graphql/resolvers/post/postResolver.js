@@ -14,11 +14,11 @@ module.exports = {
     getPost: async (_,args) => {
       return await Post.findById(args.postId);
     },
-    getFollowerPosts: async (_, args, { authenticatedUserInstance }) => {
+    getUserFeed: async (_, args, { authenticatedUserInstance }) => {
       if (!authenticatedUserInstance) {
         return new AuthenticationError('ERROR_GETTING_FOLLOWER_POSTS');
       }
-      return await authenticatedUserInstance.getMyFollowersPosts();
+      return await authenticatedUserInstance.getMyFollowersPostsAndUsersAuthoredPosts();
     },
     getHundredxPosts: async (_, args) => {
       return await PostService.fetchHundredxResteemedPosts();
