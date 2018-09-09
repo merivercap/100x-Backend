@@ -72,7 +72,7 @@ module.exports = {
     });
   },
 
- fetchSingleSteemitPost: async function(permlink, userRecord) {
+  fetchSingleSteemitPost: async function(permlink, userRecord) {
    const storeSteemitPostInOurDb = (post) => {
      const postForOurDb = this.formatSteemitPost(post[0]);
      return this.findOrCreatePost(postForOurDb, userRecord);

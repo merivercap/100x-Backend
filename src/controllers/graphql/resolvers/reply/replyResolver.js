@@ -14,6 +14,14 @@ module.exports = {
       return await Reply.count( {where:{ postId: args.postId}} );
     }
   },
+  Mutation: {
+    broadcastReply: async (_, { postId, permLink, body }, { authenticatedUserInstance } ) => {
+      if (!authenticatedUserInstance) {
+        return new AuthenticationError('ERROR_CREATING_OR_EDITING_REPLY');
+      }
+      return await ReplyService.broadcastAndStoreReply({ authenticatedUserInstance, postId, permLink, body });
+    },
+  },
   Reply: {
     commenter(reply) {
       return reply.getUser();

@@ -7,6 +7,7 @@ const UserModel  = models.user;
 const _            = require('lodash');
 const PostService = require('./postService');
 const client       = require('./steem');
+const PostModel  = models.post
 
 const { GET_FOLLOWING } = require('../utils/constants');
 
@@ -84,7 +85,7 @@ class UserAuthentication {
   broadcastPost({ permLink, title, body, tags }) { // create or edit
     return this.steemUser.comment(
       '',
-      tags[0],
+      '',
       this.username,
       permLink,
       title,
@@ -97,6 +98,30 @@ class UserAuthentication {
     );
   }
 
+  broadcastReply({ postId, permLink, body }) { // create or edit
+    return PostModel.findById(postId) //find post
+      .then(postRecord => {
+        // store post info...
+        const postAuthor = postRecord.userId;
+        const postPermLink = postRecord.permLink;
+        return this.steemUser.comment(
+          postAuthor,
+          postPermLink,
+          this.username,
+          permLink,
+          '',
+          body,
+          {},
+          function (err, res) {
+            return err ? new Error(err.error_description) : true
+
+          }
+        );
+      })
+      .catch(err => {
+        console.log(err, "post doesnt exist in the db.");
+      })
+  }
 }
 
 module.exports = UserAuthentication;

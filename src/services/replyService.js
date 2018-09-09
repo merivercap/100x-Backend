@@ -13,6 +13,21 @@ const {
 }                = require('../utils/constants');
 
 module.exports = {
+  broadcastAndStoreReply: function({ authenticatedUserInstance, postId, permLink, body }) {
+    return authenticatedUserInstance.broadcastReply({ postId, permLink, body })
+      .then(broadcastSuccess => {
+        if (broadcastSuccess) {
+          return authenticatedUserInstance.userInOurDb;
+        }
+      })
+      .then(userRecord => {
+        return this.fetchSingleSteemitReply(postId, permLink, userRecord);
+      })
+      .catch(err => {
+        new Error(err.error_description);
+      })
+  },
+
   fetchAllPostReplies: function(postId) {
     return PostModel.findById(postId) //find post
       .then(postRecord => {
@@ -57,6 +72,15 @@ module.exports = {
       .catch(err => console.log("trouble adding replies to db", err));
   },
 
+  fetchSingleSteemitReply: async function(postId, postpermlink, userRecord) {
+   const storeSteemitReplyInOurDb = (reply) => {
+     const replyForOurDb = this.replyProperFormat(postId, reply[0]);
+     return this.findOrCreateReply(replyForOurDb, userRecord);
+    }
+    const params = [[userRecord.id, permlink]];
+    return client.sendAsync(GET_CONTENT, params, storeSteemitReplyInOurDb);
+  },
+
   findOrCreateReply: function(replyObj, commenter) {
     return ReplyModel
       .findOrCreate({
@@ -70,6 +94,7 @@ module.exports = {
       })
       .catch(err => console.log("trouble finding or creating reply", err));
   },
+
   replyProperFormat: function(postId, steemitReply) {
     const convertedValue = Number.parseFloat(steemitReply.pending_payout_value.split("SBD")[0]);
     return {

@@ -1,5 +1,8 @@
 const { AuthenticationError, gql } = require('apollo-server');
 
+// permLink format: commentauthor-re-postauthorpostPermLink
+// $ curl -s --data '{"jsonrpc":"2.0", "method":"condenser_api.get_content_replies", "params":["niko79542", "a-post-by-niko"], "id":1}' https://api.steemit.com
+
 module.exports = gql `
 type Reply {
   id: Int!
@@ -21,4 +24,8 @@ type Query {
     replyCountById(postId: Int): Int
 }
 
+type Mutation {
+  # creates or edits a reply
+  broadcastReply(postId: Int, permLink: String, body: String): Reply
+}
 `;
