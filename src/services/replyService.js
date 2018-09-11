@@ -13,19 +13,32 @@ const {
 }                = require('../utils/constants');
 
 module.exports = {
-  broadcastAndStoreReply: function({ authenticatedUserInstance, postId, permLink, body }) {
-    return authenticatedUserInstance.broadcastReply({ postId, permLink, body })
-      .then(broadcastSuccess => {
+  broadcastAndStoreReply: function({ authenticatedUserInstance, postId, body }) {
+    return PostModel.findById(postId)
+      .then(postRecord => {
+        const postAuthor = postRecord.userId;
+        const postPermLink = postRecord.permLink;
+        const permLink = this.replyPermlink(postAuthor, postPermLink, authenticatedUserInstance.username)
+        return [authenticatedUserInstance.broadcastReply({ postAuthor, postPermLink, permLink, body }), permLink];
+      })    
+      .spread((broadcastSuccess, permLink) => {
         if (broadcastSuccess) {
-          return authenticatedUserInstance.userInOurDb;
+          return [authenticatedUserInstance.userInOurDb, permLink];
         }
       })
-      .then(userRecord => {
+      .spread((userRecord, permLink) => {
         return this.fetchSingleSteemitReply(postId, permLink, userRecord);
       })
       .catch(err => {
         new Error(err.error_description);
       })
+  },
+
+  // $ curl -s --data '{"jsonrpc":"2.0", "method":"condenser_api.get_content_replies", "params":["trevonjb", "because-i-do-care"], "id":1}' https://api.steemit.com | jq 
+  replyPermlink: function(postAuthor, postPermLink, commenter) {
+     // TODO: add created timestamp to reply permLink
+     // "oadissin-re-trevonjb-because-i-do-care-20180911t021129058z"
+     return [commenter, 're', postAuthor, postPermLink].join('-')
   },
 
   fetchAllPostReplies: function(postId) {
@@ -72,12 +85,12 @@ module.exports = {
       .catch(err => console.log("trouble adding replies to db", err));
   },
 
-  fetchSingleSteemitReply: async function(postId, postpermlink, userRecord) {
+  fetchSingleSteemitReply: async function(postId, permLink, userRecord) {
    const storeSteemitReplyInOurDb = (reply) => {
      const replyForOurDb = this.replyProperFormat(postId, reply[0]);
      return this.findOrCreateReply(replyForOurDb, userRecord);
     }
-    const params = [[userRecord.id, permlink]];
+    const params = [[userRecord.id, permLink]];
     return client.sendAsync(GET_CONTENT, params, storeSteemitReplyInOurDb);
   },
 
