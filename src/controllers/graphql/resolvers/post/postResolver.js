@@ -17,11 +17,11 @@ module.exports = {
     getPost: async (_,args) => {
       return await Post.findById(args.postId);
     },
-    getFollowerPosts: async (_, args, { authenticatedUserInstance }) => {
+    getUserFeed: async (_, args, { authenticatedUserInstance }) => {
       if (!authenticatedUserInstance) {
         return new AuthenticationError('ERROR_GETTING_FOLLOWER_POSTS');
       }
-      return await authenticatedUserInstance.getMyFollowersPosts();
+      return await authenticatedUserInstance.getMyFollowersPostsAndUsersAuthoredPosts();
     },
     getHundredxPosts: async (_, args) => {
       return await PostService.fetchHundredxResteemedPosts();
@@ -30,7 +30,7 @@ module.exports = {
   Mutation: {
     broadcastPost: async (_, { permLink, title, body, tags }, { authenticatedUserInstance } ) => {
       if (!authenticatedUserInstance) {
-        return new AuthenticationError('ERROR_CREATING_OR_EDTING_POST');
+        return new AuthenticationError('ERROR_CREATING_OR_EDITING_POST');
       }
       return await PostService.broadcastAndStorePost({ authenticatedUserInstance, permLink, title, body, tags });
     },
