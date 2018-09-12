@@ -1,6 +1,7 @@
 const { AuthenticationError } = require('apollo-server');
 const db = require('../../connectors');
 const User = db.sequelize.models.user;
+const UserService = require('../../../../services/userService');
 
 module.exports = {
   Query: {
@@ -19,6 +20,9 @@ module.exports = {
       return !authenticatedUserInstance
         ? new AuthenticationError('ERROR_UNFOLLOWING_USER')
         : await authenticatedUserInstance.unFollowSteemUser(args.steemUsernameToUnfollow);
+    },
+    getProfileInformation: async (_, args) => {
+      return await UserService.getUserInfo(args.name);
     }
   },
   User: {
