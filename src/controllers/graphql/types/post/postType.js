@@ -29,6 +29,7 @@ type Query {
   getPost(postId: Int): Post
   getFollowerPosts: [Post]
   getHundredxPosts: [Post]
+  getPostsByType: [Post]
 }
 
 type Mutation {

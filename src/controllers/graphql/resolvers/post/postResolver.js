@@ -11,6 +11,9 @@ module.exports = {
     getAllPosts: async (_, args) => {
       return await Post.findAll({order: [['hot', 'ASC']], limit: FETCH_TOP_X_POSTS});
     },
+    getPostsByType: async (_, { postType }) => { // Is either NEWS_POST, BLOG_POST, VIDEO_POST
+      return await Post.findAll({ where: { postType } });
+    }
     getPost: async (_,args) => {
       return await Post.findById(args.postId);
     },
