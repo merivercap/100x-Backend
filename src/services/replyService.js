@@ -13,20 +13,23 @@ const {
 }                = require('../utils/constants');
 
 module.exports = {
-  broadcastAndStoreReply: function({ authenticatedUserInstance, postId, body }) {
+  broadcastAndStoreReply: function({ authenticatedUserInstance, postId, body, createdAt }) {
     return PostModel.findById(postId)
       .then(postRecord => {
         const postAuthor = postRecord.userId;
         const postPermLink = postRecord.permLink;
-        const permLink = this.replyPermlink(postAuthor, postPermLink, authenticatedUserInstance.username)
-        return [authenticatedUserInstance.broadcastReply({ postAuthor, postPermLink, permLink, body }), permLink];
-      })    
-      .spread((broadcastSuccess, permLink) => {
-        if (broadcastSuccess) {
-          return [authenticatedUserInstance.userInOurDb, permLink];
+        const permLink = this.replyPermlink(postAuthor, postPermLink,
+          authenticatedUserInstance.username, createdAt)
+        return authenticatedUserInstance.broadcastReply({ postAuthor, postPermLink, permLink, body });
+      })
+      .then(broadcastSuccess => {
+        if (broadcastSuccesss) {
+          return authenticatedUserInstance.userInOurDb;
         }
       })
-      .spread((userRecord, permLink) => {
+      .then(userRecord => {
+        const permLink = this.replyPermlink(postAuthor, postPermLink,
+          authenticatedUserInstance.username, createdAt)
         return this.fetchSingleSteemitReply(postId, permLink, userRecord);
       })
       .catch(err => {
@@ -34,11 +37,11 @@ module.exports = {
       })
   },
 
-  // $ curl -s --data '{"jsonrpc":"2.0", "method":"condenser_api.get_content_replies", "params":["trevonjb", "because-i-do-care"], "id":1}' https://api.steemit.com | jq 
-  replyPermlink: function(postAuthor, postPermLink, commenter) {
-     // TODO: add created timestamp to reply permLink
-     // "oadissin-re-trevonjb-because-i-do-care-20180911t021129058z"
-     return [commenter, 're', postAuthor, postPermLink].join('-')
+  // $ curl -s --data '{"jsonrpc":"2.0", "method":"condenser_api.get_content_replies", "params":["trevonjb", "because-i-do-care"], "id":1}' https://api.steemit.com | jq
+  replyPermlink: function(postAuthor, postPermLink, commenter, createdAt) {
+     // e.g. "oadissin-re-trevonjb-because-i-do-care-20180911t021129058z"
+     var iso = createdAt.toISOString().replace(/:|-./g, "").toLowerCase()
+     return [commenter, 're', postAuthor, postPermLink, iso].join('-')
   },
 
   fetchAllPostReplies: function(postId) {
@@ -86,9 +89,9 @@ module.exports = {
   },
 
   fetchSingleSteemitReply: async function(postId, permLink, userRecord) {
-   const storeSteemitReplyInOurDb = (reply) => {
-     const replyForOurDb = this.replyProperFormat(postId, reply[0]);
-     return this.findOrCreateReply(replyForOurDb, userRecord);
+    const storeSteemitReplyInOurDb = (reply) => {
+      const replyForOurDb = this.replyProperFormat(postId, reply[0]);
+      return this.findOrCreateReply(replyForOurDb, userRecord);
     }
     const params = [[userRecord.id, permLink]];
     return client.sendAsync(GET_CONTENT, params, storeSteemitReplyInOurDb);

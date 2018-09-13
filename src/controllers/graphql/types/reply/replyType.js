@@ -23,6 +23,6 @@ type Query {
 
 type Mutation {
   # creates or edits a reply
-  broadcastReply(postId: Int, body: String): Reply
+  broadcastReply(postId: Int, body: String, createdAt: Date): Reply
 }
 `;
