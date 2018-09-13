@@ -21,8 +21,14 @@ type Query {
     replyCountById(postId: Int): Int
 }
 
+input BroadcastReplyInput {
+  postId: Int!
+  body: String!
+  createdAt: Date!
+}
+
 type Mutation {
   # creates or edits a reply
-  broadcastReply(postId: Int, body: String, createdAt: Date): Reply
+  broadcastReply(input: BroadcastReplyInput): Reply
 }
 `;

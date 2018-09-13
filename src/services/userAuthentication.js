@@ -92,7 +92,6 @@ class UserAuthentication {
       { "tags": tags },
       function (err, res) {
         return err ? new Error(err.error_description) : true
-
       }
     );
   }
@@ -107,8 +106,10 @@ class UserAuthentication {
       body,
       {},
       function (err, res) {
-        return err ? new Error(err.error_description) : true
-
+        if (err) {
+          throw new Error(err.error_description);
+        }
+        return true
       }
     );
   }

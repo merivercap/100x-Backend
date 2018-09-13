@@ -1,19 +1,19 @@
-const db         = require('../models/sequelize');
-const models     = db.sequelize.models;
-const PostModel  = models.post;
-const UserModel  = models.user;
+const db = require('../models/sequelize');
+const models = db.sequelize.models;
+const PostModel = models.post;
+const UserModel = models.user;
 const ReplyModel = models.reply;
-const Op         = db.Sequelize.Op;
-const _          = require('lodash');
-const client     = require('./steem');
+const Op = db.Sequelize.Op;
+const _ = require('lodash');
+const client = require('./steem');
 const idGenerator = require('./idGenerator');
 
 const {
   GET_CONTENT_REPLIES,
-}                = require('../utils/constants');
+} = require('../utils/constants');
 
 module.exports = {
-  broadcastAndStoreReply: function({ authenticatedUserInstance, postId, body, createdAt }) {
+  broadcastAndStoreReply: function(authenticatedUserInstance, { postId, body, createdAt }) {
     return PostModel.findById(postId)
       .then(postRecord => {
         const postAuthor = postRecord.userId;
@@ -33,15 +33,16 @@ module.exports = {
         return this.fetchSingleSteemitReply(postId, permLink, userRecord);
       })
       .catch(err => {
-        new Error(err.error_description);
+        throw new Error(err.error_description);
       })
   },
 
   // $ curl -s --data '{"jsonrpc":"2.0", "method":"condenser_api.get_content_replies", "params":["trevonjb", "because-i-do-care"], "id":1}' https://api.steemit.com | jq
   replyPermlink: function(postAuthor, postPermLink, commenter, createdAt) {
      // e.g. "oadissin-re-trevonjb-because-i-do-care-20180911t021129058z"
-     var iso = createdAt.toISOString().replace(/:|-./g, "").toLowerCase()
-     return [commenter, 're', postAuthor, postPermLink, iso].join('-')
+     const iso = createdAt.toISOString().replace(/:|-./g, "").toLowerCase()
+     const permLink = [commenter, 're', postAuthor, postPermLink, iso].join('-')
+     return permLink
   },
 
   fetchAllPostReplies: function(postId) {
