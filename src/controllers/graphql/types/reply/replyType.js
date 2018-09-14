@@ -13,6 +13,7 @@ type Reply {
   pendingPayoutValue: Float!
   children: Int!
   depth: Int!
+  deleted: Boolean!
 }
 
 type Query {
@@ -30,5 +31,7 @@ input BroadcastReplyInput {
 type Mutation {
   # creates or edits a reply
   broadcastReply(input: BroadcastReplyInput): Reply
+  # flags reply as deleted
+  deleteReply(permLink: String): Reply
 }
 `;

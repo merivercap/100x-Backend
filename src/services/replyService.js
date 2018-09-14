@@ -10,6 +10,7 @@ const idGenerator = require('./idGenerator');
 
 const {
   GET_CONTENT_REPLIES,
+  DELETED,
 } = require('../utils/constants');
 
 module.exports = {
@@ -142,5 +143,15 @@ module.exports = {
     return {
       params, parentId
     };
+  },
+
+  deleteReply: function({ permLink }) {
+    const keyVal = {};
+    keyVal[DELETED] = true;
+    return ReplyModel.update(keyVal, {
+      where: { permLink },
+    }).catch(err => {
+      throw new Error(err.error_description);
+    });
   },
 }

@@ -64,6 +64,11 @@ module.exports = (sequelize, DataTypes) => {
           min: 0
         }
       },
+      deleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+      },
     },
     {
       tableName: 'replies',

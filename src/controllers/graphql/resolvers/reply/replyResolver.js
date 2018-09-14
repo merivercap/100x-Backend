@@ -21,6 +21,12 @@ module.exports = {
       }
       return await ReplyService.broadcastAndStoreReply(authenticatedUserInstance, { input });
     },
+    deleteReply: async(_, { permLink }, { authenticatedUserInstance } ) => {
+      if (!authenticatedUserInstance) {
+        return new AuthenticationError('ERROR_DELETING_REPLY');
+      }
+      return await ReplyService.deleteReply({ permLink });
+    },
   },
   Reply: {
     commenter(reply) {
