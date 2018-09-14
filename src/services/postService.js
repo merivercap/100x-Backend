@@ -14,6 +14,7 @@ const {
   HUNDREDX_USERNAME,
   GET_BLOG_ENTRIES,
   GET_CONTENT,
+  DELETED,
 }                  = require('../utils/constants');
 const VIDEO_URLS   = require('../utils/videoUrls');
 const idGenerator  = require('./idGenerator');
@@ -102,6 +103,16 @@ module.exports = {
     }
     const params = [[HUNDREDX_USERNAME,0,FETCH_TOP_X_POSTS]];
     return client.sendAsync(GET_BLOG_ENTRIES, params, getHundredxPosts);
+  },
+
+  deletePost: function({ permLink }) {
+    const keyVal = {};
+    keyVal[DELETED] = true;
+    return PostModel.update(keyVal, {
+      where: { permLink },
+    }).catch(err => {
+      throw new Error(err.error_description);
+    });
   },
 
   // ===== PRIVATE

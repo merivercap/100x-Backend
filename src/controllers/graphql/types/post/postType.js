@@ -22,6 +22,7 @@ type Post {
   tag3: String
   tag4: String
   tag5: String
+  deleted: Boolean!
 }
 
 type Query {
@@ -34,5 +35,7 @@ type Query {
 type Mutation {
   # creates or edits a post
   broadcastPost(permLink: String, title: String, body: String, tags: [String]): Post
+  # flags post as deleted
+  deletePost(permLink: String): Post
 }
 `;

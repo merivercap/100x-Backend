@@ -31,6 +31,12 @@ module.exports = {
       }
       return await PostService.broadcastAndStorePost({ authenticatedUserInstance, permLink, title, body, tags });
     },
+    deletePost: async(_, { permLink }, { authenticatedUserInstance } ) => {
+      if (!authenticatedUserInstance) {
+        return new AuthenticationError('ERROR_DELETING_POST');
+      }
+      return await PostService.deletePost({ permLink });
+    },
   },
   Post: {
     author(post) {
