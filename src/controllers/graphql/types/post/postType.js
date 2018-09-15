@@ -37,5 +37,7 @@ type Mutation {
   broadcastPost(permLink: String, title: String, body: String, tags: [String]): Post
   # flags post as deleted
   deletePost(permLink: String): Post
+  # votes on a post
+  votePost(permLink: String, up: Boolean): Post
 }
 `;

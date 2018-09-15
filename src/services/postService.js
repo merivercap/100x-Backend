@@ -15,6 +15,7 @@ const {
   GET_BLOG_ENTRIES,
   GET_CONTENT,
   DELETED,
+  NETVOTES,
 }                  = require('../utils/constants');
 const VIDEO_URLS   = require('../utils/videoUrls');
 const idGenerator  = require('./idGenerator');
@@ -115,6 +116,30 @@ module.exports = {
     });
   },
 
+  votePost: function({ authenticatedUserInstance, permLink, up }) {
+    const weight = up ? +10000 : -10000;
+    return PostModel.findOne({
+        where: { permLink },
+      }).then(postInOurDb => {
+        const postAuthor = postRecord.userId;
+        return authenticatedUserInstance.votePost({ permLink, postAuthor, weight });
+      }).then(broadcastSuccess => {
+        if (broadcastSuccess) {
+          return authenticatedUserInstance.userInOurDb;
+        }
+      })
+      .then(userRecord => {
+        const keyVal = {};
+        // TODO: add to previous postInOurDb.netVotes
+        keyVal[NETVOTES] = weight;
+        return PostModel.update(keyVal, {
+          where: { permLink },
+        })
+      })
+      .catch(err => {
+        throw new Error(err.error_description);
+      })
+  }
   // ===== PRIVATE
 
   postIsEnglish: function(post) {

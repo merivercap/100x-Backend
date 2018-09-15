@@ -96,6 +96,20 @@ class UserAuthentication {
     );
   }
 
+  votePost({ permlink, author, weight }) {
+    return this.steemUser.vote(
+      this.username,
+      author,
+      permlink,
+      weight,
+      function(err, res) {
+        if (err) {
+          throw new Error(err.error_description);
+        }
+        return true
+      });
+  }
+
   broadcastReply({ postAuthor, postPermLink, permLink, body }) { // create or edit
     return this.steemUser.comment(
       postAuthor,

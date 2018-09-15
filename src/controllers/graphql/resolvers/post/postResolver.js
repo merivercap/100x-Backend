@@ -37,6 +37,12 @@ module.exports = {
       }
       return await PostService.deletePost({ permLink });
     },
+    votePost: async(_, { permLink, up }, { authenticatedUserInstance } ) => {
+      if (!authenticatedUserInstance) {
+        return new AuthenticationError('ERROR_VOTING_ON_POST');
+      }
+      return await PostService.votePost({ authenticatedUserInstance, permLink, up });
+    }
   },
   Post: {
     author(post) {
