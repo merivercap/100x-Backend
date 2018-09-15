@@ -16,6 +16,7 @@ const {
   GET_CONTENT,
   DELETED,
   NETVOTES,
+  VOTE_WEIGHT,
 }                  = require('../utils/constants');
 const VIDEO_URLS   = require('../utils/videoUrls');
 const idGenerator  = require('./idGenerator');
@@ -107,17 +108,19 @@ module.exports = {
   },
 
   deletePost: function({ permLink }) {
-    const keyVal = {};
-    keyVal[DELETED] = true;
-    return PostModel.update(keyVal, {
+    return PostModel.findOne({
       where: { permLink },
+    }).then(postInOurDb => {
+      const keyVal = {};
+      keyVal[DELETED] = true;
+      return postInOurDb.update(keyVal);
     }).catch(err => {
       throw new Error(err.error_description);
     });
   },
 
   votePost: function({ authenticatedUserInstance, permLink, up }) {
-    const weight = up ? +10000 : -10000;
+    const weight = (up ? +1 : -1) * VOTE_WEIGHT;
     return PostModel.findOne({
         where: { permLink },
       }).then(postInOurDb => {
@@ -125,16 +128,15 @@ module.exports = {
         return authenticatedUserInstance.vote({ permLink, postAuthor, weight });
       }).then(broadcastSuccess => {
         if (broadcastSuccess) {
-          return authenticatedUserInstance.userInOurDb;
+          return PostModel.findOne({
+            where: { permLink }
+          });
         }
       })
-      .then(userRecord => {
+      .then(postInOurDb => {
         const keyVal = {};
-        // TODO: add to previous postInOurDb.netVotes
-        keyVal[NETVOTES] = weight;
-        return PostModel.update(keyVal, {
-          where: { permLink },
-        })
+        keyVal[NETVOTES] = postInOurDb.netVotes + weight;
+        return postInOurDb.update(keyVal);
       })
       .catch(err => {
         throw new Error(err.error_description);

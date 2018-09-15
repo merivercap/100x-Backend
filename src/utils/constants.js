@@ -14,3 +14,4 @@ module.exports.GET_BLOG_ENTRIES = 'get_blog_entries';
 module.exports.GET_CONTENT = 'get_content';
 module.exports.DELETED = 'deleted';
 module.exports.NETVOTES = 'netVotes';
+module.exports.VOTE_WEIGHT = 10000;

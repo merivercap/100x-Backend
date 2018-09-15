@@ -11,6 +11,7 @@ const idGenerator = require('./idGenerator');
 const {
   GET_CONTENT_REPLIES,
   DELETED,
+  VOTE_WEIGHT,
 } = require('../utils/constants');
 
 module.exports = {
@@ -146,17 +147,19 @@ module.exports = {
   },
 
   deleteReply: function({ permLink }) {
-    const keyVal = {};
-    keyVal[DELETED] = true;
-    return ReplyModel.update(keyVal, {
+    return ReplyModel.findOne({
       where: { permLink },
+    }).then(replyInOurDb => {
+      const keyVal = {};
+      keyVal[DELETED] = true;
+      return replyInOurDb.update(keyVal);
     }).catch(err => {
       throw new Error(err.error_description);
     });
   },
 
   voteReply: function({ authenticatedUserInstance, permLink, up }) {
-    const weight = up ? +10000 : -10000;
+    const weight = (up ? +1 : -1) * VOTE_WEIGHT;
     return ReplyModel.findOne({
         where: { permLink },
       }).then(replyInOurDb => {
@@ -164,16 +167,15 @@ module.exports = {
         return authenticatedUserInstance.vote({ permLink, replyAuthor, weight });
       }).then(broadcastSuccess => {
         if (broadcastSuccess) {
-          return authenticatedUserInstance.userInOurDb;
+          return ReplyModel.findOne({
+            where: { permLink },
+          });
         }
       })
-      .then(userRecord => {
+      .then(replyInOurDb => {
         const keyVal = {};
-        // TODO: add to previous replyInOurDb.netVotes
-        keyVal[NETVOTES] = weight;
-        return ReplyModel.update(keyVal, {
-          where: { permLink },
-        })
+        keyVal[NETVOTES] = replyInOurDb.netVotes + weight;
+        return replyInOurDb.update(keyVal);
       })
       .catch(err => {
         throw new Error(err.error_description);
