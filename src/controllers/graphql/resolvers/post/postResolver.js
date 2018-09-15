@@ -9,10 +9,14 @@ const { FETCH_TOP_X_POSTS } = require('../../../../utils/constants');
 module.exports = {
   Query: {
     getAllPosts: async (_, args) => {
-      return await Post.findAll({order: [['hot', 'ASC']], limit: FETCH_TOP_X_POSTS});
+      return await Post.findAll({
+        order: [['hot', 'ASC']],
+        limit: FETCH_TOP_X_POSTS,
+        where: { deleted: false },
+      });
     },
     getPost: async (_,args) => {
-      return await Post.findById(args.postId);
+      return await Post.findById(args.postId, { where: { deleted: false } });
     },
     getFollowerPosts: async (_, args, { authenticatedUserInstance }) => {
       if (!authenticatedUserInstance) {

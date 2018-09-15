@@ -72,6 +72,7 @@ module.exports = {
            }
          }
       ],
+      where: { deleted: false },
     });
   },
 
@@ -220,7 +221,7 @@ module.exports = {
   },
   findByPermLinkAndAuthor: function(permLink, name) {
     return PostModel.findOne({
-      where: { permLink },
+      where: { permLink, deleted: false },
       include: [
         {
           model: UserModel,

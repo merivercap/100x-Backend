@@ -48,15 +48,16 @@ module.exports = {
   },
 
   fetchAllPostReplies: function(postId) {
-    return PostModel.findById(postId) //find post
-      .then(postRecord => {
+    return PostModel.findById(postId, { // find post
+      where: { deleted: false },
+    }).then(postRecord => {
         // store post info...
         const postAuthor = postRecord.userId;
         const postPermLink = postRecord.permLink;
         return this.fetchRepliesFromSteemit(postId, postAuthor, postPermLink);
       })
       .then(result => {
-        return ReplyModel.findAll({ where: { postId } })
+        return ReplyModel.findAll({ where: { postId, deleted: false } })
       })
       .catch(err => {
         console.log(err, "post doesnt exist in the db, or error fetching replies.");
