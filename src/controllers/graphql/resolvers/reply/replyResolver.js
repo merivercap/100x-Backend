@@ -27,6 +27,12 @@ module.exports = {
       }
       return await ReplyService.deleteReply({ permLink });
     },
+    voteReply: async(_, { permLink, up }, { authenticatedUserInstance } ) => {
+      if (!authenticatedUserInstance) {
+        return new AuthenticationError('ERROR_VOTING_ON_REPLY');
+      }
+      return await ReplyService.voteReply({ authenticatedUserInstance, permLink, up });
+    }
   },
   Reply: {
     commenter(reply) {

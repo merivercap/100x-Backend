@@ -96,7 +96,7 @@ class UserAuthentication {
     );
   }
 
-  votePost({ permlink, author, weight }) {
+  vote({ permlink, author, weight }) {
     return this.steemUser.vote(
       this.username,
       author,

@@ -121,8 +121,8 @@ module.exports = {
     return PostModel.findOne({
         where: { permLink },
       }).then(postInOurDb => {
-        const postAuthor = postRecord.userId;
-        return authenticatedUserInstance.votePost({ permLink, postAuthor, weight });
+        const postAuthor = postInOurDb.userId;
+        return authenticatedUserInstance.vote({ permLink, postAuthor, weight });
       }).then(broadcastSuccess => {
         if (broadcastSuccess) {
           return authenticatedUserInstance.userInOurDb;

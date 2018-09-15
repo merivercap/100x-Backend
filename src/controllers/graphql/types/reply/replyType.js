@@ -33,5 +33,7 @@ type Mutation {
   broadcastReply(input: BroadcastReplyInput): Reply
   # flags reply as deleted
   deleteReply(permLink: String): Reply
+  # votes on a reply
+  voteReply(permLink: String, up: Boolean): Reply
 }
 `;

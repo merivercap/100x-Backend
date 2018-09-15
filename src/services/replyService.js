@@ -154,4 +154,29 @@ module.exports = {
       throw new Error(err.error_description);
     });
   },
+
+  voteReply: function({ authenticatedUserInstance, permLink, up }) {
+    const weight = up ? +10000 : -10000;
+    return ReplyModel.findOne({
+        where: { permLink },
+      }).then(replyInOurDb => {
+        const replyAuthor = replyInOurDb.userId;
+        return authenticatedUserInstance.vote({ permLink, replyAuthor, weight });
+      }).then(broadcastSuccess => {
+        if (broadcastSuccess) {
+          return authenticatedUserInstance.userInOurDb;
+        }
+      })
+      .then(userRecord => {
+        const keyVal = {};
+        // TODO: add to previous replyInOurDb.netVotes
+        keyVal[NETVOTES] = weight;
+        return ReplyModel.update(keyVal, {
+          where: { permLink },
+        })
+      })
+      .catch(err => {
+        throw new Error(err.error_description);
+      })
+  }
 }
