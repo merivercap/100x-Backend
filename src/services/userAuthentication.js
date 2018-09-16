@@ -34,7 +34,7 @@ class UserAuthentication {
       this.username,
       steemUserNameToFollow,
       function(err, res) {
-        return err ? new Error(err.error_description) : self.userInOurDb;
+        return err ? new Error(err) : self.userInOurDb;
       }
     );
   }
@@ -45,7 +45,7 @@ class UserAuthentication {
       this.username,
       steemUserNameToUnfollow,
       function(err, res) {
-        return err ? new Error(err.error_description) : self.userInOurDb;
+        return err ? new Error(err) : self.userInOurDb;
       }
     );
   }
@@ -91,7 +91,7 @@ class UserAuthentication {
       body,
       { "tags": tags },
       function (err, res) {
-        return err ? new Error(err.error_description) : true
+        return err ? new Error(err) : true
       }
     );
   }
@@ -104,7 +104,7 @@ class UserAuthentication {
       weight,
       function(err, res) {
         if (err) {
-          throw new Error(err.error_description);
+          throw new Error(err);
         }
         return true
       });
@@ -121,7 +121,7 @@ class UserAuthentication {
       {},
       function (err, res) {
         if (err) {
-          throw new Error(err.error_description);
+          throw new Error(err);
         }
         return true
       }

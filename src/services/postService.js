@@ -14,7 +14,7 @@ const {
   HUNDREDX_USERNAME,
   GET_BLOG_ENTRIES,
   GET_CONTENT,
-  DELETED,
+  IS_DELETED,
   NETVOTES,
   VOTE_WEIGHT,
 }                  = require('../utils/constants');
@@ -33,7 +33,7 @@ module.exports = {
         return this.fetchSingleSteemitPost(permLink, userRecord);
       })
       .catch(err => {
-        new Error(err.error_description);
+        new Error(err);
       })
   },
 
@@ -72,7 +72,7 @@ module.exports = {
            }
          }
       ],
-      where: { deleted: false },
+      where: { isDeleted: false },
     });
   },
 
@@ -113,10 +113,10 @@ module.exports = {
       where: { permLink },
     }).then(postInOurDb => {
       const keyVal = {};
-      keyVal[DELETED] = true;
+      keyVal[IS_DELETED] = true;
       return postInOurDb.update(keyVal);
     }).catch(err => {
-      throw new Error(err.error_description);
+      throw new Error(err);
     });
   },
 
@@ -140,7 +140,7 @@ module.exports = {
         return postInOurDb.update(keyVal);
       })
       .catch(err => {
-        throw new Error(err.error_description);
+        throw new Error(err);
       })
   }
   // ===== PRIVATE
@@ -221,7 +221,7 @@ module.exports = {
   },
   findByPermLinkAndAuthor: function(permLink, name) {
     return PostModel.findOne({
-      where: { permLink, deleted: false },
+      where: { permLink, isDeleted: false },
       include: [
         {
           model: UserModel,

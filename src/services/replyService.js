@@ -10,7 +10,7 @@ const idGenerator = require('./idGenerator');
 
 const {
   GET_CONTENT_REPLIES,
-  DELETED,
+  IS_DELETED,
   VOTE_WEIGHT,
 } = require('../utils/constants');
 
@@ -35,7 +35,7 @@ module.exports = {
         return this.fetchSingleSteemitReply(postId, permLink, userRecord);
       })
       .catch(err => {
-        throw new Error(err.error_description);
+        throw new Error(err);
       })
   },
 
@@ -49,7 +49,7 @@ module.exports = {
 
   fetchAllPostReplies: function(postId) {
     return PostModel.findById(postId, { // find post
-      where: { deleted: false },
+      where: { isDeleted: false },
     }).then(postRecord => {
         // store post info...
         const postAuthor = postRecord.userId;
@@ -57,7 +57,7 @@ module.exports = {
         return this.fetchRepliesFromSteemit(postId, postAuthor, postPermLink);
       })
       .then(result => {
-        return ReplyModel.findAll({ where: { postId, deleted: false } })
+        return ReplyModel.findAll({ where: { postId, isDeleted: false } })
       })
       .catch(err => {
         console.log(err, "post doesnt exist in the db, or error fetching replies.");
@@ -152,10 +152,10 @@ module.exports = {
       where: { permLink },
     }).then(replyInOurDb => {
       const keyVal = {};
-      keyVal[DELETED] = true;
+      keyVal[IS_DELETED] = true;
       return replyInOurDb.update(keyVal);
     }).catch(err => {
-      throw new Error(err.error_description);
+      throw new Error(err);
     });
   },
 
@@ -179,7 +179,7 @@ module.exports = {
         return replyInOurDb.update(keyVal);
       })
       .catch(err => {
-        throw new Error(err.error_description);
+        throw new Error(err);
       })
   }
 }

@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
       tag3: { type: DataTypes.STRING },
       tag4: { type: DataTypes.STRING },
       tag5: { type: DataTypes.STRING },
-      deleted: {
+      isDeleted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
         allowNull: false

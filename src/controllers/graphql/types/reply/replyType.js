@@ -13,7 +13,7 @@ type Reply {
   pendingPayoutValue: Float!
   children: Int!
   depth: Int!
-  deleted: Boolean!
+  isDeleted: Boolean!
 }
 
 type Query {

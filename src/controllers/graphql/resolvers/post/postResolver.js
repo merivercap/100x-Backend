@@ -12,11 +12,11 @@ module.exports = {
       return await Post.findAll({
         order: [['hot', 'ASC']],
         limit: FETCH_TOP_X_POSTS,
-        where: { deleted: false },
+        where: { isDeleted: false },
       });
     },
     getPost: async (_,args) => {
-      return await Post.findById(args.postId, { where: { deleted: false } });
+      return await Post.findById(args.postId, { where: { isDeleted: false } });
     },
     getFollowerPosts: async (_, args, { authenticatedUserInstance }) => {
       if (!authenticatedUserInstance) {

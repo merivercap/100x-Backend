@@ -22,7 +22,7 @@ type Post {
   tag3: String
   tag4: String
   tag5: String
-  deleted: Boolean!
+  isDeleted: Boolean!
 }
 
 type Query {

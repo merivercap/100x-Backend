@@ -8,10 +8,10 @@ module.exports = {
       return await ReplyService.fetchAllPostReplies(postId);
     },
     returnAllReplies: async (_, args) => {
-      return await Reply.findAll({ where: { deleted: false } });
+      return await Reply.findAll({ where: { isDeleted: false } });
     },
     replyCountById: async (_, args) => {
-      return await Reply.count({ where: { postId: args.postId, deleted: false } });
+      return await Reply.count({ where: { postId: args.postId, isDeleted: false } });
     }
   },
   Mutation: {
