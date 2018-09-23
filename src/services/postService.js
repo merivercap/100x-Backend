@@ -50,8 +50,8 @@ module.exports = {
 
           UserModel
           .findOrCreate({
-            where: {id: steemitPost.author + idGenerator.generate() },
-            defaults: { name: steemitPost.author }
+            where: { name: steemitPost.author },
+            defaults: { id: steemitPost.author + idGenerator.generate() }
           })
           .spread((userRecord, created) => {
             return this.findOrCreatePost({...postForOurDb, ...newRankingObj}, userRecord);

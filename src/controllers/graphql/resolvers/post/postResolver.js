@@ -17,9 +17,12 @@ module.exports = {
     },
     getPostsByType: async (_, { postType }) => { // Is either NEWS_POST, BLOG_POST, VIDEO_POST
       return await Post.findAll({ where: { postType } });
-    }
+    },
     getPost: async (_,args) => {
-      return await Post.findById(args.postId, { where: { isDeleted: false } });
+      return await Post.findOne({ where: {
+        id: args.postId,
+        isDeleted: false,
+      } });
     },
     getUserFeed: async (_, args, { authenticatedUserInstance }) => {
       if (!authenticatedUserInstance) {

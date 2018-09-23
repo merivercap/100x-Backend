@@ -1,5 +1,4 @@
 const db           = require('../models/sequelize');
-const UserModel    = db.sequelize.models.user;
 const _            = require('lodash');
 const client       = require('./steem');
 const {

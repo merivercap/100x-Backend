@@ -48,8 +48,11 @@ module.exports = {
   },
 
   fetchAllPostReplies: function(postId) {
-    return PostModel.findById(postId, { // find post
-      where: { isDeleted: false },
+    return PostModel.findOne({ // find post
+      where: {
+        id: postId,
+        isDeleted: false
+      },
     }).then(postRecord => {
         // store post info...
         const postAuthor = postRecord.userId;
@@ -84,7 +87,8 @@ module.exports = {
   addReplyToDb: function(replyObj) {
     return UserModel
       .findOrCreate({
-        where: {id: replyObj.userId},
+        where: { name: replyObj.userId },
+        defaults: { id: replyObj.userId + idGenerator.generate() }
       })
       .spread((commenter, created) => {
         return this.findOrCreateReply(replyObj, commenter);

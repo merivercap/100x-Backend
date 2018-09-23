@@ -7,6 +7,7 @@ const UserModel  = models.user;
 const _            = require('lodash');
 const PostService = require('./postService');
 const client       = require('./steem');
+const idGenerator  = require('./idGenerator');
 
 const { GET_FOLLOWING } = require('../utils/constants');
 
@@ -53,7 +54,8 @@ class UserAuthentication {
   findOrCreateUser(username) {
     return UserModel
       .findOrCreate({
-        where: {name: username },
+        where: { name: username },
+        defaults: { id: username + idGenerator.generate() }
       })
       .spread((user, created) => {
         return user;
