@@ -15,3 +15,4 @@ module.exports.GET_CONTENT = 'get_content';
 module.exports.IS_DELETED = 'isDeleted';
 module.exports.NETVOTES = 'netVotes';
 module.exports.VOTE_WEIGHT = 10000;
+module.exports.GET_ACCOUNTS = 'get_accounts';

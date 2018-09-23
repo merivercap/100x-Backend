@@ -68,12 +68,13 @@ class UserAuthentication {
     });
   }
 
-  getMyFollowersPosts() {
+  getMyFollowersPostsAndUsersAuthoredPosts() {
     const getFollowerPostsFromOurDb = (followingObjects) => {
       const authorUsernames = [];
       for (const followingObject of followingObjects[0]) { // replies returned in 2-D array.  Our client.sendAsync supports multiple requests..
         authorUsernames.push(followingObject.following);
       }
+      authorUsernames.push(this.username);
       return PostService.getPostsOfAuthors(authorUsernames);
     }
     // const params = [account (string)	start (string)	type (string)	limit (int)];
