@@ -91,7 +91,12 @@ module.exports = (sequelize, DataTypes) => {
       tag2: { type: DataTypes.STRING },
       tag3: { type: DataTypes.STRING },
       tag4: { type: DataTypes.STRING },
-      tag5: { type: DataTypes.STRING }
+      tag5: { type: DataTypes.STRING },
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false
+      },
     },
     {
       tableName: 'posts',

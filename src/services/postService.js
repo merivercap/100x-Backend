@@ -14,6 +14,9 @@ const {
   HUNDREDX_USERNAME,
   GET_BLOG_ENTRIES,
   GET_CONTENT,
+  IS_DELETED,
+  NETVOTES,
+  VOTE_WEIGHT,
 }                  = require('../utils/constants');
 const VIDEO_URLS   = require('../utils/videoUrls');
 const idGenerator  = require('./idGenerator');
@@ -30,7 +33,7 @@ module.exports = {
         return this.fetchSingleSteemitPost(permLink, userRecord);
       })
       .catch(err => {
-        new Error(err.error_description);
+        new Error(err);
       })
   },
 
@@ -69,10 +72,11 @@ module.exports = {
            }
          }
       ],
+      where: { isDeleted: false },
     });
   },
 
- fetchSingleSteemitPost: async function(permlink, userRecord) {
+  fetchSingleSteemitPost: async function(permlink, userRecord) {
    const storeSteemitPostInOurDb = (post) => {
      const postForOurDb = this.formatSteemitPost(post[0]);
      return this.findOrCreatePost(postForOurDb, userRecord);
@@ -104,6 +108,41 @@ module.exports = {
     return client.sendAsync(GET_BLOG_ENTRIES, params, getHundredxPosts);
   },
 
+  deletePost: function({ permLink }) {
+    return PostModel.findOne({
+      where: { permLink },
+    }).then(postInOurDb => {
+      const keyVal = {};
+      keyVal[IS_DELETED] = true;
+      return postInOurDb.update(keyVal);
+    }).catch(err => {
+      throw new Error(err);
+    });
+  },
+
+  votePost: function({ authenticatedUserInstance, permLink, up }) {
+    const weight = (up ? +1 : -1) * VOTE_WEIGHT;
+    return PostModel.findOne({
+        where: { permLink },
+      }).then(postInOurDb => {
+        const postAuthor = postInOurDb.userId;
+        return authenticatedUserInstance.vote({ permLink, postAuthor, weight });
+      }).then(broadcastSuccess => {
+        if (broadcastSuccess) {
+          return PostModel.findOne({
+            where: { permLink }
+          });
+        }
+      })
+      .then(postInOurDb => {
+        const keyVal = {};
+        keyVal[NETVOTES] = postInOurDb.netVotes + weight;
+        return postInOurDb.update(keyVal);
+      })
+      .catch(err => {
+        throw new Error(err);
+      })
+  },
   // ===== PRIVATE
 
   postIsEnglish: function(post) {
@@ -182,7 +221,7 @@ module.exports = {
   },
   findByPermLinkAndAuthor: function(permLink, name) {
     return PostModel.findOne({
-      where: { permLink },
+      where: { permLink, isDeleted: false },
       include: [
         {
           model: UserModel,

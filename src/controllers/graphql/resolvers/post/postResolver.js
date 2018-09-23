@@ -9,13 +9,17 @@ const { FETCH_TOP_X_POSTS } = require('../../../../utils/constants');
 module.exports = {
   Query: {
     getAllPosts: async (_, args) => {
-      return await Post.findAll({order: [['hot', 'ASC']], limit: FETCH_TOP_X_POSTS});
+      return await Post.findAll({
+        order: [['hot', 'ASC']],
+        limit: FETCH_TOP_X_POSTS,
+        where: { isDeleted: false },
+      });
     },
     getPostsByType: async (_, { postType }) => { // Is either NEWS_POST, BLOG_POST, VIDEO_POST
       return await Post.findAll({ where: { postType } });
     }
     getPost: async (_,args) => {
-      return await Post.findById(args.postId);
+      return await Post.findById(args.postId, { where: { isDeleted: false } });
     },
     getUserFeed: async (_, args, { authenticatedUserInstance }) => {
       if (!authenticatedUserInstance) {
@@ -34,6 +38,18 @@ module.exports = {
       }
       return await PostService.broadcastAndStorePost({ authenticatedUserInstance, permLink, title, body, tags });
     },
+    deletePost: async(_, { permLink }, { authenticatedUserInstance } ) => {
+      if (!authenticatedUserInstance) {
+        return new AuthenticationError('ERROR_DELETING_POST');
+      }
+      return await PostService.deletePost({ permLink });
+    },
+    votePost: async(_, { permLink, up }, { authenticatedUserInstance } ) => {
+      if (!authenticatedUserInstance) {
+        return new AuthenticationError('ERROR_VOTING_ON_POST');
+      }
+      return await PostService.votePost({ authenticatedUserInstance, permLink, up });
+    }
   },
   Post: {
     author(post) {

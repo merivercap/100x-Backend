@@ -34,7 +34,7 @@ class UserAuthentication {
       this.username,
       steemUserNameToFollow,
       function(err, res) {
-        return err ? new Error(err.error_description) : self.userInOurDb;
+        return err ? new Error(err) : self.userInOurDb;
       }
     );
   }
@@ -45,7 +45,7 @@ class UserAuthentication {
       this.username,
       steemUserNameToUnfollow,
       function(err, res) {
-        return err ? new Error(err.error_description) : self.userInOurDb;
+        return err ? new Error(err) : self.userInOurDb;
       }
     );
   }
@@ -53,7 +53,7 @@ class UserAuthentication {
   findOrCreateUser(username) {
     return UserModel
       .findOrCreate({
-        where: {id: username },
+        where: {name: username },
       })
       .spread((user, created) => {
         return user;
@@ -85,18 +85,49 @@ class UserAuthentication {
   broadcastPost({ permLink, title, body, tags }) { // create or edit
     return this.steemUser.comment(
       '',
-      tags[0],
+      '',
       this.username,
       permLink,
       title,
       body,
       { "tags": tags },
       function (err, res) {
-        return err ? new Error(err.error_description) : true;
+        return err ? new Error(err) : true
       }
     );
   }
 
+  vote({ permlink, author, weight }) {
+    return this.steemUser.vote(
+      this.username,
+      author,
+      permlink,
+      weight,
+      function(err, res) {
+        if (err) {
+          throw new Error(err);
+        }
+        return true
+      });
+  }
+
+  broadcastReply({ postAuthor, postPermLink, permLink, body }) { // create or edit
+    return this.steemUser.comment(
+      postAuthor,
+      postPermLink,
+      this.username,
+      permLink,
+      '',
+      body,
+      {},
+      function (err, res) {
+        if (err) {
+          throw new Error(err);
+        }
+        return true
+      }
+    );
+  }
 }
 
 module.exports = UserAuthentication;

@@ -13,6 +13,7 @@ type Reply {
   pendingPayoutValue: Float!
   children: Int!
   depth: Int!
+  isDeleted: Boolean!
 }
 
 type Query {
@@ -21,4 +22,18 @@ type Query {
     replyCountById(postId: Int): Int
 }
 
+input BroadcastReplyInput {
+  postId: Int!
+  body: String!
+  createdAt: Date!
+}
+
+type Mutation {
+  # creates or edits a reply
+  broadcastReply(input: BroadcastReplyInput): Reply
+  # flags reply as deleted
+  deleteReply(permLink: String): Reply
+  # votes on a reply
+  voteReply(permLink: String, up: Boolean): Reply
+}
 `;

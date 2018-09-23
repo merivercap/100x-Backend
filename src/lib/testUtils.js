@@ -12,6 +12,7 @@ module.exports = {
 
   createTestUserOpts: (number = 0) => {
     const randomNum = _.random(10000) + number;
+    const name = `name${randomNum}`;
     const id = `name${randomNum}`;
 
     return {
