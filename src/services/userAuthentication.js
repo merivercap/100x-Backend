@@ -53,7 +53,7 @@ class UserAuthentication {
   findOrCreateUser(username) {
     return UserModel
       .findOrCreate({
-        where: {id: username },
+        where: {name: username },
       })
       .spread((user, created) => {
         return user;

@@ -142,7 +142,7 @@ module.exports = {
       .catch(err => {
         throw new Error(err);
       })
-  }
+  },
   // ===== PRIVATE
 
   postIsEnglish: function(post) {
