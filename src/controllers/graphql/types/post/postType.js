@@ -30,7 +30,7 @@ type Query {
   getPost(postId: Int): Post
   getUserFeed: [Post]
   getHundredxPosts: [Post]
-  getPostsByType: [Post]
+  getPostsByType(postType: String): [Post]
 }
 
 type Mutation {
