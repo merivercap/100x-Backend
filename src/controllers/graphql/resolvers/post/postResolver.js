@@ -18,7 +18,7 @@ module.exports = {
     getPostsByType: async (_, { postType }) => { // Is either NEWS_POST, BLOG_POST, VIDEO_POST
       return await Post.findAll({ where: { postType } });
     },
-    getPost: async (_,args) => {
+    getPost: async (_, args) => {
       return await Post.findOne({ where: {
         id: args.postId,
         isDeleted: false,
