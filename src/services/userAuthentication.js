@@ -92,7 +92,7 @@ class UserAuthentication {
       permLink,
       title,
       body,
-      { "tags": tags },
+      JSON.stringify({ "tags": tags }),
       function (err, res) {
         return err ? new Error(err) : true
       }

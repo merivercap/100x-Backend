@@ -4,6 +4,7 @@ const client       = require('./steem');
 const {
   GET_ACCOUNTS,
 }                  = require('../utils/constants');
+const User         = db.sequelize.models.user;
 
 module.exports = {
 
@@ -12,6 +13,7 @@ module.exports = {
     const location = jsonMetadata.profile.location;
     const introBlurb = jsonMetadata.profile.about;
     const profileImageUrl = jsonMetadata.profile.profile_image;
+    const realLifeName = jsonMetadata.name;
     const reputationScore = userInfoFromSteemit.posting_rewards;
     const createdAt = userInfoFromSteemit.created;
     const votingPower = userInfoFromSteemit.voting_power;
@@ -24,16 +26,15 @@ module.exports = {
       reputationScore,
       createdAt,
       votingPower
-    }
+    };
   },
 
   getUserInfo: async function(name) {
     const storeUserInfo = (userInfo) => {
-      const self = this;
-      const userProfileInformation = this.mapSteemUserInfoToOurBackend(userInfo[0]);
-      User.find({where: { name }})
+      const userProfileInformation = this.mapSteemUserInfoToOurBackend(userInfo[0][0]);
+      return User.findOne({where: { name }})
         .then(user => {
-          return user.update(self.userProfileInformation);
+          return user.update(userProfileInformation);
         })
         .then(updatedUser => {
           return updatedUser;
