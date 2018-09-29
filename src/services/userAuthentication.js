@@ -51,6 +51,19 @@ class UserAuthentication {
     );
   }
 
+  claimUsersRewardBalance() {
+    const self=this;
+    return this.steemUser.claimRewardBalance(
+      self.username,
+      self.userInOurDb.steemBalance,
+      self.userInOurDb.sbdBalance,
+      self.userInOurDb.vestingBalance,
+      function(err, res) {
+        return err ? new Error(err) : self.userInOurDb;
+      }
+    );
+  }
+
   findOrCreateUser(username) {
     return UserModel
       .findOrCreate({

@@ -23,6 +23,11 @@ module.exports = {
     },
     getProfileInformation: async (_, args) => {
       return await UserService.getUserInfo(args.name);
+    },
+    claimRewardBalance: async (_, args, { authenticatedUserInstance }) => {
+      return !authenticatedUserInstance
+        ? new AuthenticationError('ERROR_CLAIMING_REWARD_BALANCE')
+        : await authenticatedUserInstance.claimUsersRewardBalance();
     }
   },
   User: {
