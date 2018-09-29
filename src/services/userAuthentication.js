@@ -64,6 +64,7 @@ class UserAuthentication {
 
   initializeSteemUser(accessToken) {
     return this.steemUser = sc2.Initialize({
+      baseURL: 'https://steemconnect.com',
       app: 'hundredx.app',
       callbackURL: process.env.DEV_URL,
       accessToken,
