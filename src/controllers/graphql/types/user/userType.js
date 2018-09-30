@@ -13,6 +13,11 @@ type User {
   profileImageUrl: String
   posts: [Post]
   replies: [Reply]
+  steemBalance: Float
+  sbdBalance: Float
+  steemPower: Float
+  userVests: Float
+  estimatedAccountValue: Float
 }
 
 type Query {

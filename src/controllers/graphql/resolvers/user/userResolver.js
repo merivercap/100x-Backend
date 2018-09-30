@@ -22,7 +22,7 @@ module.exports = {
         : await authenticatedUserInstance.unFollowSteemUser(args.steemUsernameToUnfollow);
     },
     getProfileInformation: async (_, args) => {
-      return await UserService.getUserInfo(args.name);
+      return await UserService.getUserProfileInfo(args.name);
     },
     claimRewardBalance: async (_, args, { authenticatedUserInstance }) => {
       return !authenticatedUserInstance
