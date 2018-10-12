@@ -15,11 +15,11 @@ module.exports = {
     }
   },
   Mutation: {
-    broadcastReply: async (_, { input }, { authenticatedUserInstance } ) => {
+    broadcastReply: async (_, { postPermLink, postAuthor, body }, { authenticatedUserInstance } ) => {
       if (!authenticatedUserInstance) {
         return new AuthenticationError('ERROR_CREATING_OR_EDITING_REPLY');
       }
-      return await ReplyService.broadcastAndStoreReply(authenticatedUserInstance, { input });
+      return await ReplyService.broadcastAndStoreReply(authenticatedUserInstance, postPermLink, postAuthor, body);
     },
     deleteReply: async(_, { permLink }, { authenticatedUserInstance } ) => {
       if (!authenticatedUserInstance) {

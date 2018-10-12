@@ -1,4 +1,4 @@
-module.exports.FETCH_POSTS_PER_TAG = 10;
+module.exports.FETCH_POSTS_PER_TAG = 1;
 module.exports.FETCH_TOP_X_POSTS = 100;
 module.exports.HOT = 'hot';
 module.exports.TRENDING = 'trending';

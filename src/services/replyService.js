@@ -15,36 +15,31 @@ const {
 } = require('../utils/constants');
 
 module.exports = {
-  broadcastAndStoreReply: function(authenticatedUserInstance, { postId, body, createdAt }) {
-    return PostModel.findById(postId)
-      .then(postRecord => {
-        const postAuthor = postRecord.userId;
-        const postPermLink = postRecord.permLink;
-        const permLink = this.replyPermlink(postAuthor, postPermLink,
+  broadcastAndStoreReply: function(authenticatedUserInstance, postPermLink, postAuthor, body) {
+      const createdAt = new Date();
+      const permLink = this.replyPermlink(postAuthor, postPermLink,
           authenticatedUserInstance.username, createdAt)
-        return authenticatedUserInstance.broadcastReply({ postAuthor, postPermLink, permLink, body });
-      })
-      .then(broadcastSuccess => {
-        if (broadcastSuccesss) {
-          return authenticatedUserInstance.userInOurDb;
-        }
-      })
-      .then(userRecord => {
-        const permLink = this.replyPermlink(postAuthor, postPermLink,
-          authenticatedUserInstance.username, createdAt)
-        return this.fetchSingleSteemitReply(postId, permLink, userRecord);
-      })
-      .catch(err => {
-        throw new Error(err);
-      })
+      return authenticatedUserInstance.broadcastReply({ postAuthor, postPermLink, permLink, body })
+        .then(broadcastSuccess => {
+            return broadcastSuccess ? "success" : "error";
+            // return authenticatedUserInstance.userInOurDb;
+        })
+        // .then(userRecord => {
+        //   const permLink = this.replyPermlink(postAuthor, postPermLink,
+        //     authenticatedUserInstance.username, createdAt)
+        //   return this.fetchSingleSteemitReply(postId, permLink, userRecord);
+        // })
+        .catch(err => {
+          throw new Error(err);
+        })
   },
 
   // $ curl -s --data '{"jsonrpc":"2.0", "method":"condenser_api.get_content_replies", "params":["trevonjb", "because-i-do-care"], "id":1}' https://api.steemit.com | jq
   replyPermlink: function(postAuthor, postPermLink, commenter, createdAt) {
      // e.g. "oadissin-re-trevonjb-because-i-do-care-20180911t021129058z"
-     const iso = createdAt.toISOString().replace(/:|-./g, "").toLowerCase()
-     const permLink = [commenter, 're', postAuthor, postPermLink, iso].join('-')
-     return permLink
+     const iso = createdAt.toISOString().replace(/:|-./g, "").replace('.').toLowerCase();
+     const permLink = [commenter, 're', postAuthor, postPermLink, iso].join('-');
+     return permLink;
   },
 
   fetchAllPostReplies: function(postId) {

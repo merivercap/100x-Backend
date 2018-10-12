@@ -88,12 +88,12 @@ class UserAuthentication {
   broadcastPost({ permLink, title, body, tags }) { // create or edit
     return this.steemUser.comment(
       '',
-      '',
+      tags[0],
       this.username,
       permLink,
       title,
       body,
-      JSON.stringify({ "tags": tags }),
+      {"tags": tags},
       function (err, res) {
         return err ? new Error(err) : true
       }
@@ -122,12 +122,10 @@ class UserAuthentication {
       permLink,
       '',
       body,
-      {},
+      {"postPermLink": postPermLink},
       function (err, res) {
-        if (err) {
-          throw new Error(err);
-        }
-        return true
+        console.log(err);
+        return err ? new Error(err) : true
       }
     );
   }

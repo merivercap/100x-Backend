@@ -30,7 +30,7 @@ input BroadcastReplyInput {
 
 type Mutation {
   # creates or edits a reply
-  broadcastReply(input: BroadcastReplyInput): Reply
+  broadcastReply(postPermLink: String, postAuthor: String, body: String): String
   # flags reply as deleted
   deleteReply(permLink: String): Reply
   # votes on a reply
