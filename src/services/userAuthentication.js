@@ -25,6 +25,7 @@ class UserAuthentication {
       return self.userInOurDb = self.findOrCreateUser(self.username);
     });
   }
+
   followSteemUser(steemUserNameToFollow) {
     const self = this;
     return this.steemUser.follow(

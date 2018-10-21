@@ -73,12 +73,7 @@ module.exports = {
       const self = this;
       const userProfileInformation = this.mapSteemUserInfoToOurBackend(userInfo[0]);
       User.find({where: { name }})
-        .then(user => {
-          return user.update(self.userProfileInformation);
-        })
-        .then(updatedUser => {
-          return updatedUser;
-        })
+        .then(user => user.update(self.userProfileInformation))
         .catch(err => {
           throw err;
         });
