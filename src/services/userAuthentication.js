@@ -57,7 +57,7 @@ class UserAuthentication {
       self.userInOurDb.steemBalance,
       self.userInOurDb.sbdBalance,
       self.userInOurDb.vestingBalance,
-      function(err, res) {
+      (err, res) => {
         if (err) throw err;
         return self.userInOurDb;
       }
