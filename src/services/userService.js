@@ -7,7 +7,6 @@ const {
 }                  = require('../utils/constants');
 
 module.exports = {
-
   mapSteemUserInfoToOurBackend: function(userInfoFromSteemit) {
     const jsonMetadata = JSON.parse(userInfoFromSteemit.json_metadata);
     const location = jsonMetadata.profile.location;
@@ -45,8 +44,8 @@ module.exports = {
         return this.getCoinMarketCapPrices(userInOurDb);
       })
       .catch(err => {
-        new Error(err);
-      })
+        throw err;
+      });
   },
 
   getCoinMarketCapPrices: async function(userRecord) {
@@ -60,8 +59,8 @@ module.exports = {
           return userRecord.update({ estimatedAccountValue });
       })
       .catch(err => {
-        new Error(err);
-      })
+        throw err;
+      });
   },
 
   getDynamicVestInfo: async function(userRecord) {
@@ -90,11 +89,11 @@ module.exports = {
           return updatedUser;
         })
         .catch(err => {
-          new Error(err);
-        })
+          throw err;
+        });
     }
 
     const params = [[[name]]];
     return client.sendAsync(GET_ACCOUNTS, params, storeUserInfo);
   },
-}
+};
