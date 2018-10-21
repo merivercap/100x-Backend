@@ -1,13 +1,12 @@
-'user strict';
 // https://github.com/steemit/steemconnect-sdk
 const sc2 = require('sc2-sdk');
-const db         = require('../models/sequelize');
-const models     = db.sequelize.models;
-const UserModel  = models.user;
-const _            = require('lodash');
+const db = require('../models/sequelize');
+const models = db.sequelize.models;
+const UserModel = models.user;
+const _ = require('lodash');
 const PostService = require('./postService');
-const client       = require('./steem');
-const idGenerator  = require('./idGenerator');
+const client = require('./steem');
+const idGenerator = require('./idGenerator');
 
 const { GET_FOLLOWING } = require('../utils/constants');
 
