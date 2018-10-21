@@ -17,20 +17,26 @@ type Reply {
 }
 
 type Query {
-    getAllPostReplies(postId: Int): [Reply]
-    returnAllReplies: [Reply]
-    replyCountById(postId: Int): Int
+  getAllPostReplies(postId: Int): [Reply]
+  returnAllReplies: [Reply]
+  replyCountById(postId: Int): Int
 }
 
+# input BroadcastReplyInput {
+#   postId: Int!
+#   body: String!
+#   createdAt: Date!
+# }
+
 input BroadcastReplyInput {
-  postId: Int!
-  body: String!
-  createdAt: Date!
+  body: String;
+  postPermLink: String
+  postAuthor: String
 }
 
 type Mutation {
   # creates or edits a reply
-  broadcastReply(postPermLink: String, postAuthor: String, body: String): String
+  broadcastReply(input: BroadcastReplyInput): String
   # flags reply as deleted
   deleteReply(permLink: String): Reply
   # votes on a reply
