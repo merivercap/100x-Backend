@@ -17,19 +17,19 @@ module.exports = {
   Mutation: {
     broadcastReply: async (_, { postPermLink, postAuthor, body }, { authenticatedUserInstance } ) => {
       if (!authenticatedUserInstance) {
-        return new AuthenticationError('ERROR_CREATING_OR_EDITING_REPLY');
+        throw new AuthenticationError('UNAUTHORIZED_USER');
       }
       return await ReplyService.broadcastAndStoreReply(authenticatedUserInstance, postPermLink, postAuthor, body);
     },
     deleteReply: async(_, { permLink }, { authenticatedUserInstance } ) => {
       if (!authenticatedUserInstance) {
-        return new AuthenticationError('ERROR_DELETING_REPLY');
+        throw new AuthenticationError('UNAUTHORIZED_USER');
       }
       return await ReplyService.deleteReply({ permLink });
     },
     voteReply: async(_, { permLink, up }, { authenticatedUserInstance } ) => {
       if (!authenticatedUserInstance) {
-        return new AuthenticationError('ERROR_VOTING_ON_REPLY');
+        throw new AuthenticationError('UNAUTHORIZED_USER');
       }
       return await ReplyService.voteReply({ authenticatedUserInstance, permLink, up });
     }
