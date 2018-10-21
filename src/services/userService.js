@@ -5,6 +5,7 @@ const {
   GET_ACCOUNTS,
   GET_DYNAMIC_GLOBAL_PROPERTIES,
 }                  = require('../utils/constants');
+const User         = db.sequelize.models.user;
 
 module.exports = {
   mapSteemUserInfoToOurBackend: function(userInfoFromSteemit) {
@@ -12,6 +13,7 @@ module.exports = {
     const location = jsonMetadata.profile.location;
     const introBlurb = jsonMetadata.profile.about;
     const profileImageUrl = jsonMetadata.profile.profile_image;
+    const realLifeName = jsonMetadata.name;
     const reputationScore = userInfoFromSteemit.posting_rewards;
     const createdAt = userInfoFromSteemit.created;
     const votingPower = userInfoFromSteemit.voting_power;
@@ -70,13 +72,15 @@ module.exports = {
 
   getUserAccount: async function(name) {
     const storeUserInfo = (userInfo) => {
-      const self = this;
-      const userProfileInformation = this.mapSteemUserInfoToOurBackend(userInfo[0]);
-      User.find({where: { name }})
-        .then(user => user.update(self.userProfileInformation))
-        .catch(err => {
-          throw err;
-        });
+      const userProfileInformation = this.mapSteemUserInfoToOurBackend(userInfo[0][0]);
+      return User.findOne({where: { name }})
+        .then(user => {
+          return user.update(userProfileInformation);
+        })
+        .then(updatedUser => {
+          return updatedUser;
+        })
+        .catch (err => console.log(err));
     }
 
     const params = [[[name]]];

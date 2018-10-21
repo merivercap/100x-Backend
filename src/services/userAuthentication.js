@@ -101,12 +101,12 @@ class UserAuthentication {
   broadcastPost({ permLink, title, body, tags }) { // create or edit
     return this.steemUser.comment(
       '',
-      '',
+      tags[0],
       this.username,
       permLink,
       title,
       body,
-      { "tags": tags },
+      {"tags": tags},
       function (err, res) {
         if (err) throw err;
         return true; // Why not return res?
@@ -126,15 +126,14 @@ class UserAuthentication {
       });
   }
 
-  broadcastReply({ postAuthor, postPermLink, permLink, body }) { // create or edit
+  broadcastReply({ postAuthor, postPermLink, body }) { // create or edit
     return this.steemUser.comment(
       postAuthor,
       postPermLink,
       this.username,
-      permLink,
       '',
       body,
-      {},
+      {"postPermLink": postPermLink},
       function (err, res) {
         if (err) throw err;
         return true; // Why not return res?

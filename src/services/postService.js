@@ -35,6 +35,10 @@ module.exports = {
       .catch(err => {
         new Error(err);
       })
+    // return authenticatedUserInstance.userInOurDb
+    //   .then(userRecord => {
+    //     return this.fetchSingleSteemitPost(permLink, userRecord);
+    //   })
   },
 
   reSyncPosts: function(posts, rankType) {
@@ -81,7 +85,7 @@ module.exports = {
      const postForOurDb = this.formatSteemitPost(post[0]);
      return this.findOrCreatePost(postForOurDb, userRecord);
     }
-    const params = [[userRecord.id, permlink]];
+    const params = [[userRecord.name, permlink]];
     return client.sendAsync(GET_CONTENT, params, storeSteemitPostInOurDb);
   },
 
