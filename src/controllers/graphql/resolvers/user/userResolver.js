@@ -11,23 +11,26 @@ module.exports = {
     getAllUsers: async (_, args) => {
       return await User.findAll();
     },
-    follow: async (_, args, { authenticatedUserInstance }) => {
-      return !authenticatedUserInstance
-        ? new AuthenticationError('ERROR_FOLLOWING_USER')
-        : await authenticatedUserInstance.followSteemUser(args.steemUsernameToFollow);
+    follow: async (_, { steemUsernameToFollow }, { authenticatedUserInstance }) => {
+      if (!authenticatedUserInstance) {
+        throw new AuthenticationError('UNAUTHORIZED_USER');
+      }
+      return await authenticatedUserInstance.followSteemUser(steemUsernameToFollow);
     },
-    unfollow: async (_, args, { authenticatedUserInstance }) => {
-      return !authenticatedUserInstance
-        ? new AuthenticationError('ERROR_UNFOLLOWING_USER')
-        : await authenticatedUserInstance.unFollowSteemUser(args.steemUsernameToUnfollow);
+    unfollow: async (_, { steemUsernameToUnfollow }, { authenticatedUserInstance }) => {
+      if (!authenticatedUserInstance) {
+        throw new AuthenticationError('UNAUTHORIZED_USER');
+      }
+      return await authenticatedUserInstance.unFollowSteemUser(steemUsernameToUnfollow);
     },
-    getProfileInformation: async (_, args) => {
-      return await UserService.getUserProfileInfo(args.name);
+    getProfileInformation: async (_, { name }) => {
+      return await UserService.getUserProfileInfo(name);
     },
     claimRewardBalance: async (_, args, { authenticatedUserInstance }) => {
-      return !authenticatedUserInstance
-        ? new AuthenticationError('ERROR_CLAIMING_REWARD_BALANCE')
-        : await authenticatedUserInstance.claimUsersRewardBalance();
+      if (!authenticatedUserInstance) {
+        throw new AuthenticationError('UNAUTHORIZED_USER');
+      }
+      return await UserService.claimUsersRewardBalance();
     }
   },
   User: {
