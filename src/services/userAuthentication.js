@@ -30,12 +30,15 @@ class UserAuthentication {
     });
   }
   followSteemUser(steemUserNameToFollow) {
-    const self=this;
+    const self = this;
     return this.steemUser.follow(
       this.username,
       steemUserNameToFollow,
       function(err, res) {
-        return err ? new Error(err) : self.userInOurDb;
+        if (err) {
+          throw err;
+        }
+        return self.userInOurDb;
       }
     );
   }
