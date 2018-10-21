@@ -62,7 +62,7 @@ module.exports = {
       .catch(err => {
         new Error(err);
       })
-  }
+  },
 
   getDynamicVestInfo: async function(userRecord) {
     const calculateSteemPower = (vestInfo) => {
