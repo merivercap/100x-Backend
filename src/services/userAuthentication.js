@@ -114,18 +114,17 @@ class UserAuthentication {
       });
   }
 
-  broadcastReply({ postAuthor, postPermLink, permLink, body }) { // create or edit
+  broadcastReply({ postAuthor, postPermLink, body }) { // create or edit
     return this.steemUser.comment(
       postAuthor,
       postPermLink,
       this.username,
-      permLink,
       '',
       body,
       {"postPermLink": postPermLink},
       function (err, res) {
-        console.log(err);
-        return err ? new Error(err) : true
+        if (err) throw err;
+        return true; // Why not return res?
       }
     );
   }
