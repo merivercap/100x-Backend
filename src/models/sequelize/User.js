@@ -53,6 +53,31 @@ module.exports = (sequelize, DataTypes) => {
         field: 'profileImageUrl',
         allowNull: true
       },
+      steemBalance: {
+        type: DataTypes.FLOAT,
+        field: 'steemBalance',
+        allowNull: true
+      },
+      sbdBalance: {
+        type: DataTypes.FLOAT,
+        field: 'sbdBalance',
+        allowNull: true
+      },
+      steemPower: {
+        type: DataTypes.FLOAT,
+        field: 'steemPower',
+        allowNull: true
+      },
+      userVests: {
+        type: DataTypes.FLOAT,
+        field: 'userVests',
+        allowNull: true
+      },
+      estimatedAccountValue: {
+        type: DataTypes.FLOAT,
+        field: 'estimatedAccountValue',
+        allowNull: true
+      },
     },
     {
       tableName: 'users',
