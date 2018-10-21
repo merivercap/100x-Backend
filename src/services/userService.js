@@ -32,7 +32,7 @@ module.exports = {
       steemBalance,
       sbdBalance,
       userVests,
-    }
+    };
   },
 
   getUserProfileInfo: async function(name) {
@@ -64,17 +64,8 @@ module.exports = {
   },
 
   getDynamicVestInfo: async function(userRecord) {
-    const calculateSteemPower = (vestInfo) => {
-      const vestProperties = vestInfo[0];
-      const totalSteem = parseFloat(vestProperties.total_vesting_fund_steem);
-      const totalVests = parseFloat(vestProperties.total_vesting_shares);
-      const userVests = userRecord.userVests;
-      const steemPower = totalSteem * (userVests / totalVests);
-      return userRecord.update({ steemPower });
-    }
-
     const params = [[]];
-    return client.sendAsync(GET_DYNAMIC_GLOBAL_PROPERTIES, params, calculateSteemPower);
+    return client.sendAsync(GET_DYNAMIC_GLOBAL_PROPERTIES, params, calculateSteemPower(userRecord));
   },
 
   getUserAccount: async function(name) {
@@ -97,3 +88,16 @@ module.exports = {
     return client.sendAsync(GET_ACCOUNTS, params, storeUserInfo);
   },
 };
+
+
+/** Helper functions */
+function calculateSteemPower(userRecord) {
+  return vestInfo => {
+    const vestProperties = vestInfo[0];
+    const totalSteem = parseFloat(vestProperties.total_vesting_fund_steem);
+    const totalVests = parseFloat(vestProperties.total_vesting_shares);
+    const userVests = userRecord.userVests;
+    const steemPower = totalSteem * (userVests / totalVests);
+    return userRecord.update({ steemPower });
+  };
+}
