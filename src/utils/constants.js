@@ -16,3 +16,4 @@ module.exports.IS_DELETED = 'isDeleted';
 module.exports.NETVOTES = 'netVotes';
 module.exports.VOTE_WEIGHT = 10000;
 module.exports.GET_ACCOUNTS = 'get_accounts';
+module.exports.GET_DYNAMIC_GLOBAL_PROPERTIES = 'get_dynamic_global_properties';

@@ -3,10 +3,10 @@ const _            = require('lodash');
 const client       = require('./steem');
 const {
   GET_ACCOUNTS,
+  GET_DYNAMIC_GLOBAL_PROPERTIES,
 }                  = require('../utils/constants');
 
 module.exports = {
-
   mapSteemUserInfoToOurBackend: function(userInfoFromSteemit) {
     const jsonMetadata = JSON.parse(userInfoFromSteemit.json_metadata);
     const location = jsonMetadata.profile.location;
@@ -15,6 +15,11 @@ module.exports = {
     const reputationScore = userInfoFromSteemit.posting_rewards;
     const createdAt = userInfoFromSteemit.created;
     const votingPower = userInfoFromSteemit.voting_power;
+    const realLifeName = jsonMetadata.profile.name;
+    const steemBalance = parseFloat(userInfoFromSteemit.balance);
+    const sbdBalance = parseFloat(userInfoFromSteemit.sbd_balance);
+    const steemBalance = parseFloat(userInfoFromSteemit.balance);
+    const userVests = parseFloat(userInfoFromSteemit.vesting_shares);
 
     return {
       profileImageUrl,
@@ -23,25 +28,71 @@ module.exports = {
       realLifeName,
       reputationScore,
       createdAt,
-      votingPower
-    }
+      votingPower,
+      steemBalance,
+      sbdBalance,
+      userVests,
+    };
   },
 
-  getUserInfo: async function(name) {
+  getUserProfileInfo: async function(name) {
+    return this.getUserAccount(name)
+      .then(userInOurDb => {
+        return this.getDynamicVestInfo(userInOurDb);
+      })
+      .then(userInOurDb => {
+        return this.getCoinMarketCapPrices(userInOurDb);
+      })
+      .catch(err => {
+        throw err;
+      });
+  },
+
+  getCoinMarketCapPrices: async function(userRecord) {
+    const url = "https://api.coinmarketcap.com/v1/ticker/steem";
+
+    return await fetch(url)
+      .then(function(data) {
+          const steemPriceInUsd = parseFloat(data.price_usd);
+          const steemTokensInAccount = userRecord.steemBalance + userRecord.steemPower
+          const estimatedAccountValue = steemTokensInAccount * steemPriceInUsd + userRecord.sbdBalance;
+          return userRecord.update({ estimatedAccountValue });
+      })
+      .catch(err => {
+        throw err;
+      });
+  },
+
+  getDynamicVestInfo: async function(userRecord) {
+    const params = [[]];
+    return client.sendAsync(GET_DYNAMIC_GLOBAL_PROPERTIES, params, calculateSteemPower(userRecord));
+  },
+
+  getUserAccount: async function(name) {
     const storeUserInfo = (userInfo) => {
       const self = this;
       const userProfileInformation = this.mapSteemUserInfoToOurBackend(userInfo[0]);
       User.find({where: { name }})
-        .then(user => {
-          return user.update(self.userProfileInformation);
-        })
-        .then(updatedUser => {
-          return updatedUser;
-        })
-        .catch (err => console.log(err));
+        .then(user => user.update(self.userProfileInformation))
+        .catch(err => {
+          throw err;
+        });
     }
 
     const params = [[[name]]];
     return client.sendAsync(GET_ACCOUNTS, params, storeUserInfo);
   },
+};
+
+
+/** Helper functions */
+function calculateSteemPower(userRecord) {
+  return vestInfo => {
+    const vestProperties = vestInfo[0];
+    const totalSteem = parseFloat(vestProperties.total_vesting_fund_steem);
+    const totalVests = parseFloat(vestProperties.total_vesting_shares);
+    const userVests = userRecord.userVests;
+    const steemPower = totalSteem * (userVests / totalVests);
+    return userRecord.update({ steemPower });
+  };
 }

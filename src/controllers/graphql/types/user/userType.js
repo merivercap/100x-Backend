@@ -13,6 +13,11 @@ type User {
   profileImageUrl: String
   posts: [Post]
   replies: [Reply]
+  steemBalance: Float
+  sbdBalance: Float
+  steemPower: Float
+  userVests: Float
+  estimatedAccountValue: Float
 }
 
 type Query {
@@ -21,5 +26,6 @@ type Query {
   follow(steemUsernameToFollow: String): User
   unfollow(steemUsernameToUnfollow: String): User
   getProfileInformation(name: String): User
+  claimRewardBalance: User
 }
 `;

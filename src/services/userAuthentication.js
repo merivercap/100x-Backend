@@ -1,13 +1,12 @@
-'user strict';
 // https://github.com/steemit/steemconnect-sdk
 const sc2 = require('sc2-sdk');
-const db         = require('../models/sequelize');
-const models     = db.sequelize.models;
-const UserModel  = models.user;
-const _            = require('lodash');
+const db = require('../models/sequelize');
+const models = db.sequelize.models;
+const UserModel = models.user;
+const _ = require('lodash');
 const PostService = require('./postService');
-const client       = require('./steem');
-const idGenerator  = require('./idGenerator');
+const client = require('./steem');
+const idGenerator = require('./idGenerator');
 
 const { GET_FOLLOWING } = require('../utils/constants');
 
@@ -19,34 +18,48 @@ class UserAuthentication {
   }
 
   verifyTokenApiCall(accessToken) {
-    let self=this;
+    let self = this;
     return this.initializeSteemUser(accessToken).me(function (err, res) {
-      if (err) {
-        throw new Error(`Invalid Access Token: ${err}`);
-      } else {
-        self.username=res['user'];
-        return self.userInOurDb = self.findOrCreateUser(self.username);
-      }
+      if (err) throw err;
+      self.username = res['user'];
+      return self.userInOurDb = self.findOrCreateUser(self.username);
     });
   }
+
   followSteemUser(steemUserNameToFollow) {
-    const self=this;
+    const self = this;
     return this.steemUser.follow(
       this.username,
       steemUserNameToFollow,
       function(err, res) {
-        return err ? new Error(err) : self.userInOurDb;
+        if (err) throw err;
+        return self.userInOurDb;
       }
     );
   }
 
   unFollowSteemUser(steemUserNameToUnfollow) {
-    const self=this;
+    const self = this;
     return this.steemUser.unfollow(
       this.username,
       steemUserNameToUnfollow,
       function(err, res) {
-        return err ? new Error(err) : self.userInOurDb;
+        if (err) throw err;
+        return self.userInOurDb;
+      }
+    );
+  }
+
+  claimUsersRewardBalance() {
+    const self = this;
+    return this.steemUser.claimRewardBalance(
+      self.username,
+      self.userInOurDb.steemBalance,
+      self.userInOurDb.sbdBalance,
+      self.userInOurDb.vestingBalance,
+      (err, res) => {
+        if (err) throw err;
+        return self.userInOurDb;
       }
     );
   }
@@ -95,7 +108,8 @@ class UserAuthentication {
       body,
       { "tags": tags },
       function (err, res) {
-        return err ? new Error(err) : true
+        if (err) throw err;
+        return true; // Why not return res?
       }
     );
   }
@@ -107,10 +121,8 @@ class UserAuthentication {
       permlink,
       weight,
       function(err, res) {
-        if (err) {
-          throw new Error(err);
-        }
-        return true
+        if (err) throw err;
+        return true; // Why not return res?
       });
   }
 
@@ -124,10 +136,8 @@ class UserAuthentication {
       body,
       {},
       function (err, res) {
-        if (err) {
-          throw new Error(err);
-        }
-        return true
+        if (err) throw err;
+        return true; // Why not return res?
       }
     );
   }
