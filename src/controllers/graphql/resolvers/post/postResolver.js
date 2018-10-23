@@ -26,7 +26,7 @@ module.exports = {
     },
     getUserFeed: async (_, args, { authenticatedUserInstance }) => {
       if (!authenticatedUserInstance) {
-        return new AuthenticationError('ERROR_GETTING_FOLLOWER_POSTS');
+        throw new AuthenticationError('UNAUTHORIZED_USER');
       }
       return await authenticatedUserInstance.getMyFollowersPostsAndUsersAuthoredPosts();
     },
@@ -37,19 +37,19 @@ module.exports = {
   Mutation: {
     broadcastPost: async (_, { permLink, title, body, tags }, { authenticatedUserInstance } ) => {
       if (!authenticatedUserInstance) {
-        return new AuthenticationError('ERROR_CREATING_OR_EDITING_POST');
+        throw new AuthenticationError('UNAUTHORIZED_USER');
       }
       return await PostService.broadcastAndStorePost({ authenticatedUserInstance, permLink, title, body, tags });
     },
     deletePost: async(_, { permLink }, { authenticatedUserInstance } ) => {
       if (!authenticatedUserInstance) {
-        return new AuthenticationError('ERROR_DELETING_POST');
+        throw new AuthenticationError('UNAUTHORIZED_USER');
       }
       return await PostService.deletePost({ permLink });
     },
     votePost: async(_, { permLink, up }, { authenticatedUserInstance } ) => {
       if (!authenticatedUserInstance) {
-        return new AuthenticationError('ERROR_VOTING_ON_POST');
+        throw new AuthenticationError('UNAUTHORIZED_USER');
       }
       return await PostService.votePost({ authenticatedUserInstance, permLink, up });
     }
