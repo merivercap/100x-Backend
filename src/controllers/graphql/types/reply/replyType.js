@@ -29,7 +29,7 @@ type Query {
 # }
 
 input BroadcastReplyInput {
-  body: String;
+  body: String
   postPermLink: String
   postAuthor: String
 }
